@@ -91,7 +91,7 @@ void checkLedBrightness() {
   switch (led_status) {
     case led_status_idle :
       if (0 < lam_led_brightness) {
-        adjustLedBrightness(-1);
+        adjustLedBrightness(-5);
       } else {
         ledOff();
       }
@@ -99,6 +99,13 @@ void checkLedBrightness() {
     case led_status_highlighted :
       if(50 > lam_led_brightness) {
         adjustLedBrightness(1);
+      } else if(50 < lam_led_brightness) {
+        adjustLedBrightness(-5);
+      }
+    break;
+    case led_status_inUse :
+      if(250 > lam_led_brightness) {
+        adjustLedBrightness(5);
       }
     break;
     default:
@@ -117,7 +124,7 @@ void setLedStatus() {
       break;
     default :
       if (50 >= distance) {
-        led_status = led_status_highlighted;
+        led_status = led_status_inUse;
       } else if (200 >= distance) {
         led_status = led_status_highlighted;
       }
