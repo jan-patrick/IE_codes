@@ -17,9 +17,10 @@ int lam_led_brightness = 0;
 //Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRBW + NEO_KHZ800);
 
 unsigned long led_previousMillis = 0;
-const long led_normal_interval = 100;
+const long led_normal_interval = 700;
 
 boolean ledsOn = false;
+boolean fadeUp = true;
 
 int led_status = 0;
 boolean newLedStatusReached = false;
@@ -82,16 +83,28 @@ void ledOff() {
 }
 
 void fadeLed() {
-  if(5 >= lam_led_brightness) {
-    adjustLedBrightness(0);
-  } else if(45 <= lam_led_brightness) {
-    adjustLedBrightness(1);
-  } else if(55 <= lam_led_brightness) {
-    adjustLedBrightness(-1);
-  } else {
-    adjustLedBrightness(0);
+  unsigned long led_currentMillis = millis();
+  if (led_currentMillis - led_previousMillis >= led_normal_interval) {
+    led_previousMillis = led_currentMillis;
+    
+    if (5 >= lam_led_brightness) {
+      adjustLedBrightness(0);
+    } else if (40 <= lam_led_brightness && !fadeUp) {
+      fadeUp = true;
+    } else if (40 <= lam_led_brightness && 60 >= lam_led_brightness) {
+      adjustLedBrightness(1);
+      Serial.println("e");
+    } else if (60 >= lam_led_brightness && fadeUp) {
+      fadeUp = false;
+    } else if (60 >= lam_led_brightness) {
+      adjustLedBrightness(-1);
+      Serial.println("üüüe");
+    } else {
+      adjustLedBrightness(0);
+    }
+    setLedBrightness();
+    Serial.println(lam_led_brightness);
   }
-  setLedBrightness();
 }
 
 void setLedBrightness() {
@@ -105,9 +118,6 @@ void adjustLedBrightness(int a) {
 }
 
 void checkLedBrightness() {
-  //unsigned long led_currentMillis = millis();
-  //if (led_currentMillis - led_previousMillis >= led_normal_interval) {
-    //led_previousMillis = led_currentMillis;
   switch (led_status) {
     case led_status_idle :
       if (5 < lam_led_brightness) {
@@ -120,37 +130,35 @@ void checkLedBrightness() {
       }
       break;
     case led_status_highlighted :
-      if(50 > lam_led_brightness) {
+      if (50 > lam_led_brightness && !newLedStatusReached) {
         adjustLedBrightness(1);
         newLedStatusReached = false;
-      } else if(50 < lam_led_brightness) {
+      } else if (50 < lam_led_brightness && !newLedStatusReached) {
         adjustLedBrightness(-5);
         newLedStatusReached = false;
       } else {
         newLedStatusReached = true;
       }
-    break;
+      break;
     case led_status_inUse :
-      if(250 > lam_led_brightness) {
+      if (250 > lam_led_brightness) {
         adjustLedBrightness(5);
         newLedStatusReached = false;
       } else {
         newLedStatusReached = true;
       }
-    break;
+      break;
     default:
       Serial.println("error");
       break;
   }
   setLedBrightness();
-  if(newLedStatusReached) {
+  if (newLedStatusReached) {
     //fadeLed();
   }
-  //}
 }
 
 void setLedStatus() {
-  Serial.println(lam_led_brightness);
   switch (distance) {
     case -1 :
       led_status = led_status_idle;
