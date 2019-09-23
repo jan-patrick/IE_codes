@@ -1,6 +1,9 @@
 // distance sensor one (time of flight)
+// use I2C port
 
 #include "Adafruit_VL53L0X.h"
+
+int distance;
 
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
@@ -21,22 +24,21 @@ void setupDistanceSensor() {
   Serial.println(F("time of flight sensor loaded\n\n"));
 }
 
+void updateDistance() {
+  distance = getDistance();
+}
+
 int getDistance() {
   unsigned long range_currentMillis = millis();
 
   if (range_currentMillis - range_previousMillis >= range_interval) {
-  VL53L0X_RangingMeasurementData_t measure;
-  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+    VL53L0X_RangingMeasurementData_t measure;
+    lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
-  if (measure.RangeStatus != 4 && 8000 >= measure.RangeMilliMeter && 0 <= measure.RangeMilliMeter) {  // phase failures have incorrect data
-    return measure.RangeMilliMeter;
-  } else {
-    return -1;
+    if (measure.RangeStatus != 4 && 8000 >= measure.RangeMilliMeter && 0 <= measure.RangeMilliMeter) {  // phase failures have incorrect data
+      return measure.RangeMilliMeter;
+    } else {
+      return -1;
+    }
   }
-  }
-}
-
-void printDistance(int mm) {
-  Serial.print("Distance (mm): "); Serial.println(mm);
-  //delay(100);
 }
