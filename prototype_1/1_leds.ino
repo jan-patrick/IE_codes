@@ -16,9 +16,13 @@ int lam_led_brightness = 0;
 
 //Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRBW + NEO_KHZ800);
 
+unsigned long led_previousMillis = 0;
+const long led_normal_interval = 100;
+
 boolean ledsOn = false;
 
 int led_status = 0;
+boolean newLedStatusReached = false;
 
 const int led_status_idle = 0;
 const int led_status_highlighted = 1;
@@ -77,6 +81,19 @@ void ledOff() {
   FastLED.show();
 }
 
+void fadeLed() {
+  if(5 >= lam_led_brightness) {
+    adjustLedBrightness(0);
+  } else if(45 <= lam_led_brightness) {
+    adjustLedBrightness(1);
+  } else if(55 <= lam_led_brightness) {
+    adjustLedBrightness(-1);
+  } else {
+    adjustLedBrightness(0);
+  }
+  setLedBrightness();
+}
+
 void setLedBrightness() {
   for (int i = 0; i < lam_num_leds; i++)
     leds[i].setHSV(lam_led_hue, 255, lam_led_brightness);
@@ -88,24 +105,37 @@ void adjustLedBrightness(int a) {
 }
 
 void checkLedBrightness() {
+  //unsigned long led_currentMillis = millis();
+  //if (led_currentMillis - led_previousMillis >= led_normal_interval) {
+    //led_previousMillis = led_currentMillis;
   switch (led_status) {
     case led_status_idle :
-      if (0 < lam_led_brightness) {
+      if (5 < lam_led_brightness) {
+        newLedStatusReached = false;
         adjustLedBrightness(-5);
       } else {
         ledOff();
+        lam_led_brightness = 0;
+        newLedStatusReached = true;
       }
       break;
     case led_status_highlighted :
       if(50 > lam_led_brightness) {
         adjustLedBrightness(1);
+        newLedStatusReached = false;
       } else if(50 < lam_led_brightness) {
         adjustLedBrightness(-5);
+        newLedStatusReached = false;
+      } else {
+        newLedStatusReached = true;
       }
     break;
     case led_status_inUse :
       if(250 > lam_led_brightness) {
         adjustLedBrightness(5);
+        newLedStatusReached = false;
+      } else {
+        newLedStatusReached = true;
       }
     break;
     default:
@@ -113,6 +143,10 @@ void checkLedBrightness() {
       break;
   }
   setLedBrightness();
+  if(newLedStatusReached) {
+    //fadeLed();
+  }
+  //}
 }
 
 void setLedStatus() {
@@ -120,7 +154,6 @@ void setLedStatus() {
   switch (distance) {
     case -1 :
       led_status = led_status_idle;
-      ledOff();
       break;
     default :
       if (50 >= distance) {

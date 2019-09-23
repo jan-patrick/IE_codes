@@ -31,7 +31,8 @@ void updateDistance() {
 int getDistance() {
   unsigned long range_currentMillis = millis();
 
-  if (range_currentMillis - range_previousMillis >= range_interval) {
+  //if (range_currentMillis - range_previousMillis >= range_interval) {
+    //range_previousMillis = range_currentMillis;
     VL53L0X_RangingMeasurementData_t measure;
     lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
@@ -40,5 +41,5 @@ int getDistance() {
     } else {
       return -1;
     }
-  }
+  //}
 }
