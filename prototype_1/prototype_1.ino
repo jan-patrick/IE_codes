@@ -21,4 +21,5 @@ void loop() {
   //setMatrixColor(200, 100, 100);
   updateDistance();
   setLedStatus();
+  checkLedBrightness();
 }

@@ -10,41 +10,9 @@ const int lam_num_leds = 1;
 CRGB leds[lam_num_leds];
 
 
-// Collection of states for Led Animation Machine (lam)
-const int lam_state_off = 0;
-const int lam_state_on = 1;
-const int lam_state_blink = 2;
-const int lam_state_fade = 3;
-const int lam_state_rainbow = 4;
-
-// Remember the current state
-int lam_current_state = lam_state_off;
-
-// Make it possible to track the passing of time
-long lam_timer_duration = 1000;
-long lam_timer_mark = 0;
-
-// Variable to control blinking
-int lam_blink_state = 0;
-int lam_blink_update_tempo = 1000;
-
-// Variables to control fading
-long lam_fade_duration = 2000;
-int lam_fade_steps = 40;
-int lam_fade_update_tempo = lam_fade_duration / lam_fade_steps;
-int lam_fade_direction = 1;
-int lam_fade_max = 255;
-int lam_fade_min = 0;
-int lam_fade_brightness_increment = (lam_fade_max - lam_fade_min) / lam_fade_steps;
-int lam_fade_brightness = 0;
-
-// Variable to control the color rainbow
-long lam_rainbow_update_tempo = 50;
-int lam_rainbow_hue_step = 10;
-
-// Variable to control led color [0..255]
 // red=0 orange=32 yellow=64 green=96 blue=160 purple=192 pink=224
 int lam_led_hue = 96;
+int lam_led_brightness = 0;
 
 //Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRBW + NEO_KHZ800);
 
@@ -100,19 +68,48 @@ void setLedsOn(boolean setledsOn) {
 void ledOn() {
   for (int i = 0; i < lam_num_leds; i++)
     leds[i].setHSV(lam_led_hue, 255, 255);
-    Serial.println("on");
   FastLED.show();
 }
 
 void ledOff() {
   for (int i = 0; i < lam_num_leds; i++)
-    leds[i].setHSV(100, 255, 0);
+    leds[i].setHSV(lam_led_hue, 255, 0);
   FastLED.show();
-  Serial.println("off");
+}
+
+void setLedBrightness() {
+  for (int i = 0; i < lam_num_leds; i++)
+    leds[i].setHSV(lam_led_hue, 255, lam_led_brightness);
+  FastLED.show();
+}
+
+void adjustLedBrightness(int a) {
+  lam_led_brightness += a;
+}
+
+void checkLedBrightness() {
+  switch (led_status) {
+    case led_status_idle :
+      if (0 < lam_led_brightness) {
+        adjustLedBrightness(-1);
+      } else {
+        ledOff();
+      }
+      break;
+    case led_status_highlighted :
+      if(50 > lam_led_brightness) {
+        adjustLedBrightness(1);
+      }
+    break;
+    default:
+      Serial.println("error");
+      break;
+  }
+  setLedBrightness();
 }
 
 void setLedStatus() {
-  Serial.println(distance);
+  Serial.println(lam_led_brightness);
   switch (distance) {
     case -1 :
       led_status = led_status_idle;
@@ -120,9 +117,9 @@ void setLedStatus() {
       break;
     default :
       if (50 >= distance) {
-        ledOn();
+        led_status = led_status_highlighted;
       } else if (200 >= distance) {
-        ledOn();
+        led_status = led_status_highlighted;
       }
       break;
   }
