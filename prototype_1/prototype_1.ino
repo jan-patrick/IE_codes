@@ -14,7 +14,7 @@ const boolean debug = true;
 void setup() {
   setupDebugging();
   setupDistanceSensor();
-  //setupLeds();
+  setupLeds();
 }
 
 void loop() {

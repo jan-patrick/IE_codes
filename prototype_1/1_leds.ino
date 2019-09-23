@@ -106,7 +106,7 @@ void ledOn() {
 
 void ledOff() {
   for (int i = 0; i < lam_num_leds; i++)
-    leds[i].setHSV(lam_led_hue, 255, 0);
+    leds[i].setHSV(100, 255, 0);
   FastLED.show();
   Serial.println("off");
 }
