@@ -2,8 +2,7 @@
 // port D7 on Seeeduino Lotus
 
 //#include <Adafruit_NeoPixel.h>
-//#define PIN            8
-//#define NUMPIXELS      64
+//#define NUMPIXELS 64
 #include <FastLED.h>
 
 const int lam_num_leds = 1;
@@ -14,7 +13,7 @@ CRGB leds[lam_num_leds];
 int lam_led_hue = 96;
 int lam_led_brightness = 0;
 
-//Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRBW + NEO_KHZ800);
+//Adafruit_NeoPixel pixels = Adafruit_NeoPixel(64, 8, NEO_GRBW + NEO_KHZ800);
 
 boolean ledsOn = false;
 
@@ -30,8 +29,8 @@ const int led_status_inUse = 3;
 // ---------------------------------------------- Leds utility functions
 
 
-const int clock_pin = 7;
-const int data_pin = 8;
+const int clock_pin = 3;
+const int data_pin = 4;
 
 void setupLeds() {
   //pixels.begin();
@@ -49,7 +48,7 @@ void setupLeds() {
 //  if (ledsOn) {
 //    for (int i = 0; i < NUMPIXELS; i++) {
 //      pixels.setPixelColor(i, pixels.Color(r, g, b));
-//    }
+//   }
 //  } else {
 //    setMatrixColor(0, 0, 0);
 //  }
@@ -69,18 +68,21 @@ void ledOn() {
   for (int i = 0; i < lam_num_leds; i++)
     leds[i].setHSV(lam_led_hue, 255, 255);
   FastLED.show();
+  //setMatrixColor(255, 255, 255);
 }
 
 void ledOff() {
   for (int i = 0; i < lam_num_leds; i++)
     leds[i].setHSV(lam_led_hue, 255, 0);
   FastLED.show();
+  //setMatrixColor(0, 0, 0);
 }
 
 void setLedBrightness() {
   for (int i = 0; i < lam_num_leds; i++)
     leds[i].setHSV(lam_led_hue, 255, lam_led_brightness);
   FastLED.show();
+  //setMatrixColor(lam_led_brightness, lam_led_brightness, lam_led_brightness);
 }
 
 void adjustLedBrightness(int a) {
@@ -88,7 +90,7 @@ void adjustLedBrightness(int a) {
 }
 
 void checkLedBrightness() {
-  Serial.println(led_status);
+  //Serial.println(led_status);
   switch (led_status) {
     case led_status_idle :
       if (5 < lam_led_brightness) {
@@ -99,25 +101,24 @@ void checkLedBrightness() {
       }
       break;
     case led_status_highlighted :
-      if(50 > lam_led_brightness) {
+      if (50 > lam_led_brightness) {
         adjustLedBrightness(1);
-      } else if(50 < lam_led_brightness) {
+      } else if (50 < lam_led_brightness) {
         adjustLedBrightness(-5);
       }
-    break;
+      break;
     case led_status_attracted :
-      if(250 > lam_led_brightness) {
+      if (250 > lam_led_brightness) {
         adjustLedBrightness(5);
       }
-    break;
-    case led_status_inUse : 
-    Serial.println("hi");
+      break;
+    case led_status_inUse :
       if (15 < lam_led_brightness) {
         adjustLedBrightness(-5);
       } else {
         lam_led_brightness = 10;
       }
-    break;
+      break;
     default:
       Serial.println("error");
       break;
