@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import { Link } from "react-router-dom";
+import Fade from '@material-ui/core/Fade';
 
 const styles = theme => ({
   root: {
@@ -36,7 +37,6 @@ const styles = theme => ({
 
 class MenuAppBar extends React.Component {
   state = {
-    auth: true,
     anchorEl: null,
     open: false,
   };
@@ -61,56 +61,50 @@ class MenuAppBar extends React.Component {
     if (this.anchorEl.contains(event.target)) {
       return;
     }
-
     this.setState({ open: false });
   };
 
   render() {
     const { classes } = this.props;
-    const { auth } = this.state;
     const { open } = this.state;
 
     return (
       <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" buttonRef={node => {
-              this.anchorEl = node;
-            }}
-              aria-owns={open ? 'menu-list-grow' : null}
-              aria-haspopup="true"
-              onClick={this.handleToggle}>
-              <MenuIcon />
-            </IconButton>
-            <Popper open={open} anchorEl={this.anchorEl} transition disablePortal>
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  id="menu-list-grow"
-                  style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={this.handleClose}>
-                      <MenuList>
-                        <MenuItem onClick={this.handleClose}><Link to="/" style={{ textDecoration: 'none', color:'blue' }}>Home</Link></MenuItem>
-                        <MenuItem onClick={this.handleClose}><Link to="/lock" style={{ textDecoration: 'none', color:'blue' }}>Lock</Link></MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              front door
-            </Typography>
-            {auth && (
-              <div>
-                <IconButton></IconButton>
-                <Link to="/profile"></Link>
-              </div>
-            )}
-          </Toolbar>
-        </AppBar>
+        <Fade in='true'>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" buttonRef={node => {
+                this.anchorEl = node;
+              }}
+                aria-owns={open ? 'menu-list-grow' : null}
+                aria-haspopup="true"
+                onClick={this.handleToggle}>
+                <MenuIcon />
+              </IconButton>
+              <Popper open={open} anchorEl={this.anchorEl} transition disablePortal>
+                {({ TransitionProps, placement }) => (
+                  <Grow
+                    {...TransitionProps}
+                    id="menu-list-grow"
+                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                  >
+                    <Paper>
+                      <ClickAwayListener onClickAway={this.handleClose}>
+                        <MenuList>
+                          <MenuItem onClick={this.handleClose}><Link to="/" style={{ textDecoration: 'none', color: 'black' }}>Home</Link></MenuItem>
+                          <MenuItem onClick={this.handleClose}><Link to="/lock" style={{ textDecoration: 'none', color: 'black' }}>Lock</Link></MenuItem>
+                        </MenuList>
+                      </ClickAwayListener>
+                    </Paper>
+                  </Grow>
+                )}
+              </Popper>
+              <Typography variant="h6" color="inherit" className={classes.grow}>
+                front door
+              </Typography>
+            </Toolbar>
+          </AppBar>
+        </Fade>
       </div>
     );
   }

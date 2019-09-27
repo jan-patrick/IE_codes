@@ -1,5 +1,5 @@
 import React from 'react';
-import Lock from './Numpad.js';
+import Unlock from './Success.js';
 import Navbar from './Navbar.js';
 
 class Login extends React.Component {
@@ -16,7 +16,7 @@ class Login extends React.Component {
     return (
       <div>
         <Navbar></Navbar>
-        <Lock></Lock>
+        <Unlock></Unlock>
       </div>
     )
   }

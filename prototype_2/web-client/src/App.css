@@ -1,8 +1,9 @@
 .App {
   text-align: center;
+  overflow: hidden;
+  width: 412px;
+  height: 740px;
 }
-
-/* position: relative*/
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;

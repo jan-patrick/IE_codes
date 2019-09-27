@@ -33,6 +33,7 @@ class SimpleSnackbar extends React.Component {
     }
 
     this.setState({ open: false });
+    setTimeout(this.handleClick.bind(this), 2000);
   };
 
   render() {
@@ -45,7 +46,6 @@ class SimpleSnackbar extends React.Component {
             horizontal: 'center',
           }}
           open={this.state.open}
-          //autoHideDuration={6000}
           onClose={this.handleClose}
           ContentProps={{
             'aria-describedby': 'message-id',
@@ -53,7 +53,7 @@ class SimpleSnackbar extends React.Component {
           message={<span id="message-id">front door nearby</span>}
           action={[
             <Button key="undo" color="secondary" size="small" onClick={this.handleClose}>
-              <Link to="/lock" style={{ textDecoration: 'none', color:'white' }}>UNLOCK</Link>
+              <Link to="/lock" style={{ textDecoration: 'none', color: 'white' }}>UNLOCK</Link>
             </Button>,
             <IconButton
               key="close"
