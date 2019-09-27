@@ -3,22 +3,14 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Notification from './Notification';
 import './App.css';
 import 'typeface-roboto';
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
-import Lock from "./Lock";
-import Unlocked from "./Unlocked";
-import homescreen from './homescreen.jpg';
-
-const divStyle = {
-  width: '412px',
-  height: '740px',
-  backgroundImage: `url(${homescreen})`,
-  backgroundSize: 'cover'
-};
+import Lock, { fakeAuth } from "./Lock";
+import Navbar from './Navbar.js';
 
 class App extends React.Component {
-
   render() {
+
     return (
       <div className="App">
         <React.Fragment>
@@ -27,21 +19,26 @@ class App extends React.Component {
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
-          
           <Grid
-            container
-            spacing={16}
-            className="App"
-            direction="row"
-            justify="center"
-            alignItems="flex-start">
+          container
+          spacing={16}
+          className="App"
+          direction="row"
+          justify="center"
+          alignItems="flex-start">
             <Grid item xs={12}>
+              <Grid key="nav" item>
+                <Navbar></Navbar>
+              </Grid>
               <Grid key="switch" item>
                 <Switch>
                   <Route path="/lock" component={Lock} />
-                  <Route path="/unlocked" component={Unlocked} />
                   <Route exact path="/" component={Home} />
+                  <PrivateRoute path="/admin" component={Admin} />
                 </Switch>
+              </Grid>
+              <Grid key="not" item>
+                <Notification></Notification>
               </Grid>
             </Grid>
           </Grid>
@@ -51,11 +48,38 @@ class App extends React.Component {
   }
 }
 
+//Private router function
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        fakeAuth.isAuthenticated === true ? (
+          <Component {...props} />
+        ) : (
+            <Redirect
+              to={{ pathname: "/lock", state: { from: props.location } }}
+            />
+          )}
+    />
+  );
+};
+
 //Home component
 const Home = props => (
-  <div className="home" style={divStyle} >
-    <Notification></Notification>
+  <div>
+    <h2>Home {console.log(props)}</h2>
   </div>
 );
+
+//Admin component
+const Admin = ({ match }) => {
+  return (
+    <div>
+      {" "}
+      <h2>Welcome home! </h2>
+    </div>
+  );
+};
 
 export default App;

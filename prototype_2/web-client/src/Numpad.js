@@ -14,9 +14,6 @@ import Button from '@material-ui/core/Button';
 import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
 import UnlockIcon from '@material-ui/icons/LockOpen';
 import Grid from '@material-ui/core/Grid';
-import Fade from '@material-ui/core/Fade';
-import { Redirect } from 'react-router';
-import Websocket from 'react-websocket';
 
 const styles = theme => ({
   root: {
@@ -24,7 +21,7 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   margin: {
-    margin: theme.spacing.unit + 10,
+    margin: theme.spacing.unit,
   },
   withoutLabel: {
     marginTop: theme.spacing.unit * 3,
@@ -33,7 +30,7 @@ const styles = theme => ({
     flexBasis: 200,
   },
   button: {
-    margin: theme.spacing.unit + 10,
+    margin: theme.spacing.unit+10,
     height: 80,
     width: 80,
     fontSize: 25,
@@ -49,10 +46,6 @@ const styles = theme => ({
 class NumPad extends React.Component {
   state = {
     showPassword: false,
-    showError: false,
-    password: '',
-    pinpadshown: true,
-    redirect: false,
   };
 
   handleChange = prop => event => {
@@ -63,148 +56,86 @@ class NumPad extends React.Component {
     this.setState(state => ({ showPassword: !state.showPassword }));
   };
 
-  handleError = param => {
-    if (param === "error") {
-      this.setState({ showError: true });
-      // ledRed 2 ON, 3 OFF
-      this.sendMessage(2);
-    } else {
-      this.setState({ showError: false });
-      this.sendMessage(3);
-    }
-  };
-
-  handleClick = param => e => {
-    if (param === "unlock" || param === "#") {
-      if (this.state.password === "1234") {
-        console.log('this is correct!', param);
-        this.handleError("noError");
-        this.sendMessage(0);
-        this.setState({ redirect: true });
-        // ledGreen 0 ON, 1 OFF
-        
-      } else {
-        this.handleError("error");
-        this.sendMessage(1);
-      }
-    }
-    else if (param === "delete") {
-      this.setState({ password: this.state.password.substring(0, this.state.password.length - 1) });
-      this.handleError("noError");
-      this.sendMessage(5)
-    } else {
-      this.setState({ password: this.state.password + param });
-      this.handleError("noError");
-      this.sendMessage(5)
-    }
-  }
-
-  handleData(data) {
-    console.log(String(data));
-    this.handleClick(data)();
-  }
-
-  handleOpen()  {
-    console.log("connected:)");
-  }
-  handleClose() {
-    console.log("disconnected:(");
-  }
-
-  sendMessage(message){
-    if(message !== null){
-      this.refWebSocket.sendMessage(message);
-    }
+  handleClick() {
+    console.log('this is:', this);
   }
 
   render() {
     const { classes } = this.props;
-    const { pinpadshown } = this.state;
 
-    if (this.state.redirect) {
-      // 4 all LEDs ON, 5 all LEDs OFF
-      return (
-        <Redirect push to="/unlocked" />
-      );
-    } else {
-      return (
-        <div className={classes.root}>
-        <Websocket url='ws://localhost:8080/' onMessage={this.handleData.bind(this)} onOpen={this.handleOpen} onClose={this.handleClose} reconnect={true} debug={true} ref={Websocket => {this.refWebSocket = Websocket;}}/>
-          <Grid container className="de">
-            <Fade in={pinpadshown}>
-              <Grid item xs={12}>
-                <Grid key="password" item>
-                  <span key="pass">
-                    <FormControl className={classNames(classes.margin, classes.textField)}>
-                      <InputLabel htmlFor="adornment-password">Please enter your code</InputLabel>
-                      <Input
-                        id="adornment-password"
-                        error={this.state.showError}
-                        type={this.state.showPassword ? 'text' : 'password'}
-                        value={this.state.password}
-                        onChange={this.handleChange('password')}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="Toggle password visibility"
-                              onClick={this.handleClickShowPassword}
-                            >
-                              {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                      />
-                      <FormHelperText id="weight-helper-text"></FormHelperText>
-                    </FormControl>
-                    <br />
-                  </span>
+    return (
+      <div className={classes.root}>
+        <Grid container className="de">
+          <Grid item xs={12}>
+            <Grid key="password" item>
+            <span key="pass">
+              <FormControl className={classNames(classes.margin, classes.textField)}>
+                <InputLabel htmlFor="adornment-password">Please enter your code</InputLabel>
+                <Input
+                  id="adornment-password"
+                  type={this.state.showPassword ? 'text' : 'password'}
+                  value={this.state.password}
+                  onChange={this.handleChange('password')}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={this.handleClickShowPassword}
+                      >
+                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                <FormHelperText id="weight-helper-text">1234</FormHelperText>
+              </FormControl>
+              <br/>
+              </span>
+            </Grid>
+            <Grid
+              container
+              spacing={16}
+              className="test"
+              direction="row"
+              justify="space-evenly"
+              alignItems="flex-start"
+            >
+            <span key="1-3">
+                <Grid key="123" item>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("1")}>1</Button>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("2")}>2</Button>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("3")}>3</Button>
                 </Grid>
-                <Grid
-                  container
-                  spacing={16}
-                  className="test"
-                  direction="row"
-                  justify="space-evenly"
-                  alignItems="flex-start"
-                >
-                  <span key="1-3">
-                    <Grid key="123" item>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(1)}>1</Button>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(2)}>2</Button>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(3)}>3</Button>
-                    </Grid>
-                    <br />
-                    <Grid key="456" item>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(4)}>4</Button>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(5)}>5</Button>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(6)}>6</Button>
-                    </Grid>
-                    <br />
-                    <Grid key="789" item>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(7)}>7</Button>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(8)}>8</Button>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(9)}>9</Button>
-                    </Grid>
-                    <br />
-                    <Grid key="0okback" item>
-                      <Button variant="fab" color="primary" aria-label="Add" className={classes.button} onClick={this.handleClick("delete")}>
-                        <BackIcon />
-                      </Button>
-                      <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick(0)}>
-                        0
-                      </Button>
-                      <Button variant="fab" color="primary" aria-label="Default" className={classes.button} onClick={this.handleClick("unlock")}>
-                        <UnlockIcon />
-                      </Button>
-                    </Grid>
-                  </span>
+              <br />
+              <Grid key="456" item>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("4")}>4</Button>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("5")}>5</Button>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("6")}>6</Button>
                 </Grid>
+              <br />
+              <Grid key="789" item>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("7")}>7</Button>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("8")}>8</Button>
+                  <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("9")}>9</Button>
+                </Grid>
+              <br />
+              <Grid key="0okback" item>
+                <Button variant="fab" color="primary" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("delete")}>
+                  <BackIcon />
+                </Button>
+                <Button variant="fab" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("0")}>
+                  0
+                </Button>
+                <Button variant="fab" color="primary" aria-label="Add" className={classes.button} onClick={this.handleClick.bind("unlock")}>
+                  <UnlockIcon />
+                </Button>
               </Grid>
-            </Fade>
+              </span>
+            </Grid>
           </Grid>
-        </div>
-      );
-    }
+        </Grid>
+      </div>
+    );
   }
 }
 
