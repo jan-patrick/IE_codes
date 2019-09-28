@@ -101,7 +101,7 @@ class MenuAppBar extends React.Component {
               )}
             </Popper>
             <Typography variant="h6" color="inherit" className={classes.grow}>
-              front door
+              Luggage Finder Dashboard
             </Typography>
             {auth && (
               <div>

@@ -7,7 +7,6 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import Lock, { fakeAuth } from "./Lock";
 import Navbar from './Navbar.js';
-import MediaCard from './MediaCard.js';
 
 class App extends React.Component {
   render() {
@@ -70,7 +69,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 const Home = props => (
   <div>
     <h2>Home {console.log(props)}</h2>
-    <MediaCard></MediaCard>
   </div>
 );
 

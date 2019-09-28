@@ -50,10 +50,10 @@ class SimpleSnackbar extends React.Component {
           ContentProps={{
             'aria-describedby': 'message-id',
           }}
-          message={<span id="message-id">front door nearby</span>}
+          message={<span id="message-id">error</span>}
           action={[
             <Button key="undo" color="secondary" size="small" onClick={this.handleClose}>
-              <Link to="/lock" style={{ textDecoration: 'none', color:'white' }}>UNLOCK</Link>
+              <Link to="/lock" style={{ textDecoration: 'none', color:'white' }}>RELOAD</Link>
             </Button>,
             <IconButton
               key="close"
