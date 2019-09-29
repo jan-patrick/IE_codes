@@ -25,6 +25,7 @@ void loop() {
   if (ledState == false) {
     //ledOn();
     //ledMatrixOn();
+    findLuggageOfUser("Marie");
     setMatrixColorinRange(16, 32, 100, 100, 100);
     ledState = true;
   }
