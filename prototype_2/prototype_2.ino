@@ -19,6 +19,7 @@ void setup() {
   setupUserRec();
   setupLed();
   setupLedMatrix();
+  setupBrain();
 }
 
 void loop() {
