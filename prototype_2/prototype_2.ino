@@ -2,6 +2,7 @@
 //
 // Uses (check the tabs of your Arduino window):
 //   2_users.ino    - information about where is a user
+//   2_database.ino - for the user / luggage database
 //   2_led.ino      - to highlight seating area
 //   2_led-matrix   - for luggage highlighting
 //   2_debug.ino    - for Serial and debugging
@@ -25,7 +26,7 @@ void loop() {
   if (ledState == false) {
     //ledOn();
     //ledMatrixOn();
-    findLuggageOfUser("Marie");
+    Serial.println(findLuggageOfUser("Marie"));
     setMatrixColorinRange(16, 32, 100, 100, 100);
     ledState = true;
   }
