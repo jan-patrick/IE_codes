@@ -26,22 +26,22 @@ void setupUserRec() {
 }
 
 void getUseronEntrance() {
-  if(1 == digitalRead(userPin_Entrance)) {
+  if (1 == digitalRead(userPin_Entrance)) {
     entrance_State = true;
   }
 }
 
 void getUseronWaiting() {
-  if(1 == digitalRead(userPin_Waiting)) {
+  if (1 == digitalRead(userPin_Waiting)) {
     waiting_State = true;
   }
 }
 
 void getIfLuagge() {
-  if(1 == digitalRead(luggagePin)) {
+  if (1 == digitalRead(luggagePin)) {
     luggage_State = true;
   } else {
-    luggage_State = false;
+    //luggage_State = false; // @Jan for now
   }
 }
 
@@ -49,7 +49,7 @@ void setBrainState() {
   // user at entrance
   if (entrance_State) {
     // if luggage there
-    if(luggage_State) {
+    if (luggage_State) {
       current_brainState = brainState_EntranceAndLuggage;
       // if no luggage
     } else {
@@ -58,7 +58,7 @@ void setBrainState() {
     // user at waiting area
   } else if (waiting_State) {
     // if luggage there
-    if(luggage_State) {
+    if (luggage_State) {
       current_brainState = brainState_WaitingAndLuggage;
       // if no luggage
     } else {
@@ -72,27 +72,37 @@ void setBrainState() {
 }
 
 void mainFlow() {
-  switch(current_brainState) {
+  Serial.println(current_brainState);
+  switch (current_brainState) {
     case brainState_idle :
       ledMatrixOff();
       ledOff();
-    break;
+      luggage_State = false; // @Jan for now
+      break;
     case brainState_EntranceAndLuggage :
+      setMatrixColorinRange(0, 32, 100, 100, 100);
       ledOff();
-    break;
+      Serial.println(findLuggageOfUser("Marie") + " found");
+      waiting_State = false;
+      break;
     case brainState_EntranceAndNoLuggage :
       ledMatrixOff();
       ledOn();
-    break;
+      waiting_State = false;
+      break;
     case brainState_WaitingAndLuggage :
+      setMatrixColorinRange(0, 32, 100, 100, 100);
       ledOff();
-    break;
+      Serial.println(findLuggageOfUser("John") + " found");
+      entrance_State = false;
+      break;
     case brainState_WaitingAndNoLuggage :
       ledMatrixOff();
       ledOff();
-    break;
-    default : 
-    Serial.println(current_brainState);
-    break;
+      entrance_State = false;
+      break;
+    default :
+      Serial.println(current_brainState);
+      break;
   }
 }

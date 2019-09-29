@@ -28,7 +28,6 @@ void setMatrixColor(int r, int g, int b) {
 }
 
 void setMatrixColorinRange(int is, int ie, int r, int g, int b) {
-  pixels.clear();
   for (int i = is; i < ie; i++) {
     pixels.setPixelColor(i, pixels.Color(r, g, b));
     pixels.show();

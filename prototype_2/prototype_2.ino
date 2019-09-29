@@ -23,11 +23,9 @@ void setup() {
 }
 
 void loop() {
-  if (ledState == false) {
-    //ledOn();
-    //ledMatrixOn();
-    Serial.println(findLuggageOfUser("Marie"));
-    setMatrixColorinRange(16, 32, 100, 100, 100);
-    ledState = true;
-  }
+  getIfLuagge();
+  getUseronWaiting();
+  getUseronEntrance();
+  setBrainState();
+  mainFlow();
 }
