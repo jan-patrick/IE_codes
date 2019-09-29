@@ -16,17 +16,16 @@ const long interval = 10000;
 
 void setup() {
   setupDebugging();
+  setupUserRec();
   setupLed();
   setupLedMatrix();
 }
 
 void loop() {
+  getUseronEntrance();
   if (ledState == false) {
-    ledOn();
-    ledMatrixOn();
+    //ledOn();
+    //ledMatrixOn();
     ledState = true;
-    Serial.println("hi");
-  } else {
-    Serial.println("no");
   }
 }

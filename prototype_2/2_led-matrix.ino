@@ -2,7 +2,7 @@
 // port D7 on Seeeduino Lotus
 
 #include <Adafruit_NeoPixel.h>
-#define NUMPIXELS 64
+#define NUMPIXELS 8
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(64, 8, NEO_GRBW + NEO_KHZ800);
 

@@ -1,11 +1,10 @@
 // LED
-// port D1237 on Seeeduino Lotus
+// port D3 on Seeeduino Lotus
 
 #include <FastLED.h>
 
 const int lam_num_leds = 1;
 CRGB leds[lam_num_leds];
-
 
 // red=0 orange=32 yellow=64 green=96 blue=160 purple=192 pink=224
 int lam_led_hue = 96;
