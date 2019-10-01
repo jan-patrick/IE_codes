@@ -14,8 +14,8 @@ int lam_led_brightness = 0;
 // ---------------------------------------------- Leds utility functions
 
 
-const int clock_pin = 3;
-const int data_pin = 4;
+const int clock_pin = 6;
+const int data_pin = 7;
 
 void setupLed() {
   FastLED.addLeds<P9813, data_pin, clock_pin, RGB>(leds, lam_num_leds);
@@ -34,6 +34,7 @@ void ledOff() {
   for (int i = 0; i < lam_num_leds; i++)
     leds[i].setHSV(lam_led_hue, 255, 0);
   FastLED.show();
+  Serial.println("led off");
 }
 
 void setLedBrightness() {

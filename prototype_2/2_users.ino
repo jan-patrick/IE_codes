@@ -7,8 +7,8 @@ unsigned long previousMillis_userPinEntrance = 0;
 const long interval_ultrasonic = 250; 
 
 Ultrasonic userPin_Entrance(4);
-const int userPin_Waiting = 2;
-const int luggagePin = 6;
+const int userPin_Waiting = 3;
+const int luggagePin = 2;
 
 boolean entrance_State = false;
 boolean waiting_State = false;
@@ -91,29 +91,24 @@ void mainFlow() {
     case brainState_idle :
       ledMatrixOff();
       ledOff();
-      luggage_State = false; // @Jan for now
       break;
     case brainState_EntranceAndLuggage :
       setMatrixColorinRange(0, 32, 100, 100, 100);
       ledOff();
       Serial.println(findLuggageOfUser("Marie") + " found");
-      waiting_State = false;
       break;
     case brainState_EntranceAndNoLuggage :
       ledMatrixOff();
       ledOn();
-      waiting_State = false;
       break;
     case brainState_WaitingAndLuggage :
       setMatrixColorinRange(0, 32, 100, 100, 100);
       ledOff();
       Serial.println(findLuggageOfUser("John") + " found");
-      entrance_State = false;
       break;
     case brainState_WaitingAndNoLuggage :
       ledMatrixOff();
       ledOff();
-      entrance_State = false;
       break;
     default :
       Serial.println(current_brainState);
