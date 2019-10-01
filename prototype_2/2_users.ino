@@ -1,14 +1,20 @@
-// button for now
-// use I2C port
+// Ultrasonic Rangers
 
 
 #include "Ultrasonic.h"
-unsigned long previousMillis_userPinEntrance = 0;
-const long interval_ultrasonic = 250; 
+unsigned long previousMillis_userEntrance = 0;
+unsigned long previousMillis_userWaiting = 0;
+unsigned long previousMillis_luggage = 0;
+const long interval_ultrasonic = 250;
 
-Ultrasonic userPin_Entrance(4);
-const int userPin_Waiting = 3;
-const int luggagePin = 2;
+// in cm
+const long range_userEntrance = 5;
+const long range_userWaiting = 5;
+const long range_luggage = 5;
+
+Ultrasonic user_Entrance(4);
+Ultrasonic user_Waiting(3);
+Ultrasonic luggage(2);
 
 boolean entrance_State = false;
 boolean waiting_State = false;
@@ -25,37 +31,48 @@ const int brainState_WaitingAndNoLuggage = 4;
 // ---------------------------------------------- Distance sensors utility functions
 
 void setupUserRec() {
-  pinMode(userPin_Waiting, INPUT);
-  pinMode(luggagePin, INPUT);
+
 }
 
 void getUseronEntrance() {
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis_userPinEntrance >= interval_ultrasonic) {
-    previousMillis_userPinEntrance = currentMillis;
-  long RangeInCentimeters;
-  RangeInCentimeters = userPin_Entrance.MeasureInCentimeters(); // two measurements should keep an interval
-  if (5 >= RangeInCentimeters) {
-    entrance_State = true;
-    Serial.println("on");
-  } else {
-    entrance_State = false;
-    Serial.println("off");
-  }
+  if (currentMillis - previousMillis_userEntrance >= interval_ultrasonic) {
+    previousMillis_userEntrance = currentMillis;
+    long RangeInCentimeters;
+    RangeInCentimeters = user_Entrance.MeasureInCentimeters();
+    if (range_userEntrance >= RangeInCentimeters) {
+      entrance_State = true;
+    } else {
+      entrance_State = false;
+    }
   }
 }
 
 void getUseronWaiting() {
-  if (1 == digitalRead(userPin_Waiting)) {
-    waiting_State = true;
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis_userWaiting >= interval_ultrasonic) {
+    previousMillis_userWaiting = currentMillis;
+    long RangeInCentimeters;
+    RangeInCentimeters = user_Waiting.MeasureInCentimeters();
+    if (range_userWaiting >= RangeInCentimeters) {
+      waiting_State = true;
+    } else {
+      waiting_State = false;
+    }
   }
 }
 
 void getIfLuagge() {
-  if (1 == digitalRead(luggagePin)) {
-    luggage_State = true;
-  } else {
-    //luggage_State = false; // @Jan for now
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis_luggage >= interval_ultrasonic) {
+    previousMillis_luggage = currentMillis;
+    long RangeInCentimeters;
+    RangeInCentimeters = luggage.MeasureInCentimeters();
+    if (range_luggage >= RangeInCentimeters) {
+      luggage_State = true;
+    } else {
+      luggage_State = false;
+    }
   }
 }
 
