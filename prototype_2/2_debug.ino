@@ -17,7 +17,7 @@ MAKE_TYPE_INFO( short )
 // ---------------------------------------------- debug utility functions
 
 void setupDebugging() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // wait until serial port opens for native USB devices
   while (! Serial) {

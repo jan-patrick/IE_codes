@@ -1,7 +1,12 @@
 // button for now
 // use I2C port
 
-const int userPin_Entrance = 4;
+
+#include "Ultrasonic.h"
+unsigned long previousMillis_userPinEntrance = 0;
+const long interval_ultrasonic = 250; 
+
+Ultrasonic userPin_Entrance(4);
 const int userPin_Waiting = 2;
 const int luggagePin = 6;
 
@@ -20,14 +25,23 @@ const int brainState_WaitingAndNoLuggage = 4;
 // ---------------------------------------------- Distance sensors utility functions
 
 void setupUserRec() {
-  pinMode(userPin_Entrance, INPUT);
   pinMode(userPin_Waiting, INPUT);
   pinMode(luggagePin, INPUT);
 }
 
 void getUseronEntrance() {
-  if (1 == digitalRead(userPin_Entrance)) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis_userPinEntrance >= interval_ultrasonic) {
+    previousMillis_userPinEntrance = currentMillis;
+  long RangeInCentimeters;
+  RangeInCentimeters = userPin_Entrance.MeasureInCentimeters(); // two measurements should keep an interval
+  if (5 >= RangeInCentimeters) {
     entrance_State = true;
+    Serial.println("on");
+  } else {
+    entrance_State = false;
+    Serial.println("off");
+  }
   }
 }
 
