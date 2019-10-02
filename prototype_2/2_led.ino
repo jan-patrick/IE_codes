@@ -7,7 +7,7 @@ const int lam_num_leds = 1;
 CRGB leds[lam_num_leds];
 
 // red=0 orange=32 yellow=64 green=96 blue=160 purple=192 pink=224
-int lam_led_hue = 96;
+int lam_led_hue = 160;
 int lam_led_brightness = 0;
 
 
@@ -25,8 +25,15 @@ void setupLed() {
 // ---------------------------------------------- Leds effect functions
 
 void ledOn() {
+  //for (int i = 0; i < lam_num_leds; i++)
+    //leds[i].setHSV(lam_led_hue, 255, 255);
+    leds[0] = CRGB::White;
+  FastLED.show();
+}
+
+void ledOn50Percent() {
   for (int i = 0; i < lam_num_leds; i++)
-    leds[i].setHSV(lam_led_hue, 255, 255);
+    leds[i].setHSV(lam_led_hue, 255, 50);
   FastLED.show();
 }
 
@@ -34,7 +41,6 @@ void ledOff() {
   for (int i = 0; i < lam_num_leds; i++)
     leds[i].setHSV(lam_led_hue, 255, 0);
   FastLED.show();
-  Serial.println("led off");
 }
 
 void setLedBrightness() {

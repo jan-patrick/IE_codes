@@ -10,11 +10,11 @@ const long interval_ultrasonic = 250;
 // in cm
 const long range_userEntrance = 5;
 const long range_userWaiting = 5;
-const long range_luggage = 5;
+const long range_luggage = 300;
 
 Ultrasonic user_Entrance(4);
 Ultrasonic user_Waiting(3);
-Ultrasonic luggage(2);
+const int luggage = A3;
 
 boolean entrance_State = false;
 boolean waiting_State = false;
@@ -66,9 +66,9 @@ void getIfLuagge() {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis_luggage >= interval_ultrasonic) {
     previousMillis_luggage = currentMillis;
-    long RangeInCentimeters;
-    RangeInCentimeters = luggage.MeasureInCentimeters();
-    if (range_luggage >= RangeInCentimeters) {
+    int sensorValue = analogRead(luggage);
+    //Serial.println(sensorValue);
+    if (range_luggage <= sensorValue) {
       luggage_State = true;
     } else {
       luggage_State = false;
@@ -103,7 +103,7 @@ void setBrainState() {
 }
 
 void mainFlow() {
-  Serial.println(current_brainState);
+  //Serial.println(current_brainState);
   switch (current_brainState) {
     case brainState_idle :
       ledMatrixOff();
@@ -112,7 +112,7 @@ void mainFlow() {
     case brainState_EntranceAndLuggage :
       setMatrixColorinRange(0, 32, 100, 100, 100);
       ledOff();
-      Serial.println(findLuggageOfUser("Marie") + " found");
+      //Serial.println(findLuggageOfUser("Marie") + " found");
       break;
     case brainState_EntranceAndNoLuggage :
       ledMatrixOff();
@@ -121,11 +121,11 @@ void mainFlow() {
     case brainState_WaitingAndLuggage :
       setMatrixColorinRange(0, 32, 100, 100, 100);
       ledOff();
-      Serial.println(findLuggageOfUser("John") + " found");
+      //Serial.println(findLuggageOfUser("John") + " found");
       break;
     case brainState_WaitingAndNoLuggage :
       ledMatrixOff();
-      ledOff();
+      ledOn50Percent();
       break;
     default :
       Serial.println(current_brainState);
