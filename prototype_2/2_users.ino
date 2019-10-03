@@ -10,7 +10,7 @@ const long interval_ultrasonic = 250;
 // in cm
 const long range_userEntrance = 5;
 const long range_userWaiting = 5;
-const long range_luggage = 300;
+const long range_luggage = 400;
 
 Ultrasonic user_Entrance(4);
 Ultrasonic user_Waiting(3);
@@ -68,7 +68,7 @@ void getIfLuagge() {
     previousMillis_luggage = currentMillis;
     int sensorValue = analogRead(luggage);
     //Serial.println(sensorValue);
-    if (range_luggage <= sensorValue) {
+    if (range_luggage >= sensorValue) {
       luggage_State = true;
     } else {
       luggage_State = false;
