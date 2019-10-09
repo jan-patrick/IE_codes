@@ -27,10 +27,25 @@ void setMatrixColor(int r, int g, int b) {
   }
 }
 
+void setMatrixColorForIndex(int i, int r, int g, int b) {
+  pixels.setPixelColor(i, pixels.Color(r, g, b));
+  pixels.show();
+}
+
 void setMatrixColorinRange(int is, int ie, int r, int g, int b) {
   for (int i = is; i < ie; i++) {
     pixels.setPixelColor(i, pixels.Color(r, g, b));
     pixels.show();
+  }
+}
+
+void loopMatrixLines() {
+  for (int i = 0; i <= 57; i += 8) {
+    if (0 < i) {
+      setMatrixColorinRange(i - 8, i, 0, 0, 0);
+    }
+    setMatrixColorinRange(i, i + 8, 255, 255, 255);
+    delay(1000);
   }
 }
 

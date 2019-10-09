@@ -10,9 +10,9 @@
 // Created September 2019
 // By Jan Schneider
 
-boolean ledState = false;
-unsigned long previousMillis = 0;
-const long interval = 10000;
+const int delay_standard = 500;
+const int delay_waiting = delay_standard * 5;
+boolean started = false;
 
 
 void setup() {
@@ -28,12 +28,53 @@ void loop() {
   //getUseronEntrance();
   //setBrainState();
   //mainFlow();
-  for (int i = 0; i <= 57; i += 8) {
-    if (0 < i) {
-      setMatrixColorinRange(i - 8, i, 0, 0, 0);
-    }
-    setMatrixColorinRange(i, i + 8, 255, 255, 255);
-    delay(1000);
+  if (!started) {
+    started = true;
+    setMatrixColorForIndex(5, 255, 255, 255);
+    setMatrixColorForIndex(13, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(5, 0, 0, 0);
+    setMatrixColorForIndex(13, 255, 255, 255);
+    setMatrixColorForIndex(21, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(13, 0, 0, 0);
+    setMatrixColorForIndex(21, 255, 255, 255);
+    setMatrixColorForIndex(28, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(21, 0, 0, 0);
+    setMatrixColorForIndex(28, 255, 255, 255);
+    setMatrixColorForIndex(35, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(28, 0, 0, 0);
+    setMatrixColorForIndex(35, 255, 255, 255);
+    setMatrixColorForIndex(42, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(35, 0, 0, 0);
+    setMatrixColorForIndex(42, 255, 255, 255);
+    delay(delay_waiting);
+
+    setMatrixColorForIndex(42, 255, 255, 255);
+    setMatrixColorForIndex(35, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(42, 0, 0, 0);
+    setMatrixColorForIndex(35, 255, 255, 255);
+    setMatrixColorForIndex(28, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(35, 0, 0, 0);
+    setMatrixColorForIndex(28, 255, 255, 255);
+    setMatrixColorForIndex(21, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(28, 0, 0, 0);
+    setMatrixColorForIndex(21, 255, 255, 255);
+    setMatrixColorForIndex(22, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(21, 0, 0, 0);
+    setMatrixColorForIndex(22, 255, 255, 255);
+    setMatrixColorForIndex(23, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(22, 0, 0, 0);
+    setMatrixColorForIndex(23, 255, 255, 255);
+    delay(delay_standard);
+    setMatrixColorForIndex(23, 0, 0, 0);
   }
-  ledMatrixOff();
 }
