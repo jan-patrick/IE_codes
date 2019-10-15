@@ -26,7 +26,7 @@ const int intensity_full = 255;
 
 const int intChange_1 = 5;
 
-int state = 5; //0;
+int state = 0; //0;
 const int state_idle = 0;
 const int state_user1ToWaiting = 1;
 const int state_user1LuggageNotification = 2;
@@ -552,13 +552,59 @@ void loop() {
         break;
 
       case state_user12ToExit :
-        ledMatrixOff();
+        setMatrixColorForIndex(43, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(51, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(44, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(45, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(52, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(53, intensity_userHere, intensity_userHere, intensity_userHere);
         delay(delay_start);
+
+
+
+        setMatrixColorForIndex(43, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(51, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(44, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(45, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(52, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(53, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(35, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(36, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(37, intensity_userHere, intensity_userHere, intensity_userHere);
+        delay(delay_standard);
+        setMatrixColorForIndex(35, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(36, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(37, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(29, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(28, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(27, intensity_userHere, intensity_userHere, intensity_userHere);
+        delay(delay_standard);
+        setMatrixColorForIndex(29, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(28, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(27, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(21, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(20, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(19, intensity_userHere, intensity_userHere, intensity_userHere);
+        delay(delay_standard);
+        setMatrixColorForIndex(21, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(20, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(19, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(13, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(12, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(11, intensity_userHere, intensity_userHere, intensity_userHere);
+        delay(delay_standard);
+        setMatrixColorForIndex(13, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(12, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(11, intensity_off, intensity_off, intensity_off);
+        setMatrixColorForIndex(5, intensity_userHere, intensity_userHere, intensity_userHere);
         setMatrixColorForIndex(4, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(3, intensity_userHere, intensity_userHere, intensity_userHere);
+        delay(delay_standard);
+        ledMatrixOff();
         break;
 
-
       default:
+        ledMatrixOff();
         Serial.println(state);
         break;
     }
