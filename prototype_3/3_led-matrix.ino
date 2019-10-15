@@ -80,3 +80,21 @@ void setLedMatrixSofa(int r, int g, int b) {
   setMatrixColorForIndex(14, r, g, b);
   setMatrixColorForIndex(7, r, g, b);
 }
+
+void setLedMatrixSofaWithoutUser1(int r, int g, int b) {
+  setMatrixColorForIndex(48, r, g, b);
+  setMatrixColorForIndex(49, r, g, b);
+  setMatrixColorForIndex(50, r, g, b);
+  setMatrixColorForIndex(52, r, g, b);
+  setMatrixColorForIndex(53, r, g, b);
+  setMatrixColorForIndex(46, r, g, b);
+  setMatrixColorForIndex(45, r, g, b);
+  setMatrixColorForIndex(44, r, g, b);
+  setMatrixColorForIndex(42, r, g, b);
+  setMatrixColorForIndex(38, r, g, b);
+  setMatrixColorForIndex(30, r, g, b);
+  setMatrixColorForIndex(22, r, g, b);
+  setMatrixColorForIndex(15, r, g, b);
+  setMatrixColorForIndex(14, r, g, b);
+  setMatrixColorForIndex(7, r, g, b);
+}
