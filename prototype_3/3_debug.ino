@@ -20,9 +20,9 @@ void setupDebugging() {
   Serial.begin(9600);
 
   // wait until serial port opens for native USB devices
-  while (! Serial) {
-    delay(1);
-  }
+  //while (! Serial) {
+  //  delay(1);
+  //}
 
   //Serial.println("Serial started");
 }

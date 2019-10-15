@@ -4,7 +4,7 @@
 #include <Adafruit_NeoPixel.h>
 #define NUMPIXELS 64
 
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(64, 8, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(64, 6, NEO_GRBW + NEO_KHZ800);
 
 
 
@@ -59,4 +59,24 @@ void ledMatrixOff() {
 
 void setLedMatrixRGB(int r,  int g, int b) {
   setMatrixColor(r, g, b);
+}
+
+void setLedMatrixSofa(int r, int g, int b) {
+  setMatrixColorForIndex(48, r, g, b);
+  setMatrixColorForIndex(49, r, g, b);
+  setMatrixColorForIndex(50, r, g, b);
+  setMatrixColorForIndex(51, r, g, b);
+  setMatrixColorForIndex(52, r, g, b);
+  setMatrixColorForIndex(53, r, g, b);
+  setMatrixColorForIndex(46, r, g, b);
+  setMatrixColorForIndex(45, r, g, b);
+  setMatrixColorForIndex(44, r, g, b);
+  setMatrixColorForIndex(43, r, g, b);
+  setMatrixColorForIndex(42, r, g, b);
+  setMatrixColorForIndex(38, r, g, b);
+  setMatrixColorForIndex(30, r, g, b);
+  setMatrixColorForIndex(22, r, g, b);
+  setMatrixColorForIndex(15, r, g, b);
+  setMatrixColorForIndex(14, r, g, b);
+  setMatrixColorForIndex(7, r, g, b);
 }
