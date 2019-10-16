@@ -21,8 +21,10 @@ const int intensity_1 = 50;
 const int intensity_2 = 100;
 const int intensity_3 = 150;
 const int intensity_4 = 200;
-const int intensity_Connect_Low = 0;
-const int intensity_Connect_High = 10;
+const int intensity_Connect_Floor_Low = 0;
+const int intensity_Connect_Floor_High = 10;
+const int intensity_Connect_Sofa_Low = 0;
+const int intensity_Connect_Sofa_High = 20;
 const int intensity_full = 255;
 const int intensity_userHere = intensity_3;
 
@@ -94,12 +96,10 @@ void loop() {
         delay(delay_standard);
         setMatrixColorForIndex(25, intensity_off, intensity_off, intensity_off);
         setMatrixColorForIndex(33, intensity_off, intensity_off, intensity_off);
-        setMatrixColorForIndex(26, intensity_userHere, intensity_userHere, intensity_userHere);
         setMatrixColorForIndex(34, intensity_userHere, intensity_userHere, intensity_userHere);
         setMatrixColorForIndex(42, intensity_userHere, intensity_userHere, intensity_userHere);
         delay(delay_standard);
         setMatrixColorForIndex(42, intensity_off, intensity_off, intensity_off);
-        setMatrixColorForIndex(26, intensity_off, intensity_off, intensity_off);
         setMatrixColorForIndex(35, intensity_userHere, intensity_userHere, intensity_userHere);
         delay(delay_standard);
         setMatrixColorForIndex(34, intensity_off, intensity_off, intensity_off);
@@ -278,8 +278,8 @@ void loop() {
         //delay(delay_start);
         setMatrixColorForIndex(43, intensity_userHere, intensity_userHere, intensity_userHere);
         setMatrixColorForIndex(51, intensity_userHere, intensity_userHere, intensity_userHere);
-        setMatrixColorForIndex(24, intensity_userHere, intensity_userHere, intensity_userHere);
         delay(delay_standard);
+        setMatrixColorForIndex(24, intensity_userHere, intensity_userHere, intensity_userHere);
         // fade up sofa
         for (int a = intensity_off; a < intensity_3; a += intChange_1) {
           setLedMatrixSofaWithoutUser1(a, a, a);
@@ -324,40 +324,44 @@ void loop() {
         delay(delay_standard);
         setMatrixColorForIndex(21, intensity_off, intensity_off, intensity_off);
         setMatrixColorForIndex(22, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(30, intensity_userHere, intensity_userHere, intensity_userHere);
         break;
 
       case state_user12Connect :
         setMatrixColorForIndex(43, intensity_userHere, intensity_userHere, intensity_userHere);
         setMatrixColorForIndex(51, intensity_userHere, intensity_userHere, intensity_userHere);
         setMatrixColorForIndex(22, intensity_userHere, intensity_userHere, intensity_userHere);
+        setMatrixColorForIndex(30, intensity_userHere, intensity_userHere, intensity_userHere);
         delay(delay_start);
         for (int e = 0; e < 5; e++) {
-          setMatrixColorForIndex(30, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(29, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(52, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(44, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(35, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(53, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(36, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(21, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
+          setMatrixColorForIndex(30, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
+          setMatrixColorForIndex(29, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
+          setMatrixColorForIndex(52, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High);
+          setMatrixColorForIndex(44, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High);
+          setMatrixColorForIndex(35, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
+          setMatrixColorForIndex(53, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High);
+          setMatrixColorForIndex(36, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
+          setMatrixColorForIndex(21, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
           delay(delay_fade);          
-          setMatrixColorForIndex(38, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(37, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(46, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(28, intensity_Connect_High, intensity_Connect_High, intensity_Connect_High);
-          setMatrixColorForIndex(30, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(29, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(52, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(44, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(53, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(36, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(21, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(35, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
+          setMatrixColorForIndex(38, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
+          setMatrixColorForIndex(37, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
+          setMatrixColorForIndex(46, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High);
+          setMatrixColorForIndex(45, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High, intensity_Connect_Sofa_High);
+          setMatrixColorForIndex(28, intensity_Connect_Floor_High, intensity_Connect_Floor_High, intensity_Connect_Floor_High);
+          setMatrixColorForIndex(30, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
+          setMatrixColorForIndex(29, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
+          setMatrixColorForIndex(52, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low);
+          setMatrixColorForIndex(44, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low);
+          setMatrixColorForIndex(53, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low);
+          setMatrixColorForIndex(36, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
+          setMatrixColorForIndex(21, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
+          setMatrixColorForIndex(35, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
           delay(delay_fade);
-          setMatrixColorForIndex(38, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(37, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
-          setMatrixColorForIndex(46, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);          
-          setMatrixColorForIndex(28, intensity_Connect_Low, intensity_Connect_Low, intensity_Connect_Low);
+          setMatrixColorForIndex(45, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low);
+          setMatrixColorForIndex(38, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
+          setMatrixColorForIndex(37, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
+          setMatrixColorForIndex(46, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low, intensity_Connect_Sofa_Low);          
+          setMatrixColorForIndex(28, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low, intensity_Connect_Floor_Low);
           setMatrixColorForIndex(30, intensity_off, intensity_off, intensity_off);
           setMatrixColorForIndex(29, intensity_off, intensity_off, intensity_off);
           setMatrixColorForIndex(52, intensity_off, intensity_off, intensity_off);
@@ -371,6 +375,7 @@ void loop() {
           setMatrixColorForIndex(38, intensity_off, intensity_off, intensity_off);
           setMatrixColorForIndex(37, intensity_off, intensity_off, intensity_off);
           setMatrixColorForIndex(46, intensity_off, intensity_off, intensity_off);
+          setMatrixColorForIndex(45, intensity_off, intensity_off, intensity_off);
           delay(delay_standard);
         }
         setMatrixColorForIndex(22, intensity_off, intensity_off, intensity_off);

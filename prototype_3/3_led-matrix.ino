@@ -6,7 +6,9 @@
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(64, 6, NEO_GRBW + NEO_KHZ800);
 
-
+int r = 0;
+int g = 0;
+int b = 0;
 
 // ---------------------------------------------- Leds utility functions
 
@@ -19,7 +21,10 @@ void setupLedMatrix() {
 
 
 
-void setMatrixColor(int r, int g, int b) {
+void setMatrixColor(int ri, int gi, int bi) {
+  setMatrixColorR(ri);
+  setMatrixColorG(gi);
+  setMatrixColorB(bi);
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     pixels.setPixelColor(i, pixels.Color(r, g, b));
@@ -27,12 +32,18 @@ void setMatrixColor(int r, int g, int b) {
   }
 }
 
-void setMatrixColorForIndex(int i, int r, int g, int b) {
+void setMatrixColorForIndex(int i, int ri, int gi, int bi) {
+  setMatrixColorR(ri);
+  setMatrixColorG(gi);
+  setMatrixColorB(bi);
   pixels.setPixelColor(i, pixels.Color(r, g, b));
   pixels.show();
 }
 
-void setMatrixColorinRange(int is, int ie, int r, int g, int b) {
+void setMatrixColorinRange(int is, int ie, int ri, int gi, int bi) {
+  setMatrixColorR(ri);
+  setMatrixColorG(gi);
+  setMatrixColorB(bi);
   for (int i = is; i < ie; i++) {
     pixels.setPixelColor(i, pixels.Color(r, g, b));
     pixels.show();
@@ -57,11 +68,17 @@ void ledMatrixOff() {
   setMatrixColor(0, 0, 0);
 }
 
-void setLedMatrixRGB(int r,  int g, int b) {
+void setLedMatrixRGB(int ri,  int gi, int bi) {
+  setMatrixColorR(ri);
+  setMatrixColorG(gi);
+  setMatrixColorB(bi);
   setMatrixColor(r, g, b);
 }
 
-void setLedMatrixSofa(int r, int g, int b) {
+void setLedMatrixSofa(int ri, int gi, int bi) {
+  setMatrixColorR(ri);
+  setMatrixColorG(gi);
+  setMatrixColorB(bi);
   setMatrixColorForIndex(48, r, g, b);
   setMatrixColorForIndex(49, r, g, b);
   setMatrixColorForIndex(50, r, g, b);
@@ -81,7 +98,10 @@ void setLedMatrixSofa(int r, int g, int b) {
   setMatrixColorForIndex(7, r, g, b);
 }
 
-void setLedMatrixSofaWithoutUser1(int r, int g, int b) {
+void setLedMatrixSofaWithoutUser1(int ri, int gi, int bi) {
+  setMatrixColorR(ri);
+  setMatrixColorG(gi);
+  setMatrixColorB(bi);
   setMatrixColorForIndex(48, r, g, b);
   setMatrixColorForIndex(49, r, g, b);
   setMatrixColorForIndex(50, r, g, b);
@@ -97,4 +117,30 @@ void setLedMatrixSofaWithoutUser1(int r, int g, int b) {
   setMatrixColorForIndex(15, r, g, b);
   setMatrixColorForIndex(14, r, g, b);
   setMatrixColorForIndex(7, r, g, b);
+}
+
+void setMatrixColorR(int ri) {
+  r = ri;
+  if(255<r) {
+    r = 255;
+  } else if (0 > r) {
+    r = 0;
+  }
+}
+void setMatrixColorG(int gi) {
+  g = gi;
+  if(255<g) {
+    g = 255;
+  } else if (0 > g) {
+    g = 0;
+  }
+}
+
+void setMatrixColorB(int bi) {
+  b = bi;
+  if(255<b) {
+    b = 255;
+  } else if (0 > b) {
+    b = 0;
+  }
 }
