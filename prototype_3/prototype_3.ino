@@ -30,7 +30,7 @@ const int intensity_userHere = intensity_3;
 
 const int intChange_1 = 5;
 
-int state = 4; //0;
+int state = 0; //0;
 const int state_idle = 0;
 const int state_user1ToWaiting = 1;
 const int state_user1LuggageNotification = 2;
