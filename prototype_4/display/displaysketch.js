@@ -1,21 +1,16 @@
-//setup MQTT client
+// setup MQTT client
 client = new Paho.MQTT.Client("broker.shiftr.io", Number(443), "controlpanel");
 client.onConnectionLost = onConnectionLost;
 client.onMessageArrived = onMessageArrived;
 
-//some placeholders for the data received trough MQTT
-var intensity = 0;
-var duration = 0;
-var continuity = 0;
-
-//some placeholders to keep track of time
+// some placeholders to keep track of time
 var messagereceivedTime = 0;
 var timeLeftPercentage = 0;
 
 var userFollowSize_Slider;
 var pg;
 
-//chair related values
+// chair related values
 var chairs = [];
 var chairSize = 80;
 var chairStandardColor = 100;
@@ -26,6 +21,9 @@ var waveState = 0;
 var waveState_idle = 0;
 var waveState_Washing = 1;
 var waveState_Finished = 2;
+
+// communication valutes
+var subscribedTopic = "/jan";
 
 
 function setup() {
@@ -105,7 +103,7 @@ function setupSliders() {
 function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
   console.log("connected to mosquitto");
-  client.subscribe("/jan");
+  client.subscribe(subscribedTopic);
 }
 
 function luggageNotification() {
@@ -123,45 +121,43 @@ function onConnectionLost(responseObject) {
 function onMessageArrived(message) {
   console.log(message.destinationName + " -> " + message.payloadString);
 
-  var payload = message.payloadString;
-
   try {
-    valuesArray = payload.split(' ');
+    inputs = JSON.parse(message.payloadString);
+    console.log(inputs.wave)
 
-    duration = Number(valuesArray[0]);
-    if (10000 <= duration) {
-      duration = 10000;
-    } else if (0 >= duration) {
-      duration = 0;
+    if(typeof inputs === 'object' && inputs !== null) {
+      if(typeof inputs.wave === "boolean") {
+        if(inputs.wave){
+          luggageNotification();
+        }
+      }
+    } else {
+      console.log("error while understanding data!")
     }
-    intensity = Number(valuesArray[1]);
-    if (100 <= intensity) {
-      intensity = 100;
-    } else if (0 >= intensity) {
-      intensity = 0;
-    }
-    continuity = Number(valuesArray[2]);
-    if (100 <= continuity) {
-      continuity = 100;
-    } else if (0 >= continuity) {
-      continuity = 0;
-    }
-    if (0 < duration) {
-      messagereceivedTime = millis();
-      timeLeftPercentage = 1;
-      strokeOn();
-      setStrokeWidth();
-      a = 0.0;
-    }
+
   } catch (e) {
     console.log("error parsing data!")
   }
 }
 
+function generateMessage(wave, users) {
+  var obj = { 
+    "wave": wave,
+    "users" : users,
+  };
+  sendMessage(compileMessage(obj));
+}
 
-function sendMessage(topic, message) {
+
+
+function compileMessage(obj) {
+  var json = JSON.stringify(obj);
+  return json;
+}
+
+function sendMessage(message) {
   message = new Paho.MQTT.Message(message);
-  message.destinationName = topic;
+  message.destinationName = subscribedTopic;
   client.send(message);
 }
 
