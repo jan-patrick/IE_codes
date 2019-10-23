@@ -31,18 +31,18 @@ function setup() {
 
 function draw() {
   const userFollowSize_value = userFollowSize_Slider.value();
-  background(userFollowSize_value, userFollowSize_value, userFollowSize_value);
+  background(0, 0, 0);
 
   fill(0, 12);
   rect(0, 0, width, height);
   fill(255);
   noStroke();
-  ellipse(mouseX, mouseY, 60, 60);
+  ellipse(mouseX, mouseY, userFollowSize_value, userFollowSize_value);
 
   pg.background(51);
   pg.noFill();
   pg.stroke(255);
-  pg.ellipse(mouseX - 150, mouseY - 75, 60, 60);
+  pg.ellipse(mouseX - 150, mouseY - 75, userFollowSize_value, userFollowSize_value);
 
   //Draw the offscreen buffer to the screen with image()
   image(pg, 150, 75);
