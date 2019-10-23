@@ -10,6 +10,8 @@ var timeLeftPercentage = 0;
 var userFollowSize_Slider;
 var pg;
 
+var users = [];
+
 // chair related values
 var chairs = [];
 var chairSize = 80;
@@ -35,14 +37,13 @@ function setup() {
   });
 
   createCanvas(windowWidth, windowHeight);
-  pg = createGraphics(500, 50);
-  setupSliders();
   setupChairs();
   setupWave();
+  users[users.length] = new User();
+
 }
 
 function draw() {
-  const userFollowSize_value = userFollowSize_Slider.value();
   background(0, 0, 0);
 
   for (let i = 0; i < chairs.length; i++) {
@@ -57,11 +58,11 @@ function draw() {
         break;
       case waveState_Washing:
         waves[i].update();
-        if(0>waves[i].x + waves[i].xSize) {
+        if (0 > waves[i].x + waves[i].xSize) {
           waveState = waveState_Finished;
         }
         break;
-      case waveState_idle :
+      case waveState_idle:
         break;
       default:
         console.log("Error " + waveState);
@@ -70,34 +71,11 @@ function draw() {
     waves[i].draw();
   }
 
-  fill(0, 12);
-  rect(0, 0, width, height);
-  fill(255);
-  noStroke();
-  ellipse(mouseX, mouseY, userFollowSize_value, userFollowSize_value);
-
-  pg.background(51);
-  pg.noFill();
-  pg.stroke(255);
-  pg.ellipse(mouseX - 150, mouseY - 75, userFollowSize_value, userFollowSize_value);
-
-  //Draw the offscreen buffer to the screen with image()
-  image(pg, 150, 75);
-
-
-
+  for (let i = 0; i < users.length; i++) {
+    users[i].draw();
+  }
   //updateTime();
   //drawTimeRemaining()
-}
-
-function setupSliders() {
-  userFollowSize_Slider = createSlider(0, 255, 100);
-  userFollowSize_Slider.position(10, 0);
-
-
-  button = createButton('wave');
-  button.position(10, 20);
-  button.mousePressed(generateMessage);
 }
 
 function onConnect() {
@@ -125,9 +103,9 @@ function onMessageArrived(message) {
     inputs = JSON.parse(message.payloadString);
     console.log(inputs.wave)
 
-    if(typeof inputs === 'object' && inputs !== null) {
-      if(typeof inputs.wave === "boolean") {
-        if(inputs.wave){
+    if (typeof inputs === 'object' && inputs !== null) {
+      if (typeof inputs.wave === "boolean") {
+        if (inputs.wave) {
           luggageNotification();
         }
       }
@@ -141,9 +119,9 @@ function onMessageArrived(message) {
 }
 
 function generateMessage(wave, users) {
-  var obj = { 
+  var obj = {
     "wave": wave,
-    "users" : users,
+    "users": users,
   };
   sendMessage(compileMessage(obj));
 }
@@ -228,7 +206,7 @@ class Wave {
   }
 
   update() {
-    this.x = this.x-2;
+    this.x = this.x - 2;
   }
 
   draw() {
@@ -237,6 +215,30 @@ class Wave {
   }
 }
 
+class User {
+  constructor() {
+    this.name = "User";
+    this.x = 0;
+    this.y = 0;
+    this.xSize = 70;
+    this.ySize = 70;
+    this.timeOfApperance = millis();
+  }
+
+  // Custom method for updating the variables
+  update() {
+
+  }
+
+  // Custom method for drawing the object
+  draw() {
+    fill(0, 12);
+    rect(0, 0, this.xSize, this.ySize);
+    fill(255);
+    noStroke();
+    ellipse(mouseX, mouseY, this.xSize, this.ySize);
+  }
+}
 
 class Chair {
   constructor(x, y, xSize, ySize, fillColor) {
