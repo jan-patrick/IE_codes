@@ -12,14 +12,20 @@ var continuity = 0;
 var messagereceivedTime = 0;
 var timeLeftPercentage = 0;
 
+let userFollowSize_Slider;
+
 let pg;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   pg = createGraphics(400, 250);
+  setupSliders();
 }
 
 function draw() {
+  const userFollowSize_value = userFollowSize_Slider.value();
+  background(userFollowSize_value, userFollowSize_value, userFollowSize_value);
+
   fill(0, 12);
   rect(0, 0, width, height);
   fill(255);
@@ -39,6 +45,12 @@ function draw() {
   //updateTime();
   //drawTimeRemaining()
 }
+
+function setupSliders() {
+  userFollowSize_Slider = createSlider(0, 255, 100);
+  userFollowSize_Slider.position(20, 20);
+}
+
 
 function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
