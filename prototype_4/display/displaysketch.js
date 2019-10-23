@@ -20,7 +20,12 @@ var chairs = [];
 var chairSize = 80;
 var chairStandardColor = 100;
 
+// wave related values
 var waves = [];
+var waveState = 0;
+var waveState_idle = 0;
+var waveState_Washing = 1;
+var waveState_Finished = 2;
 
 
 function setup() {
@@ -47,7 +52,23 @@ function draw() {
     chairs[i].draw();
   }
   for (let i = 0; i < waves.length; i++) {
-    //waves[i].update();
+    switch (waveState) {
+      case waveState_Finished:
+        waves[i].reset();
+        waveState = waveState_idle;
+        break;
+      case waveState_Washing:
+        waves[i].update();
+        if(0>waves[i].x + waves[i].xSize) {
+          waveState = waveState_Finished;
+        }
+        break;
+      case waveState_idle :
+        break;
+      default:
+        console.log("Error " + waveState);
+        break;
+    }
     waves[i].draw();
   }
 
@@ -66,7 +87,7 @@ function draw() {
   image(pg, 150, 75);
 
 
-  
+
   //updateTime();
   //drawTimeRemaining()
 }
@@ -90,6 +111,7 @@ function onConnect() {
 function luggageNotification() {
   // Once a connection has been made, make a subscription and send a message.
   console.log("luggage incoming");
+  waveState = waveState_Washing;
 }
 
 function onConnectionLost(responseObject) {
@@ -210,7 +232,7 @@ class Wave {
   }
 
   update() {
-    this.x--;
+    this.x = this.x-2;
   }
 
   draw() {
@@ -231,9 +253,9 @@ class Chair {
 
   // Custom method for updating the variables
   update(fillColor) {
-    if(0> fillColor) {
+    if (0 > fillColor) {
       fillColor = 0;
-    } else if(255<fillColor) {
+    } else if (255 < fillColor) {
       fillColor = 255;
     }
     this.fillColor = fillColor;
