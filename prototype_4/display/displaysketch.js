@@ -97,7 +97,7 @@ function setupSliders() {
 
   button = createButton('wave');
   button.position(10, 20);
-  button.mousePressed(luggageNotification);
+  button.mousePressed(generateMessage);
 }
 
 function onConnect() {
