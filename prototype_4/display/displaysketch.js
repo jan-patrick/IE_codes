@@ -17,6 +17,13 @@ let userFollowSize_Slider;
 let pg;
 
 function setup() {
+  client.connect( {
+    onSuccess: onConnect,
+    userName: "connected-thing",
+    password: "c784e41dd3da48d4",
+    useSSL: true,
+  } );
+
   createCanvas(windowWidth, windowHeight);
   pg = createGraphics(400, 250);
   setupSliders();
@@ -55,7 +62,7 @@ function setupSliders() {
 function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
   console.log("connected to mosquitto");
-  client.subscribe("/j");
+  client.subscribe("/jan");
 }
 
 function onConnectionLost(responseObject) {
