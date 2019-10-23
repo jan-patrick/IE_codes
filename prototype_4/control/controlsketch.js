@@ -8,19 +8,8 @@ var messagereceivedTime = 0;
 var timeLeftPercentage = 0;
 
 var userFollowSize_Slider;
-var pg;
-
-// chair related values
-var chairs = [];
-var chairSize = 80;
-var chairStandardColor = 100;
-
-// wave related values
-var waves = [];
-var waveState = 0;
-var waveState_idle = 0;
-var waveState_Washing = 1;
-var waveState_Finished = 2;
+var userSize_Slider = 100;
+var prevUserSize_Slider = userSize_Slider;
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -39,15 +28,20 @@ function setup() {
 }
 
 function draw() {
-  var userFollowSize_value = userFollowSize_Slider.value();
+  userSize_Slider = userFollowSize_Slider.value();
   background(0, 0, 0);
+
+  if(prevUserSize_Slider != userSize_Slider) {
+    generateMessage(undefined, 0, userSize_Slider);
+    prevUserSize_Slider = userSize_Slider;
+  }
 
   //updateTime();
   //drawTimeRemaining()
 }
 
 function setupSliders() {
-  userFollowSize_Slider = createSlider(0, 255, 100);
+  userFollowSize_Slider = createSlider(0, 255, userSize_Slider);
   userFollowSize_Slider.position(10, 0);
 
 
