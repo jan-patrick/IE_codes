@@ -101,12 +101,18 @@ function onMessageArrived(message) {
 
   try {
     inputs = JSON.parse(message.payloadString);
-    console.log(inputs.wave)
 
     if (typeof inputs === 'object' && inputs !== null) {
       if (typeof inputs.wave === "boolean") {
         if (inputs.wave) {
           luggageNotification();
+        }
+      }
+      if (typeof inputs.user === 'object' && inputs.user !== null) {
+        if (typeof inputs.user.id === "number" && 0 <= inputs.user.id && users.length >= inputs.user.id) {
+          if (typeof inputs.user.size === "number") {
+            users[inputs.user.id].updateSize(inputs.user.size, inputs.user.size)
+          }
         }
       }
     } else {
@@ -179,7 +185,7 @@ function drawTimeRemaining() {
   rect(0, height - 5, width * timeLeftPercentage, 5);
 }
 
-// Chairs
+// Chairs, Wave, User
 
 function setupChairs() {
   chairs[chairs.length] = new Chair(20, 50, chairSize, chairSize, chairStandardColor);
@@ -226,8 +232,19 @@ class User {
   }
 
   // Custom method for updating the variables
-  update() {
-
+  updateSize(xSize, ySize) {
+    if (700 < xSize) {
+      xSize = 700;
+    } else if (10 > xSize) {
+      xSize = 10;
+    }
+    if (700 < ySize) {
+      ySize = 700;
+    } else if (10 > ySize) {
+      ySize = 10;
+    }
+    this.xSize = xSize;
+    this.ySize = ySize;
   }
 
   // Custom method for drawing the object

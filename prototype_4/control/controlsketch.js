@@ -39,7 +39,7 @@ function setup() {
 }
 
 function draw() {
-  const userFollowSize_value = userFollowSize_Slider.value();
+  var userFollowSize_value = userFollowSize_Slider.value();
   background(0, 0, 0);
 
   //updateTime();
@@ -76,10 +76,13 @@ function standardMessageWave() {
   generateMessage(true);
 }
 
-function generateMessage(wave, users) {
+function generateMessage(wave, userId, userSize) {
   var obj = { 
     "wave": wave,
-    "users" : users,
+    "user" : { 
+      "id": userId,
+      "size" : userSize,
+    }
   };
   sendMessage(compileMessage(obj));
 }
