@@ -20,6 +20,8 @@ var chairs = [];
 var chairSize = 80;
 var chairStandardColor = 100;
 
+var waves = [];
+
 
 function setup() {
   client.connect({
@@ -33,6 +35,7 @@ function setup() {
   pg = createGraphics(500, 50);
   setupSliders();
   setupChairs();
+  setupWave();
 }
 
 function draw() {
@@ -42,6 +45,10 @@ function draw() {
   for (let i = 0; i < chairs.length; i++) {
     //chairs[i].update();
     chairs[i].draw();
+  }
+  for (let i = 0; i < waves.length; i++) {
+    //waves[i].update();
+    waves[i].draw();
   }
 
   fill(0, 12);
@@ -127,7 +134,6 @@ function onMessageArrived(message) {
   } catch (e) {
     console.log("error parsing data!")
   }
-
 }
 
 
@@ -181,6 +187,36 @@ function drawTimeRemaining() {
 
 function setupChairs() {
   chairs[chairs.length] = new Chair(20, 50, chairSize, chairSize, chairStandardColor);
+  chairs[chairs.length] = new Chair(300, 400, chairSize, chairSize, chairStandardColor);
+}
+
+function setupWave() {
+  waves[waves.length] = new Wave();
+}
+
+
+class Wave {
+  constructor() {
+    this.x = windowWidth;
+    this.y = 0;
+    this.xSize = 40;
+    this.ySize = windowHeight;
+    this.color1 = 255;
+  }
+
+  reset() {
+    this.x = windowWidth;
+    this.y = 0;
+  }
+
+  update() {
+    this.x--;
+  }
+
+  draw() {
+    fill(this.color1);
+    rect(this.x, this.y, this.xSize, this.ySize);
+  }
 }
 
 
@@ -194,15 +230,13 @@ class Chair {
   }
 
   // Custom method for updating the variables
-  update() {
-    this.x = this.x;
-    if (this.x >= this.unit || this.x <= 0) {
-      this.x = this.x + 1;
-      this.y = this.y + 1;
+  update(fillColor) {
+    if(0> fillColor) {
+      fillColor = 0;
+    } else if(255<fillColor) {
+      fillColor = 255;
     }
-    if (this.y >= this.unit || this.y <= 0) {
-      this.y = this.y + 1;
-    }
+    this.fillColor = fillColor;
   }
 
   // Custom method for drawing the object
