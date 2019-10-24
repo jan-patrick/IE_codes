@@ -16,6 +16,7 @@ var subscribedTopic = "/jan";
 
 // user position value
 var usersDetected = [];
+var userMovementValueDifferenz = 5;
 
 
 function setup() {
@@ -107,22 +108,22 @@ function standardMessageSofaHighlightStop() {
 }
 
 function standardMessageUserMoveUp() {
-  usersDetected[0].updateY(-5);
+  usersDetected[0].updateY(-userMovementValueDifferenz);
   generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveDown() {
-  usersDetected[0].updateY(5);
+  usersDetected[0].updateY(userMovementValueDifferenz);
   generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveLeft() {
-  usersDetected[0].updateX(-5);
+  usersDetected[0].updateX(-userMovementValueDifferenz);
   generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveRight() {
-  usersDetected[0].updateX(5);
+  usersDetected[0].updateX(userMovementValueDifferenz);
   generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
@@ -217,7 +218,7 @@ class UserDetected {
 
   reset() {
     this.x = windowWidth/2;
-    this.y = windowHeight/2;
+    this.y = windowHeight;
   }
 
 }

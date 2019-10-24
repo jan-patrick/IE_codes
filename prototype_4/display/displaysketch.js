@@ -127,6 +127,9 @@ function onMessageArrived(message) {
           if (typeof inputs.user.size === "number") {
             users[inputs.user.id].updateSize(inputs.user.size, inputs.user.size)
           }
+          if (typeof inputs.user.posX=== "number" && typeof inputs.user.posY === "number") {
+            users[inputs.user.id].updatePosition(inputs.user.posX, inputs.user.posY)
+          }
         }
       }
       if (typeof inputs.sofa === 'object' && inputs.sofa !== null) {
@@ -258,8 +261,8 @@ class Wave {
 class User {
   constructor() {
     this.name = "User";
-    this.x = 0;
-    this.y = 0;
+    this.x = windowWidth/2;
+    this.y = windowHeight;
     this.xSize = 70;
     this.ySize = 70;
     this.timeOfApperance = millis();
@@ -281,13 +284,18 @@ class User {
     this.ySize = ySize;
   }
 
+  updatePosition(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   // Custom method for drawing the object
   draw() {
     fill(0, 12);
     rect(0, 0, this.xSize, this.ySize);
     fill(255);
     noStroke();
-    ellipse(mouseX, mouseY, this.xSize, this.ySize);
+    ellipse(this.x, this.y, this.xSize, this.ySize);
   }
 }
 
