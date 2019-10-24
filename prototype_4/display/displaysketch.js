@@ -115,6 +115,13 @@ function onMessageArrived(message) {
           }
         }
       }
+      if (typeof inputs.sofa === 'object' && inputs.sofa !== null) {
+        if (typeof inputs.sofa.id === "number" && 0 <= inputs.sofa.id && chairs.length >= inputs.sofa.id) {
+          if (typeof inputs.sofa.sofaPosition === "number") {
+            chairs[inputs.sofa.id].highlight(inputs.sofa.sofaPosition)
+          }
+        }
+      }
     } else {
       console.log("error while understanding data!")
     }
@@ -189,7 +196,6 @@ function drawTimeRemaining() {
 
 function setupChairs() {
   chairs[chairs.length] = new Chair(20, 50, chairSize, chairSize, chairStandardColor);
-  chairs[chairs.length] = new Chair(300, 400, chairSize, chairSize, chairStandardColor);
 }
 
 function setupWave() {
@@ -213,6 +219,18 @@ class Wave {
 
   update() {
     this.x = this.x - 2;
+  }
+
+  setGradient(x, y, w, h, c1, c2, axis) {
+    noFill();
+    // Top to bottom gradient
+    for (let i = y; i <= y + h; i++) {
+      let inter = map(i, y, y + h, 0, 1);
+      let c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(this.x, i, this.x + w, i);
+    }
+
   }
 
   draw() {
@@ -276,9 +294,21 @@ class Chair {
     this.fillColor = fillColor;
   }
 
+  highlight(position) {
+    this.fillColor = 255;
+  }
+
   // Custom method for drawing the object
   draw() {
     fill(this.fillColor);
-    rect(this.x, this.y, this.xSize, this.ySize);
+
+    beginShape();
+    vertex(50, 50);
+    vertex(400, 50);
+    vertex(400, 400);
+    vertex(350, 400);
+    vertex(350, 100);
+    vertex(50, 100);
+    endShape(CLOSE);
   }
 }

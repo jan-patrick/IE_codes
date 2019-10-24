@@ -31,7 +31,7 @@ function draw() {
   userSize_Slider = userFollowSize_Slider.value();
   background(0, 0, 0);
 
-  if(prevUserSize_Slider != userSize_Slider) {
+  if (prevUserSize_Slider != userSize_Slider) {
     generateMessage(undefined, 0, userSize_Slider);
     prevUserSize_Slider = userSize_Slider;
   }
@@ -46,8 +46,12 @@ function setupSliders() {
 
 
   button = createButton('wave');
-  button.position(10, 20);
+  button.position(10, 30);
   button.mousePressed(standardMessageWave);
+
+  button = createButton('highlight sofa');
+  button.position(10, 60);
+  button.mousePressed(standardMessageSofa);
 }
 
 function onConnect() {
@@ -70,12 +74,20 @@ function standardMessageWave() {
   generateMessage(true);
 }
 
-function generateMessage(wave, userId, userSize) {
-  var obj = { 
+function standardMessageSofa() {
+  generateMessage(undefined, undefined, undefined, 0, 1);
+}
+
+function generateMessage(wave, userId, userSize, sofaId, sofaPosition) {
+  var obj = {
     "wave": wave,
-    "user" : { 
+    "user": {
       "id": userId,
-      "size" : userSize,
+      "size": userSize,
+    },
+    "sofa": {
+      "id": sofaId,
+      "sofaPosition": sofaPosition,
     }
   };
   sendMessage(compileMessage(obj));
