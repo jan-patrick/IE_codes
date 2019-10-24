@@ -1,4 +1,4 @@
-// Main program file for prototype 2 (luggage finding support)
+// Main program file for prototype 4 (luggage waiting joyful)
 //
 // Uses (check the tabs of your Arduino window):
 //   2_users.ino    - user detection
@@ -25,7 +25,10 @@ WiFiClient net;
 MQTTClient client;
 
 unsigned long lastMillis = 0;
+unsigned long lastJsonMillis = 0;
 bool highlightStatus = false;
+
+int sensorPin = 2;
 
 void connect() {
   Serial.print("checking wifi...");
@@ -75,29 +78,38 @@ void loop() {
     connect();
   }
 
-  // publish a message roughly every second.
-  if (millis() - lastMillis > 5000) {
+  if (30 >= analogRead(sensorPin)) {
     lastMillis = millis();
     highlightStatus = true;
-    client.publish("/jan", createMessage());
-    highlightStatus = false;
+    createMessage();
+  }
 
-    delay(5000);
-    client.publish("/jan", createMessage());
-delay(5000);
+  if (millis() - lastMillis > 5000 && highlightStatus) {
+    highlightStatus = false;
+    createMessage();
   }
 }
 
-String createMessage() {
+void createMessage() {
+  bool sendJson = true;
+  if (millis() - lastJsonMillis > 500) {
+    sendJson = false;
+  } else if (!highlightStatus) {
+    sendJson = true;
+  }
+  if (sendJson) {
+    lastJsonMillis = millis();
 
-  JSONVar myObject;
-  JSONVar sofa;
+    JSONVar myObject;
+    JSONVar sofa;
 
-  sofa["id"] = 0;
-  sofa["sofaPosition"] = -1;
-  sofa["highlightStatus"] = highlightStatus;
-  myObject["sofa"] = sofa;
+    sofa["id"] = 0;
+    sofa["sofaPosition"] = -1;
+    sofa["highlightStatus"] = highlightStatus;
+    myObject["sofa"] = sofa;
 
-  String jsonString = JSON.stringify(myObject);
-  return jsonString;
+    String jsonString = JSON.stringify(myObject);
+    
+    client.publish("/jan", jsonString);
+  }
 }
