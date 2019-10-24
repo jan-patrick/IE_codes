@@ -226,6 +226,9 @@ class Wave {
     this.xSize = 40;
     this.ySize = windowHeight;
     this.color1 = 255;
+    this.color2 = 200;
+    this.color3 = 150;
+    this.color4 = 100;
   }
 
   reset() {
@@ -237,21 +240,18 @@ class Wave {
     this.x = this.x - 2;
   }
 
-  setGradient(x, y, w, h, c1, c2, axis) {
+  setGradient(x, y, w, h) {
     noFill();
-    // Top to bottom gradient
-    for (let i = y; i <= y + h; i++) {
-      let inter = map(i, y, y + h, 0, 1);
-      let c = lerpColor(c1, c2, inter);
+      let inter = map(x, y, y + h, 0, 1);
+      let c = lerpColor(color(204, 102, 0), color(0, 102, 153), inter);
       stroke(c);
-      line(this.x, i, this.x + w, i);
-    }
-
+      line(x, y, x, y + h);
   }
 
   draw() {
     fill(this.color1);
     rect(this.x, this.y, this.xSize, this.ySize);
+    //this.setGradient(this.x, this.y, this.xSize, this.ySize);
   }
 }
 
