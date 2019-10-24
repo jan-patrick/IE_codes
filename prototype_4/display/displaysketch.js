@@ -15,7 +15,7 @@ var users = [];
 // sofa related values
 var sofas = [];
 var sofaSize = 80;
-var sofaStandardColor = 100;
+var sofaStandardColor = 0;
 var sofaSwitchFade = true;
 var sofaState = 0;
 var sofaState_idle = 0;
@@ -324,7 +324,11 @@ class Sofa {
   }
 
   setStandardFillColor() {
-    this.fillColor = sofaStandardColor;
+    if (sofaStandardColor < this.fillColor) {
+      this.fillColor -= 2;
+    } else {
+      this.fillColor = sofaStandardColor;
+    }
   }
 
   // Custom method for drawing the object
