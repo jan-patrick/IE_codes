@@ -11,6 +11,7 @@
 
 #include <WiFiNINA.h>
 #include <MQTT.h>
+#include <Arduino_JSON.h>
 
 //wifi settings
 const char ssid[] = "TUvisitor";
@@ -45,7 +46,7 @@ void connect() {
 }
 
 void messageReceived(String &topic, String &payload) {
-  Serial.println("incoming: " + topic + " - " + payload);
+  Serial.println(topic + " -> " + payload);
 }
 
 
@@ -74,8 +75,67 @@ void loop() {
   }
 
   // publish a message roughly every second.
-  if (millis() - lastMillis > 1000) {
+  if (millis() - lastMillis > 5000) {
     lastMillis = millis();
     client.publish("/jan", "world");
+    demoCreation();
   }
+}
+
+void demoCreation() {
+  Serial.println("creation");
+  Serial.println("========");
+
+  JSONVar myObject;
+  JSONVar sofa;
+
+  
+  sofa["id"] = 0;
+  sofa["sofaPosition"] = -1;
+  sofa["highlightStatus"] = true;
+  
+  myObject["test"] = "world";
+  myObject["sofa"] = sofa;
+  //myObject["x"] = 42;
+
+  Serial.print("myObject.keys() = ");
+  Serial.println(myObject.keys());
+
+  // JSON.stringify(myVar) can be used to convert the json var to a String
+  String jsonString = JSON.stringify(myObject);
+
+  Serial.print("JSON.stringify(myObject) = ");
+  Serial.println(jsonString);
+
+  Serial.println();
+
+  // myObject.keys() can be used to get an array of all the keys in the object
+  JSONVar keys = myObject.keys();
+
+  for (int i = 0; i < keys.length(); i++) {
+    JSONVar value = myObject[keys[i]];
+
+    Serial.print("JSON.typeof(myObject[");
+    Serial.print(keys[i]);
+    Serial.print("]) = ");
+    Serial.println(JSON.typeof(value));
+
+    Serial.print("myObject[");
+    Serial.print(keys[i]);
+    Serial.print("] = ");
+    Serial.println(value);
+
+    Serial.println();
+  }
+
+  Serial.println();
+
+  // setting a value to undefined can remove it from the object
+  myObject["x"] = undefined;
+
+  // you can also change a value
+  myObject["hello"] = "there!";
+
+  Serial.print("myObject = ");
+  Serial.println(myObject);
 }
