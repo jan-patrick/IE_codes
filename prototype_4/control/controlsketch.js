@@ -51,7 +51,11 @@ function setupSliders() {
 
   button = createButton('highlight sofa');
   button.position(10, 60);
-  button.mousePressed(standardMessageSofa);
+  button.mousePressed(standardMessageSofaHighlightStart);
+
+  button = createButton('stop sofa highlighting');
+  button.position(10, 90);
+  button.mousePressed(standardMessageSofaHighlightStop);
 }
 
 function onConnect() {
@@ -74,11 +78,15 @@ function standardMessageWave() {
   generateMessage(true);
 }
 
-function standardMessageSofa() {
-  generateMessage(undefined, undefined, undefined, 0, 1);
+function standardMessageSofaHighlightStart() {
+  generateMessage(undefined, undefined, undefined, 0, 1, true);
 }
 
-function generateMessage(wave, userId, userSize, sofaId, sofaPosition) {
+function standardMessageSofaHighlightStop() {
+  generateMessage(undefined, undefined, undefined, 0, 1, false);
+}
+
+function generateMessage(wave, userId, userSize, sofaId, sofaPosition, highlightStatus) {
   var obj = {
     "wave": wave,
     "user": {
@@ -88,6 +96,7 @@ function generateMessage(wave, userId, userSize, sofaId, sofaPosition) {
     "sofa": {
       "id": sofaId,
       "sofaPosition": sofaPosition,
+      "highlightStatus": highlightStatus,
     }
   };
   sendMessage(compileMessage(obj));

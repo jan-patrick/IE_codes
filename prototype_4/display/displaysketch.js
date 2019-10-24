@@ -12,10 +12,14 @@ var pg;
 
 var users = [];
 
-// chair related values
-var chairs = [];
-var chairSize = 80;
-var chairStandardColor = 100;
+// sofa related values
+var sofas = [];
+var sofaSize = 80;
+var sofaStandardColor = 100;
+var sofaSwitchFade = true;
+var sofaState = 0;
+var sofaState_idle = 0;
+var sofaState_Highlighting = 1;
 
 // wave related values
 var waves = [];
@@ -37,7 +41,7 @@ function setup() {
   });
 
   createCanvas(windowWidth, windowHeight);
-  setupChairs();
+  setupSofas();
   setupWave();
   users[users.length] = new User();
 
@@ -46,9 +50,19 @@ function setup() {
 function draw() {
   background(0, 0, 0);
 
-  for (let i = 0; i < chairs.length; i++) {
-    //chairs[i].update();
-    chairs[i].draw();
+  for (let i = 0; i < sofas.length; i++) {
+    switch (sofaState) {
+      case sofaState_idle:
+        sofas[i].setStandardFillColor();
+        break;
+      case sofaState_Highlighting:
+        sofas[i].highlight();
+        break;
+      default:
+        console.log("Error " + waveState);
+        break;
+    }
+    sofas[i].draw();
   }
   for (let i = 0; i < waves.length; i++) {
     switch (waveState) {
@@ -116,9 +130,11 @@ function onMessageArrived(message) {
         }
       }
       if (typeof inputs.sofa === 'object' && inputs.sofa !== null) {
-        if (typeof inputs.sofa.id === "number" && 0 <= inputs.sofa.id && chairs.length >= inputs.sofa.id) {
-          if (typeof inputs.sofa.sofaPosition === "number") {
-            chairs[inputs.sofa.id].highlight(inputs.sofa.sofaPosition)
+        if (typeof inputs.sofa.id === "number" && 0 <= inputs.sofa.id && sofas.length >= inputs.sofa.id) {
+          if (typeof inputs.sofa.sofaPosition === "number" && inputs.sofa.highlightStatus) {
+            sofaState = sofaState_Highlighting;
+          } else if (typeof inputs.sofa.sofaPosition === "number" && !inputs.sofa.highlightStatus) {
+            sofaState = sofaState_idle;
           }
         }
       }
@@ -192,10 +208,10 @@ function drawTimeRemaining() {
   rect(0, height - 5, width * timeLeftPercentage, 5);
 }
 
-// Chairs, Wave, User
+// Sofas, Wave, User
 
-function setupChairs() {
-  chairs[chairs.length] = new Chair(20, 50, chairSize, chairSize, chairStandardColor);
+function setupSofas() {
+  sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
 }
 
 function setupWave() {
@@ -275,7 +291,7 @@ class User {
   }
 }
 
-class Chair {
+class Sofa {
   constructor(x, y, xSize, ySize, fillColor) {
     this.x = x;
     this.y = y;
@@ -294,8 +310,21 @@ class Chair {
     this.fillColor = fillColor;
   }
 
-  highlight(position) {
-    this.fillColor = 255;
+  highlight() {
+    if (250 <= this.fillColor) {
+      sofaSwitchFade = true;
+    } else if (5 >= this.fillColor) {
+      sofaSwitchFade = false;
+    }
+    if (sofaSwitchFade) {
+      this.fillColor -= 2;
+    } else {
+      this.fillColor += 2;
+    }
+  }
+
+  setStandardFillColor() {
+    this.fillColor = sofaStandardColor;
   }
 
   // Custom method for drawing the object
