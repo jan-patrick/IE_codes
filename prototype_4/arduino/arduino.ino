@@ -30,34 +30,39 @@ bool highlightStatus = false;
 
 int sensorPin = 6;
 int val = 0;
+int state;
+int lastState = LOW;
+
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 20;
 
 void connect() {
   Serial.print("checking wifi...");
   while (WiFi.status() != WL_CONNECTED) {
-    Serial.print("+");
+    //Serial.print("+");
     delay(1000);
   }
 
-  Serial.print("\nconnecting...");
+  //Serial.print("\nconnecting...");
   while (!client.connect(mqtt_clientID, mqtt_username, mqtt_password)) {
-    Serial.print("x");
+    //Serial.print("x");
     delay(1000);
   }
 
-  Serial.println("\nconnected!");
+  //Serial.println("\nconnected!");
 
-  client.subscribe("/jan");
+  //client.subscribe("/jan");
   // client.unsubscribe("/hello");
 }
 
 void messageReceived(String &topic, String &payload) {
-  Serial.println(topic + " -> " + payload);
+  //Serial.println(topic + " -> " + payload);
 }
 
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println("WiFi.begin");
+  //Serial.begin(9600);
+  //Serial.println("WiFi.begin");
   WiFi.begin(ssid);
 
   // Note: Local domain names (e.g. "Computer.local" on OSX) are not supported by Arduino.
@@ -82,27 +87,39 @@ void loop() {
   }
 
   val = digitalRead(sensorPin);
-  if (HIGH == val) {
+
+  if (val != lastState) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+  if (HIGH == val && (millis() - lastDebounceTime) > debounceDelay) {
+    if (val == lastState) {
+    // reset the debouncing timer
+    state = val;
+  
     lastMillis = millis();
     highlightStatus = true;
     createMessage();
+    }
   }
 
   if (millis() - lastMillis > 5000 && highlightStatus) {
     highlightStatus = false;
     createMessage();
   }
+  lastState = val;
 }
 
 void createMessage() {
   bool sendJson = false;
   if (millis() - lastJsonMillis > 500) {
-    lastJsonMillis = millis();
     sendJson = true;
   } //else if (!highlightStatus) {
   //  sendJson = true;
   //}
   if (sendJson == true) {
+    lastJsonMillis = millis();
 
     JSONVar myObject;
     JSONVar sofa;
@@ -117,5 +134,5 @@ void createMessage() {
     client.publish("/jan", jsonString);
   }
 
-  Serial.println(sendJson);
+  //Serial.println(sendJson);
 }
