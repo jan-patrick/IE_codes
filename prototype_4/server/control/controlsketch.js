@@ -16,7 +16,7 @@ var subscribedTopic = "/jan";
 
 // user position value
 var usersDetected = [];
-var userMovementValueDifferenz = 5;
+var userMovementValueDifferenz = 10;
 
 
 function setup() {
