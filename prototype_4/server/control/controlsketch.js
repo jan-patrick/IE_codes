@@ -8,7 +8,7 @@ var messagereceivedTime = 0;
 var timeLeftPercentage = 0;
 
 var userFollowSize_Slider;
-var userSize_Slider = 100;
+var userSize_Slider = 130;
 var prevUserSize_Slider = userSize_Slider;
 
 // communication valutes

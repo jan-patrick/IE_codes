@@ -263,8 +263,8 @@ class User {
     this.name = "User";
     this.x = windowWidth/2;
     this.y = windowHeight;
-    this.xSize = 70;
-    this.ySize = 70;
+    this.xSize = 130;
+    this.ySize = 130;
     this.timeOfApperance = millis();
   }
 
@@ -344,12 +344,12 @@ class Sofa {
     fill(this.fillColor);
 
     beginShape();
-    vertex(50, 50);
-    vertex(400, 50);
-    vertex(400, 400);
-    vertex(350, 400);
-    vertex(350, 100);
-    vertex(50, 100);
+    vertex(0, 10);
+    vertex(750, 60);
+    vertex(750, 310);
+    vertex(200, 290);
+    vertex(200, 600);
+    vertex(0, 600);
     endShape(CLOSE);
   }
 }
