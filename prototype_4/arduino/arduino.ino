@@ -28,7 +28,8 @@ unsigned long lastMillis = 0;
 unsigned long lastJsonMillis = 0;
 bool highlightStatus = false;
 
-int sensorPin = 2;
+int sensorPin = 6;
+int val = 0;
 
 void connect() {
   Serial.print("checking wifi...");
@@ -68,6 +69,8 @@ void setup() {
 
   connect();
 
+  pinMode(sensorPin, INPUT);
+
 }
 
 void loop() {
@@ -78,7 +81,8 @@ void loop() {
     connect();
   }
 
-  if (30 >= analogRead(sensorPin)) {
+  val = digitalRead(sensorPin);
+  if (HIGH == val) {
     lastMillis = millis();
     highlightStatus = true;
     createMessage();
@@ -91,14 +95,14 @@ void loop() {
 }
 
 void createMessage() {
-  bool sendJson = true;
+  bool sendJson = false;
   if (millis() - lastJsonMillis > 500) {
-    sendJson = false;
-  } else if (!highlightStatus) {
-    sendJson = true;
-  }
-  if (sendJson) {
     lastJsonMillis = millis();
+    sendJson = true;
+  } //else if (!highlightStatus) {
+  //  sendJson = true;
+  //}
+  if (sendJson == true) {
 
     JSONVar myObject;
     JSONVar sofa;
@@ -109,7 +113,9 @@ void createMessage() {
     myObject["sofa"] = sofa;
 
     String jsonString = JSON.stringify(myObject);
-    
+
     client.publish("/jan", jsonString);
   }
+
+  Serial.println(sendJson);
 }
