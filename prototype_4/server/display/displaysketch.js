@@ -72,7 +72,7 @@ function draw() {
         break;
       case waveState_Washing:
         waves[i].update();
-        if (0 > waves[i].x + waves[i].xSize) {
+        if (windowWidth < waves[i].x - waves[i].xSize) {
           waveState = waveState_Finished;
         }
         break;
@@ -224,10 +224,10 @@ function setupWave() {
 
 class Wave {
   constructor() {
-    this.x = windowWidth;
-    this.y = 0;
     this.xSize = 40;
     this.ySize = windowHeight;
+    this.x = 0 - this.xSize;
+    this.y = 0;
     this.color1 = 255;
     this.color2 = 200;
     this.color3 = 150;
@@ -235,12 +235,12 @@ class Wave {
   }
 
   reset() {
-    this.x = windowWidth;
+    this.x = 0 - this.xSize;
     this.y = 0;
   }
 
   update() {
-    this.x = this.x - 2;
+    this.x = this.x + 5;
   }
 
   setGradient(x, y, w, h) {
