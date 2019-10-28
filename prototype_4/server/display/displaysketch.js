@@ -12,6 +12,9 @@ var users = [];
 var clientName = "display";
 var currentUser = 0;
 
+// user connections
+var userConnections = [];
+
 // sofa related values
 var sofas = [];
 var sofaSize = 80;
@@ -48,6 +51,8 @@ function setup() {
   setupSofas();
   setupWave();
   users[currentUser] = new User();
+  userConnections[0] = new Userconnection();
+  userConnections[0].setup();
 }
 
 function draw() {
@@ -94,6 +99,9 @@ function draw() {
     } else if (displayState_1 === displayState) {
       users[i].drawInsideSofa();
     }
+  }
+  for (let i = 0; i < userConnections.length; i++) {
+      userConnections[i].draw();
   }
   //updateTime();
   //drawTimeRemaining()
@@ -243,6 +251,50 @@ function setupSofas() {
 
 function setupWave() {
   waves[waves.length] = new Wave();
+}
+
+class Userconnection {
+  constructor() {
+    this.beginX = 20.0;
+    this.beginY = 20.0;
+    this.endX = 500.0; 
+    this.endY = 320.0; 
+    this.distX;
+    this.distY;
+    this.exponent = 4;
+    this.x = 0.0; 
+    this.y = 0.0; 
+    this.step = 0.01; 
+    this.pct = 0.0; 
+  }
+  
+  setup() {
+    noStroke();
+    this.distX = this.endX - this.beginX;
+    this.distY = this.endY - this.beginY;
+  }
+  
+  draw() {
+    fill(0, 2);
+    rect(0, 0, this.width, this.height);
+    this.pct += this.step;
+    if (this.pct < 1.0) {
+      this.x = this.beginX + this.pct * this.distX;
+      this.y = this.beginY + pow(this.pct, this.exponent) * this.distY;
+    }
+    fill(255);
+    ellipse(this.x, this.y, 20, 20);
+  }
+  
+  mousePressed() {
+    this.pct = 0.0;
+    this.beginY = this.y;
+    this.beginX = this.x;
+    this.endX = this.mouseX;
+    this.endY = this.mouseY;
+    this.distX = this.endX - this.beginX;
+    this.distY = this.endY - this.beginY;
+  }
 }
 
 
