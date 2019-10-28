@@ -110,7 +110,7 @@ function onConnectionLost(responseObject) {
 }
 
 function onMessageArrived(message) {
-  console.log(message.destinationName + " -> " + message.payloadString);
+  //console.log(message.destinationName + " -> " + message.payloadString);
 
   try {
     inputs = JSON.parse(message.payloadString);

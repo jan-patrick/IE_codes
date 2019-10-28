@@ -16,7 +16,7 @@
 //wifi settings
 const char ssid[] = "TUvisitor";
 const char pass[] = "pass";
-const char clientName[] = "arduino-entrance";
+const String clientName = "arduino-entrance";
 
 //mqtt settings
 const char mqtt_clientID[] = "Arduino Nano IOT";
@@ -73,6 +73,8 @@ void messageReceived(String &topic, String &payload) {
   const char* all[1] = { "all" };
   if (myObject.hasOwnProperty("from") && myObject.hasOwnProperty("to")) {
     if (strcmp((const char*) myObject["to"], "all") == 0) {
+      sayHi((const char*) myObject["from"]);
+    } else if (strcmp((const char*) myObject["to"], clientName) == 0) {
       sayHi((const char*) myObject["from"]);
     }
   }

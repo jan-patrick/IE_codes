@@ -11,6 +11,9 @@ var clientName = "control";
 var userFollowSize_Slider;
 var userSize_Slider = 130;
 var prevUserSize_Slider = userSize_Slider;
+var arduinoPresenceDelay_Slider;
+var arduinoDebounceDelay_Slider = 10;
+var prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -35,11 +38,16 @@ function setup() {
 
 function draw() {
   userSize_Slider = userFollowSize_Slider.value();
+  arduinoDebounceDelay_Slider = arduinoPresenceDelay_Slider.value();
   background(0, 0, 0);
 
   if (prevUserSize_Slider != userSize_Slider) {
     generateMessage(clientName, "display", undefined, undefined, 0, userSize_Slider);
     prevUserSize_Slider = userSize_Slider;
+  }
+  if (prevArduinoDebounceDelay_Slider != arduinoDebounceDelay_Slider) {
+    generateMessage(clientName, "arduino-entrance", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 0, arduinoDebounceDelay_Slider);
+    prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
   }
 
   //updateTime();
@@ -49,6 +57,9 @@ function draw() {
 function setupSliders() {
   userFollowSize_Slider = createSlider(0, 255, userSize_Slider);
   userFollowSize_Slider.position(10, 0);
+
+  arduinoPresenceDelay_Slider = createSlider(5, 70, arduinoDebounceDelay_Slider);
+  arduinoPresenceDelay_Slider.position(170, 40);
 
   button = createButton('reset user pos');
   button.position(170, 10);
@@ -162,7 +173,7 @@ function standardMessageShowDevOnline() {
   generateMessage(clientName, "all");
 }
 
-function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, sofaId, sofaPosition, highlightStatus) {
+function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, sofaId, sofaPosition, highlightStatus, arduinoId, debounceDelay) {
   var obj = {
     "from": from,
     "to": to,
@@ -178,6 +189,10 @@ function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, so
       "id": sofaId,
       "sofaPosition": sofaPosition,
       "highlightStatus": highlightStatus,
+    },
+    "arduino": {
+      "id": arduinoId,
+      "debounceDelay": debounceDelay,
     }
   };
   sendMessage(compileMessage(obj));
