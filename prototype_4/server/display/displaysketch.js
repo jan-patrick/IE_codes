@@ -43,16 +43,10 @@ function setup() {
     password: "c784e41dd3da48d4",
     useSSL: true,
   });
-
-  if (displayState_0 === displayState) {
-    createCanvas(windowWidth, windowHeight);
-  } else if (displayState_1 === displayState) {
-    createCanvas(windowWidth, windowHeight, WEBGL);
-  }
+  createCanvas(windowWidth, windowHeight);
   setupSofas();
   setupWave();
   users[users.length] = new User();
-
 }
 
 function draw() {
@@ -70,9 +64,6 @@ function draw() {
       default:
         console.log("Error " + waveState);
         break;
-    }
-    if (displayState_1 === displayState) {
-      sofas[i].lightNextTo();
     }
     sofas[i].draw();
   }
@@ -96,10 +87,11 @@ function draw() {
     }
     waves[i].draw();
   }
-
-  if (displayState_0 === displayState) {
-    for (let i = 0; i < users.length; i++) {
+  for (let i = 0; i < users.length; i++) {
+    if (displayState_0 === displayState) {
       users[i].draw();
+    } else if (displayState_1 === displayState) {
+      users[i].drawInsideSofa();
     }
   }
   //updateTime();
@@ -315,13 +307,21 @@ class User {
     this.y = y;
   }
 
+  drawInsideSofa() {
+    noStroke();
+    this.drawGradient(this.x, this.y);
+  }
+
   drawGradient(x, y) {
     let radius = this.xSize;
-    let h = 0;//random(0, 360);
+    let h = 0;
+
     for (let r = radius; r > 0; --r) {
-      fill(h, h, h);
+      let a = map(h, 0,500,0,1)
+      let c = color('rgba(255%, 255%, 255%, '+a+')');
+      fill(c);
       ellipse(x, y, r, r);
-      h = (h + 2) % 360;
+      h = (h + 1) % 500;
     }
   }
 
@@ -371,17 +371,6 @@ class Sofa {
     } else {
       this.fillColor = sofaStandardColor;
     }
-  }
-
-  lightNextTo() {
-    const radius = 200;
-    const dirY = (mouseY / height - 0.5) * 4;
-    const dirX = (mouseX / width - 0.5) * 4;
-    directionalLight(204, 204, 204, dirX, dirY, 1);
-    translate(-1.5 * radius, 0, 0);
-    sphere(radius);
-    translate(3 * radius, 0, 0);
-    sphere(radius);
   }
 
   // Custom method for drawing the object
