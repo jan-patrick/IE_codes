@@ -20,6 +20,7 @@ var subscribedTopic = "/jan";
 
 // user position value
 var usersDetected = [];
+var currentUser = 0;
 var userMovementValueDifferenz = 40;
 
 
@@ -33,7 +34,7 @@ function setup() {
 
   createCanvas(windowWidth, windowHeight);
   setupSliders();
-  usersDetected[usersDetected.length] = new UserDetected();
+  usersDetected[currentUser] = new UserDetected();
 }
 
 function draw() {
@@ -46,7 +47,7 @@ function draw() {
     prevUserSize_Slider = userSize_Slider;
   }
   if (prevArduinoDebounceDelay_Slider != arduinoDebounceDelay_Slider) {
-    generateMessage(clientName, "arduino-entrance", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 0, arduinoDebounceDelay_Slider);
+    generateMessage(clientName, "arduino-entrance", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, currentUser, arduinoDebounceDelay_Slider);
     prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
   }
 
@@ -64,6 +65,10 @@ function setupSliders() {
   button = createButton('reset user pos');
   button.position(170, 10);
   button.mousePressed(standardMessageUserPosReset);
+
+  button = createButton('new user');
+  button.position(170, 90);
+  button.mousePressed(standardMessageNewUser);
 
   button = createButton('show online devices');
   button.position(280, 10);
@@ -102,7 +107,7 @@ function onConnect() {
 }
 
 function onMessageArrived(message) {
-  //console.log(message.destinationName + " -> " + message.payloadString);
+  console.log(message.destinationName + " -> " + message.payloadString);
   try {
     inputs = JSON.parse(message.payloadString);
 
@@ -146,31 +151,37 @@ function standardMessageSofaHighlightStop() {
 
 function standardMessageUserMoveUp() {
   usersDetected[0].updateY(-userMovementValueDifferenz);
-  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, currentUser, undefined, usersDetected[currentUser].x, usersDetected[currentUser].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveDown() {
   usersDetected[0].updateY(userMovementValueDifferenz);
-  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, currentUser, undefined, usersDetected[currentUser].x, usersDetected[currentUser].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveLeft() {
   usersDetected[0].updateX(-userMovementValueDifferenz);
-  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, currentUser, undefined, usersDetected[currentUser].x, usersDetected[currentUser].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveRight() {
   usersDetected[0].updateX(userMovementValueDifferenz);
-  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, currentUser, undefined, usersDetected[currentUser].x, usersDetected[currentUser].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserPosReset() {
   usersDetected[0].reset();
-  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, currentUser, undefined, usersDetected[currentUser].x, usersDetected[currentUser].y, undefined, undefined, undefined);
 }
 
 function standardMessageShowDevOnline() {
   generateMessage(clientName, "all");
+}
+
+function standardMessageNewUser() {
+  currentUser++;
+  usersDetected[currentUser] = new UserDetected();
+  generateMessage(clientName, "display", undefined, undefined, currentUser, undefined, usersDetected[currentUser].x, usersDetected[currentUser].y, undefined, undefined, undefined);
 }
 
 function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, sofaId, sofaPosition, highlightStatus, arduinoId, debounceDelay) {

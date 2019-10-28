@@ -10,6 +10,7 @@ var timeLeftPercentage = 0;
 var userFollowSize_Slider;
 var users = [];
 var clientName = "display";
+var currentUser = 0;
 
 // sofa related values
 var sofas = [];
@@ -46,12 +47,12 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   setupSofas();
   setupWave();
-  users[users.length] = new User();
+  users[currentUser] = new User();
 }
 
 function draw() {
   background(0, 0, 0);
-  users[0].updatePosition(mouseX, mouseY);
+  users[currentUser].updatePosition(mouseX, mouseY);
 
   for (let i = 0; i < sofas.length; i++) {
     switch (sofaState) {
@@ -139,12 +140,18 @@ function onMessageArrived(message) {
             }
           }
           if (typeof inputs.user === 'object' && inputs.user !== null) {
-            if (typeof inputs.user.id === "number" && 0 <= inputs.user.id && users.length >= inputs.user.id) {
-              if (typeof inputs.user.size === "number") {
-                users[inputs.user.id].updateSize(inputs.user.size, inputs.user.size)
-              }
-              if (typeof inputs.user.posX === "number" && typeof inputs.user.posY === "number") {
-                users[inputs.user.id].updatePosition(inputs.user.posX, inputs.user.posY)
+            if (typeof inputs.user.id === "number" && 0 <= inputs.user.id) {
+              if (0 === inputs.user.id || users.length - 1 === inputs.user.id) {
+                if (typeof inputs.user.size === "number") {
+                  users[inputs.user.id].updateSize(inputs.user.size, inputs.user.size)
+                }
+                if (typeof inputs.user.posX === "number" && typeof inputs.user.posY === "number") {
+                  users[inputs.user.id].updatePosition(inputs.user.posX, inputs.user.posY)
+                }
+              } else if (0 != inputs.user.id || users.length - 1 === inputs.user.id + 1) {
+                currentUser = inputs.user.id;
+                console.log(currentUser);
+                users[currentUser] = new User();
               }
             }
           }
@@ -312,7 +319,7 @@ class User {
     noStroke();
     this.drawGradient();
 
-    fill(0,0,0);
+    fill(0, 0, 0);
 
     beginShape();
     vertex(0, 0);
@@ -342,8 +349,8 @@ class User {
     let h = 0;
 
     for (let r = radius; r > 0; --r) {
-      let a = map(h, 0,500,0,1)
-      let c = color('rgba(255%, 255%, 255%, '+a+')');
+      let a = map(h, 0, 500, 0, 1)
+      let c = color('rgba(255%, 255%, 255%, ' + a + ')');
       fill(c);
       ellipse(this.x, this.y, r, r);
       h = (h + 1) % 500;
