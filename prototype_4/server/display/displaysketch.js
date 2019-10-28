@@ -27,6 +27,11 @@ var waveState_idle = 0;
 var waveState_Washing = 1;
 var waveState_Finished = 2;
 
+// general state
+var displayState = 1;
+var displayState_0 = 0;
+var displayState_1 = 1;
+
 // communication valutes
 var subscribedTopic = "/jan";
 
@@ -39,7 +44,11 @@ function setup() {
     useSSL: true,
   });
 
-  createCanvas(windowWidth, windowHeight);
+  if (displayState_0 === displayState) {
+    createCanvas(windowWidth, windowHeight);
+  } else if (displayState_1 === displayState) {
+    createCanvas(windowWidth, windowHeight, WEBGL);
+  }
   setupSofas();
   setupWave();
   users[users.length] = new User();
@@ -61,6 +70,9 @@ function draw() {
       default:
         console.log("Error " + waveState);
         break;
+    }
+    if (displayState_1 === displayState) {
+      sofas[i].lightNextTo();
     }
     sofas[i].draw();
   }
@@ -85,8 +97,10 @@ function draw() {
     waves[i].draw();
   }
 
-  for (let i = 0; i < users.length; i++) {
-    users[i].draw();
+  if (displayState_0 === displayState) {
+    for (let i = 0; i < users.length; i++) {
+      users[i].draw();
+    }
   }
   //updateTime();
   //drawTimeRemaining()
@@ -118,7 +132,7 @@ function onMessageArrived(message) {
 
     if (typeof inputs === 'object' && inputs !== null) {
       if (typeof inputs.from === "string" && typeof inputs.to === "string") {
-        if ("all" === inputs.to) { 
+        if ("all" === inputs.to) {
           generateMessage(clientName, inputs.from, "online")
         }
         if (clientName === inputs.to) {
@@ -153,7 +167,7 @@ function onMessageArrived(message) {
               }
             }
           }
-        } 
+        }
       }
     }
   } catch (e) {
@@ -357,6 +371,17 @@ class Sofa {
     } else {
       this.fillColor = sofaStandardColor;
     }
+  }
+
+  lightNextTo() {
+    const radius = 200;
+    const dirY = (mouseY / height - 0.5) * 4;
+    const dirX = (mouseX / width - 0.5) * 4;
+    directionalLight(204, 204, 204, dirX, dirY, 1);
+    translate(-1.5 * radius, 0, 0);
+    sphere(radius);
+    translate(3 * radius, 0, 0);
+    sphere(radius);
   }
 
   // Custom method for drawing the object
