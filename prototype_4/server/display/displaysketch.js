@@ -150,7 +150,6 @@ function onMessageArrived(message) {
                 }
               } else if (0 != inputs.user.id || users.length - 1 === inputs.user.id + 1) {
                 currentUser = inputs.user.id;
-                console.log(currentUser);
                 users[currentUser] = new User();
               }
             }
