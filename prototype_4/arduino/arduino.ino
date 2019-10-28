@@ -16,7 +16,7 @@
 //wifi settings
 const char ssid[] = "TUvisitor";
 const char pass[] = "pass";
-const String clientName = "arduino-entrance";
+const char* clientName[1] = { "arduino-entrance" };
 
 //mqtt settings
 const char mqtt_clientID[] = "Arduino Nano IOT";
@@ -36,6 +36,7 @@ int lastState = LOW;
 
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 20;
+int id = 0;
 
 void connect() {
   //Serial.print("checking wifi...");
@@ -66,16 +67,21 @@ void messageReceived(String &topic, String &payload) {
     return;
   }
 
-  //Serial.print("JSON.typeof(myObject) = ");
-  //Serial.println(JSON.typeof(myObject)); // prints: object
-
   // myObject.hasOwnProperty(key) checks if the object contains an entry for key
-  const char* all[1] = { "all" };
   if (myObject.hasOwnProperty("from") && myObject.hasOwnProperty("to")) {
     if (strcmp((const char*) myObject["to"], "all") == 0) {
       sayHi((const char*) myObject["from"]);
-    } else if (strcmp((const char*) myObject["to"], clientName) == 0) {
-      sayHi((const char*) myObject["from"]);
+    } else if (strcmp((const char*) myObject["to"], clientName[0]) == 0) {
+      JSONVar arduino = (JSONVar) myObject["arduino"];
+      if (JSON.typeof(arduino) == "undefined") {
+        //Serial.println("Parsing input failed!");
+        return;
+      }
+      if(arduino.hasOwnProperty("id") && arduino.hasOwnProperty("debounceDelay")) {
+        
+      }
+      Serial.println((int) arduino["id"]);
+      Serial.println((int) arduino["debounceDelay"]);
     }
   }
 
