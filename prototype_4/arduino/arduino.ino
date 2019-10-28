@@ -72,7 +72,6 @@ void messageReceived(String &topic, String &payload) {
   if (myObject.hasOwnProperty("from") && myObject.hasOwnProperty("to")) {
     if (strcmp((const char*) myObject["to"], "all") == 0) {
       sayHi((const char*) myObject["from"]);
-      Serial.println("!");
     } else if (strcmp((const char*) myObject["to"], clientName[0]) == 0) {
       JSONVar arduino = (JSONVar) myObject["arduino"];
       if (JSON.typeof(arduino) == "undefined") {
