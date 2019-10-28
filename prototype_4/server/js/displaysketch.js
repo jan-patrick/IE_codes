@@ -74,7 +74,10 @@ function draw() {
   }
   // draw users connection
   if (1 <= currentUser) {
-    userConnections[currentUser - 1].updateNewestUserPoint();
+    for (let o = 0; o < userConnections.length; o++) {
+      if (currentUser === userConnections[o].currentUserConnect)
+        userConnections[o].updateNewestUserPoint();
+    }
     for (let i = 0; i < userConnections.length; i++) {
       userConnections[i].draw();
     }
@@ -164,8 +167,19 @@ function onMessageArrived(message) {
               } else if (0 != inputs.user.id || users.length - 1 === inputs.user.id + 1) {
                 currentUser = inputs.user.id;
                 users[currentUser] = new User();
-                userConnections[currentUser - 1] = new Userconnection(users[inputs.user.id - 1].x, users[inputs.user.id - 1].y, users[inputs.user.id].x, users[inputs.user.id].y);
-                userConnections[currentUser - 1].setup();
+
+                if (users.length <= 2) {
+                  userConnections[currentUser - 1] = new Userconnection(users[inputs.user.id - 1].x, users[inputs.user.id - 1].y, users[inputs.user.id].x, users[inputs.user.id].y, currentUser);
+                  userConnections[currentUser - 1].setup();
+                  console.log("hi")
+                } else {
+                  for (let i = 0; i < users.length; i++) {
+                    console.log(userConnections.length);
+                    userConnections[userConnections.length] = new Userconnection(users[i].x, users[i].y, users[currentUser].x, users[currentUser].y, currentUser);
+                    console.log(userConnections[userConnections.length]);
+                    userConnections[userConnections.length - 1].setup();
+                  }
+                }
               }
             }
           }
@@ -261,7 +275,7 @@ function setupWave() {
 }
 
 class Userconnection {
-  constructor(beginX, beginY, endX, endY) {
+  constructor(beginX, beginY, endX, endY, currentUserConnect) {
     this.beginX = beginX;
     this.beginY = beginY;
     this.endX = endX;
@@ -274,6 +288,7 @@ class Userconnection {
     this.step = 0.01;
     this.pct = 0.0;
     this.fillOpacity = 0;
+    this.currentUserConnect = currentUserConnect;
   }
 
   setup() {
