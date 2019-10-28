@@ -91,7 +91,7 @@ function onConnect() {
 }
 
 function onMessageArrived(message) {
-  console.log(message.destinationName + " -> " + message.payloadString);
+  //console.log(message.destinationName + " -> " + message.payloadString);
   try {
     inputs = JSON.parse(message.payloadString);
 
@@ -102,7 +102,7 @@ function onMessageArrived(message) {
         }
         if (clientName === inputs.to) {
           if (typeof inputs.debug === "string") {
-            console.log(inputs.from + " : " + inputs.debug);
+            console.log(inputs.debug + " : " + inputs.from);
           }
         }
       }

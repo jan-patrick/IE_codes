@@ -110,7 +110,7 @@ function onConnectionLost(responseObject) {
 }
 
 function onMessageArrived(message) {
-  console.log(message.destinationName + " -> " + message.payloadString);
+  //console.log(message.destinationName + " -> " + message.payloadString);
 
   try {
     inputs = JSON.parse(message.payloadString);
@@ -123,7 +123,7 @@ function onMessageArrived(message) {
         if (clientName === inputs.to) {
           if (typeof inputs.debug === "string") {
             if (typeof inputs.debug === "string") {
-              console.log(inputs.from + " : " + inputs.debug);
+              console.log(inputs.debug + " : " + inputs.from);
             }
           }
           if (typeof inputs.wave === "boolean") {
@@ -145,17 +145,16 @@ function onMessageArrived(message) {
             if (typeof inputs.sofa.id === "number" && 0 <= inputs.sofa.id && sofas.length >= inputs.sofa.id) {
               if (typeof inputs.sofa.sofaPosition === "number" && inputs.sofa.highlightStatus) {
                 sofaState = sofaState_Highlighting;
+                console.log("sofa highlighting");
               } else if (typeof inputs.sofa.sofaPosition === "number" && !inputs.sofa.highlightStatus) {
                 sofaState = sofaState_idle;
+                console.log("sofa is off");
               }
             }
           }
-        }
+        } 
       }
-    } else {
-      console.log("error while understanding data!")
     }
-
   } catch (e) {
     console.log("error parsing data!")
   }
