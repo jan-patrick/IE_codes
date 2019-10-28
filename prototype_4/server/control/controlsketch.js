@@ -12,7 +12,7 @@ var userFollowSize_Slider;
 var userSize_Slider = 130;
 var prevUserSize_Slider = userSize_Slider;
 var arduinoPresenceDelay_Slider;
-var arduinoDebounceDelay_Slider = 10;
+var arduinoDebounceDelay_Slider = 20;
 var prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
 
 // communication valutes

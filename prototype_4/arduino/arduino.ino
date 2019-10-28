@@ -17,6 +17,7 @@
 const char ssid[] = "TUvisitor";
 const char pass[] = "pass";
 const char* clientName[1] = { "arduino-entrance" };
+const String clientNameString = "arduino-entrance";
 
 //mqtt settings
 const char mqtt_clientID[] = "Arduino Nano IOT";
@@ -71,6 +72,7 @@ void messageReceived(String &topic, String &payload) {
   if (myObject.hasOwnProperty("from") && myObject.hasOwnProperty("to")) {
     if (strcmp((const char*) myObject["to"], "all") == 0) {
       sayHi((const char*) myObject["from"]);
+      Serial.println("!");
     } else if (strcmp((const char*) myObject["to"], clientName[0]) == 0) {
       JSONVar arduino = (JSONVar) myObject["arduino"];
       if (JSON.typeof(arduino) == "undefined") {
@@ -158,7 +160,7 @@ void sayHi( const char* to) {
 
   JSONVar myObject;
 
-  myObject["from"] = clientName;
+  myObject["from"] = clientNameString;
   myObject["to"] = to;
   myObject["debug"] = "online";
 
