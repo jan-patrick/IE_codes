@@ -12,8 +12,9 @@ var users = [];
 var clientName = "display";
 var currentUser = 0;
 
-// user connections
+// user connection possibilities
 var userConnections = [];
+userConnectionLines = [];
 
 // sofa related values
 var sofas = [];
@@ -32,9 +33,11 @@ var waveState_Washing = 1;
 var waveState_Finished = 2;
 
 // general state
-var displayState = 1;
+var displayState = 3;
 var displayState_0 = 0;
 var displayState_1 = 1;
+var displayState_2 = 2;
+var displayState_3 = 3;
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -51,12 +54,14 @@ function setup() {
   setupSofas();
   setupWave();
   users[currentUser] = new User();
+  userConnectionLines[0] = new UserconnectionLines(0, 220, 400, 300, 1);
+  userConnectionLines[0].setup();
+
 }
 
 function draw() {
   background(0, 0, 0);
   users[currentUser].updatePosition(mouseX, mouseY);
-
   for (let i = 0; i < sofas.length; i++) {
     // draw sofa
     switch (sofaState) {
@@ -74,12 +79,14 @@ function draw() {
   }
   // draw users connection
   if (1 <= currentUser) {
-    for (let o = 0; o < userConnections.length; o++) {
-      if (currentUser === userConnections[o].currentUserConnect)
-        userConnections[o].updateNewestUserPoint();
-    }
-    for (let i = 0; i < userConnections.length; i++) {
-      userConnections[i].draw();
+    if (displayState_2 === displayState) {
+      for (let o = 0; o < userConnections.length; o++) {
+        if (currentUser === userConnections[o].currentUserConnect)
+          userConnections[o].updateNewestUserPoint();
+      }
+      for (let i = 0; i < userConnections.length; i++) {
+        userConnections[i].draw();
+      }
     }
   }
   // draw wave
@@ -107,10 +114,11 @@ function draw() {
   for (let i = 0; i < users.length; i++) {
     if (displayState_0 === displayState) {
       users[i].draw();
-    } else if (displayState_1 === displayState) {
+    } else {
       users[i].drawInsideSofa();
     }
   }
+  userConnectionLines[0].draw();
   //updateTime();
   //drawTimeRemaining()
 }
@@ -169,15 +177,18 @@ function onMessageArrived(message) {
                 users[currentUser] = new User();
 
                 if (users.length <= 2) {
-                  userConnections[currentUser - 1] = new Userconnection(users[inputs.user.id - 1].x, users[inputs.user.id - 1].y, users[inputs.user.id].x, users[inputs.user.id].y, currentUser);
-                  userConnections[currentUser - 1].setup();
-                  console.log("hi")
+                  if (displayState_2 === displayState) {
+                    userConnections[currentUser - 1] = new Userconnection(users[inputs.user.id - 1].x, users[inputs.user.id - 1].y, users[inputs.user.id].x, users[inputs.user.id].y, currentUser);
+                    userConnections[currentUser - 1].setup();
+                  }
                 } else {
-                  for (let i = 0; i < users.length; i++) {
-                    console.log(userConnections.length);
-                    userConnections[userConnections.length] = new Userconnection(users[i].x, users[i].y, users[currentUser].x, users[currentUser].y, currentUser);
-                    console.log(userConnections[userConnections.length]);
-                    userConnections[userConnections.length - 1].setup();
+                  if (displayState_2 === displayState) {
+                    for (let i = 0; i < users.length; i++) {
+                      console.log(userConnections.length);
+                      userConnections[userConnections.length] = new Userconnection(users[i].x, users[i].y, users[currentUser].x, users[currentUser].y, currentUser);
+                      console.log(userConnections[userConnections.length]);
+                      userConnections[userConnections.length - 1].setup();
+                    }
                   }
                 }
               }
@@ -324,6 +335,40 @@ class Userconnection {
     let c = color('rgba(255%, 255%, 255%, ' + this.fillOpacity + ')');
     fill(c);
     ellipse(this.x, this.y, 20, 20);
+  }
+
+  updateNewestUserPoint() {
+    this.endX = users[currentUser].x;
+    this.endY = users[currentUser].y;
+    this.distX = this.endX - this.beginX;
+    this.distY = this.endY - this.beginY;
+  }
+}
+
+class UserconnectionLines {
+  constructor(beginX, beginY, endX, endY, currentUserConnect) {
+    this.beginX = beginX;
+    this.beginY = beginY;
+    this.endX = endX;
+    this.endY = endY;
+    this.exponent = 4;
+    this.x = 0.0;
+    this.y = 0.0;
+    this.step = 0.01;
+    this.pct = 0.0;
+    this.fillOpacity = 200;
+    this.currentUserConnect = currentUserConnect;
+  }
+
+  setup() {
+    noFill();
+  }
+
+  draw() {
+    let c = color('rgba(255%, 255%, 255%, ' + this.fillOpacity + ')');
+    stroke(c);
+
+    curve(this.beginX, this.beginY, this.beginX/2, this.beginY/2, this.endX/2, this.endY/2, this.endX, this.endY);
   }
 
   updateNewestUserPoint() {
@@ -495,6 +540,8 @@ class Sofa {
 
   // Custom method for drawing the object
   draw() {
+
+    noStroke();
     fill(this.fillColor);
 
     beginShape();
