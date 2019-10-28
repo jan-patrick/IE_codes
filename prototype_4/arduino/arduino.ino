@@ -16,6 +16,7 @@
 //wifi settings
 const char ssid[] = "TUvisitor";
 const char pass[] = "pass";
+const char clientName[] = "arduino-entrance";
 
 //mqtt settings
 const char mqtt_clientID[] = "Arduino Nano IOT";
@@ -37,7 +38,7 @@ unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 20;
 
 void connect() {
-  Serial.print("checking wifi...");
+  //Serial.print("checking wifi...");
   while (WiFi.status() != WL_CONNECTED) {
     //Serial.print("+");
     delay(1000);
@@ -51,12 +52,36 @@ void connect() {
 
   //Serial.println("\nconnected!");
 
-  //client.subscribe("/jan");
+  client.subscribe("/jan");
   // client.unsubscribe("/hello");
 }
 
 void messageReceived(String &topic, String &payload) {
   //Serial.println(topic + " -> " + payload);
+  JSONVar myObject = JSON.parse(payload);
+
+  // JSON.typeof(jsonVar) can be used to get the type of the var
+  if (JSON.typeof(myObject) == "undefined") {
+    //Serial.println("Parsing input failed!");
+    return;
+  }
+
+  //Serial.print("JSON.typeof(myObject) = ");
+  //Serial.println(JSON.typeof(myObject)); // prints: object
+
+  // myObject.hasOwnProperty(key) checks if the object contains an entry for key
+  const char* all[1] = { "all" };
+  if (myObject.hasOwnProperty("from") && myObject.hasOwnProperty("to")) {
+    if (strcmp((const char*) myObject["to"], "all") == 0) {
+      sayHi((const char*) myObject["from"]);
+    }
+  }
+
+  // JSON vars can be printed using print or println
+  //Serial.print("myObject = ");
+  //Serial.println(myObject);
+
+  //Serial.println();
 }
 
 
@@ -95,12 +120,12 @@ void loop() {
 
   if (HIGH == val && (millis() - lastDebounceTime) > debounceDelay) {
     if (val == lastState) {
-    // reset the debouncing timer
-    state = val;
-  
-    lastMillis = millis();
-    highlightStatus = true;
-    createMessage();
+      // reset the debouncing timer
+      state = val;
+
+      lastMillis = millis();
+      highlightStatus = true;
+      createMessage();
     }
   }
 
@@ -109,6 +134,22 @@ void loop() {
     createMessage();
   }
   lastState = val;
+}
+
+void sayHi( const char* to) {
+  lastJsonMillis = millis();
+
+  JSONVar myObject;
+
+  myObject["from"] = clientName;
+  myObject["to"] = to;
+  myObject["debug"] = "online";
+
+  String jsonString = JSON.stringify(myObject);
+
+  client.publish("/jan", jsonString);
+
+  //Serial.println(sendJson);
 }
 
 void createMessage() {
@@ -124,6 +165,8 @@ void createMessage() {
     JSONVar myObject;
     JSONVar sofa;
 
+    myObject["from"] = clientName;
+    myObject["to"] = "display";
     sofa["id"] = 0;
     sofa["sofaPosition"] = -1;
     sofa["highlightStatus"] = highlightStatus;
