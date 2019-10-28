@@ -51,8 +51,6 @@ function setup() {
   setupSofas();
   setupWave();
   users[currentUser] = new User();
-  userConnections[0] = new Userconnection(0,0, windowWidth-100, windowHeight-100);
-  userConnections[0].setup();
 }
 
 function draw() {
@@ -60,6 +58,7 @@ function draw() {
   users[currentUser].updatePosition(mouseX, mouseY);
 
   for (let i = 0; i < sofas.length; i++) {
+    // draw sofa
     switch (sofaState) {
       case sofaState_idle:
         sofas[i].setStandardFillColor();
@@ -73,6 +72,14 @@ function draw() {
     }
     sofas[i].draw();
   }
+  // draw users connection
+  if (1 <= currentUser) {
+    userConnections[currentUser - 1].updateNewestUserPoint();
+    for (let i = 0; i < userConnections.length; i++) {
+      userConnections[i].draw();
+    }
+  }
+  // draw wave
   for (let i = 0; i < waves.length; i++) {
     switch (waveState) {
       case waveState_Finished:
@@ -93,15 +100,13 @@ function draw() {
     }
     waves[i].draw();
   }
+  // draw user specific light
   for (let i = 0; i < users.length; i++) {
     if (displayState_0 === displayState) {
       users[i].draw();
     } else if (displayState_1 === displayState) {
       users[i].drawInsideSofa();
     }
-  }
-  for (let i = 0; i < userConnections.length; i++) {
-      userConnections[i].draw();
   }
   //updateTime();
   //drawTimeRemaining()
@@ -159,6 +164,8 @@ function onMessageArrived(message) {
               } else if (0 != inputs.user.id || users.length - 1 === inputs.user.id + 1) {
                 currentUser = inputs.user.id;
                 users[currentUser] = new User();
+                userConnections[currentUser - 1] = new Userconnection(users[inputs.user.id - 1].x, users[inputs.user.id - 1].y, users[inputs.user.id].x, users[inputs.user.id].y);
+                userConnections[currentUser - 1].setup();
               }
             }
           }
@@ -257,40 +264,40 @@ class Userconnection {
   constructor(beginX, beginY, endX, endY) {
     this.beginX = beginX;
     this.beginY = beginY;
-    this.endX = endX; 
-    this.endY = endY; 
+    this.endX = endX;
+    this.endY = endY;
     this.distX = this.endX - this.beginX;
     this.distY = this.endY - this.beginY;
     this.exponent = 4;
-    this.x = 0.0; 
-    this.y = 0.0; 
-    this.step = 0.01; 
-    this.pct = 0.0; 
+    this.x = 0.0;
+    this.y = 0.0;
+    this.step = 0.01;
+    this.pct = 0.0;
     this.fillOpacity = 0;
   }
-  
+
   setup() {
     noStroke();
   }
 
   resetToCurrentValues() {
-    this.x = 0.0; 
-    this.y = 0.0; 
+    this.x = 0.0;
+    this.y = 0.0;
     this.pct = 0.0;
   }
-  
+
   draw() {
     fill(0, 2);
     rect(0, 0, this.width, this.height);
     this.pct += this.step;
-    if(0.5>this.pct) {
-      this.fillOpacity+=this.step;
+    if (0.5 > this.pct) {
+      this.fillOpacity += this.step;
     } else {
-      this.fillOpacity-=this.step;
+      this.fillOpacity -= this.step;
     }
-    if(0>this.fillOpacity) {
+    if (0 > this.fillOpacity) {
       this.fillOpacity = 0;
-    } else if (1<this.fillOpacity) {
+    } else if (1 < this.fillOpacity) {
       this.fillOpacity = 1;
     }
     if (this.pct < 1.0) {
@@ -303,13 +310,10 @@ class Userconnection {
     fill(c);
     ellipse(this.x, this.y, 20, 20);
   }
-  
-  newGoalPoint() {
-    this.pct = 0.0;
-    this.beginY = this.y;
-    this.beginX = this.x;
-    this.endX = this.mouseX;
-    this.endY = this.mouseY;
+
+  updateNewestUserPoint() {
+    this.endX = users[currentUser].x;
+    this.endY = users[currentUser].y;
     this.distX = this.endX - this.beginX;
     this.distY = this.endY - this.beginY;
   }
