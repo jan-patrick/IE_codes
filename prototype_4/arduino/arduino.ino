@@ -78,10 +78,9 @@ void messageReceived(String &topic, String &payload) {
         return;
       }
       if(arduino.hasOwnProperty("id") && arduino.hasOwnProperty("debounceDelay")) {
-        
+        id = (int) arduino["id"];
+        debounceDelay = (int) arduino["debounceDelay"];
       }
-      Serial.println((int) arduino["id"]);
-      Serial.println((int) arduino["debounceDelay"]);
     }
   }
 
