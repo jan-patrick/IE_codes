@@ -6,6 +6,7 @@ client.onMessageArrived = onMessageArrived;
 // some placeholders to keep track of time
 var messagereceivedTime = 0;
 var timeLeftPercentage = 0;
+var clientName = "control";
 
 var userFollowSize_Slider;
 var userSize_Slider = 130;
@@ -16,7 +17,7 @@ var subscribedTopic = "/jan";
 
 // user position value
 var usersDetected = [];
-var userMovementValueDifferenz = 10;
+var userMovementValueDifferenz = 40;
 
 
 function setup() {
@@ -53,6 +54,10 @@ function setupSliders() {
   button.position(170, 10);
   button.mousePressed(standardMessageUserPosReset);
 
+  button = createButton('show online devices');
+  button.position(280, 10);
+  button.mousePressed(standardMessageShowDevOnline);
+
   button = createButton('wave');
   button.position(10, 30);
   button.mousePressed(standardMessageWave);
@@ -87,6 +92,27 @@ function onConnect() {
 
 function onMessageArrived(message) {
   console.log(message.destinationName + " -> " + message.payloadString);
+  try {
+    inputs = JSON.parse(message.payloadString);
+
+    if (typeof inputs === 'object' && inputs !== null) {
+      if (typeof inputs.from === "string" && typeof inputs.to === "string") {
+        if ("all" === inputs.to) { 
+          generateMessage(clientName, inputs.from, "online")
+        }
+        if (clientName === inputs.to) {
+          if (typeof inputs.debug === "string") {
+            console.log(inputs.from + " : " + inputs.debug);
+          }
+        }
+      }
+    } else {
+      console.log("error while understanding data!")
+    }
+
+  } catch (e) {
+    console.log("error parsing data!")
+  }
 }
 
 function onConnectionLost(responseObject) {
@@ -96,44 +122,51 @@ function onConnectionLost(responseObject) {
 }
 
 function standardMessageWave() {
-  generateMessage(true);
+  generateMessage(clientName, "display", undefined, true);
 }
 
 function standardMessageSofaHighlightStart() {
-  generateMessage(undefined, undefined, undefined, undefined, undefined, 0, 1, true);
+  generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, 0, 1, true);
 }
 
 function standardMessageSofaHighlightStop() {
-  generateMessage(undefined, undefined, undefined, undefined, undefined, 0, 1, false);
+  generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, 0, 1, false);
 }
 
 function standardMessageUserMoveUp() {
   usersDetected[0].updateY(-userMovementValueDifferenz);
-  generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveDown() {
   usersDetected[0].updateY(userMovementValueDifferenz);
-  generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveLeft() {
   usersDetected[0].updateX(-userMovementValueDifferenz);
-  generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserMoveRight() {
   usersDetected[0].updateX(userMovementValueDifferenz);
-  generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
 function standardMessageUserPosReset() {
   usersDetected[0].reset();
-  generateMessage(undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
+  generateMessage(clientName, "display", undefined, undefined, 0, undefined, usersDetected[0].x, usersDetected[0].y, undefined, undefined, undefined);
 }
 
-function generateMessage(wave, userId, userSize, posX, posY, sofaId, sofaPosition, highlightStatus) {
+function standardMessageShowDevOnline() {
+  generateMessage(clientName, "all");
+}
+
+function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, sofaId, sofaPosition, highlightStatus) {
   var obj = {
+    "from": from,
+    "to": to,
+    "debug": debug,
     "wave": wave,
     "user": {
       "id": userId,
@@ -204,8 +237,8 @@ function drawTimeRemaining() {
 class UserDetected {
   constructor() {
     this.name = "UserDetected";
-    this.x = windowWidth/2;
-    this.y = windowHeight/2;
+    this.x = windowWidth / 2;
+    this.y = windowHeight / 2;
   }
 
   updateX(xChange) {
@@ -217,7 +250,7 @@ class UserDetected {
   }
 
   reset() {
-    this.x = windowWidth/2;
+    this.x = windowWidth / 2;
     this.y = windowHeight;
   }
 

@@ -8,9 +8,8 @@ var messagereceivedTime = 0;
 var timeLeftPercentage = 0;
 
 var userFollowSize_Slider;
-var pg;
-
 var users = [];
+var clientName = "display";
 
 // sofa related values
 var sofas = [];
@@ -117,27 +116,39 @@ function onMessageArrived(message) {
     inputs = JSON.parse(message.payloadString);
 
     if (typeof inputs === 'object' && inputs !== null) {
-      if (typeof inputs.wave === "boolean") {
-        if (inputs.wave) {
-          luggageNotification();
+      if (typeof inputs.from === "string" && typeof inputs.to === "string") {
+        if ("all" === inputs.to) { 
+          generateMessage(clientName, inputs.from, "online")
         }
-      }
-      if (typeof inputs.user === 'object' && inputs.user !== null) {
-        if (typeof inputs.user.id === "number" && 0 <= inputs.user.id && users.length >= inputs.user.id) {
-          if (typeof inputs.user.size === "number") {
-            users[inputs.user.id].updateSize(inputs.user.size, inputs.user.size)
+        if (clientName === inputs.to) {
+          if (typeof inputs.debug === "string") {
+            if (typeof inputs.debug === "string") {
+              console.log(inputs.from + " : " + inputs.debug);
+            }
           }
-          if (typeof inputs.user.posX=== "number" && typeof inputs.user.posY === "number") {
-            users[inputs.user.id].updatePosition(inputs.user.posX, inputs.user.posY)
+          if (typeof inputs.wave === "boolean") {
+            if (inputs.wave) {
+              luggageNotification();
+            }
           }
-        }
-      }
-      if (typeof inputs.sofa === 'object' && inputs.sofa !== null) {
-        if (typeof inputs.sofa.id === "number" && 0 <= inputs.sofa.id && sofas.length >= inputs.sofa.id) {
-          if (typeof inputs.sofa.sofaPosition === "number" && inputs.sofa.highlightStatus) {
-            sofaState = sofaState_Highlighting;
-          } else if (typeof inputs.sofa.sofaPosition === "number" && !inputs.sofa.highlightStatus) {
-            sofaState = sofaState_idle;
+          if (typeof inputs.user === 'object' && inputs.user !== null) {
+            if (typeof inputs.user.id === "number" && 0 <= inputs.user.id && users.length >= inputs.user.id) {
+              if (typeof inputs.user.size === "number") {
+                users[inputs.user.id].updateSize(inputs.user.size, inputs.user.size)
+              }
+              if (typeof inputs.user.posX === "number" && typeof inputs.user.posY === "number") {
+                users[inputs.user.id].updatePosition(inputs.user.posX, inputs.user.posY)
+              }
+            }
+          }
+          if (typeof inputs.sofa === 'object' && inputs.sofa !== null) {
+            if (typeof inputs.sofa.id === "number" && 0 <= inputs.sofa.id && sofas.length >= inputs.sofa.id) {
+              if (typeof inputs.sofa.sofaPosition === "number" && inputs.sofa.highlightStatus) {
+                sofaState = sofaState_Highlighting;
+              } else if (typeof inputs.sofa.sofaPosition === "number" && !inputs.sofa.highlightStatus) {
+                sofaState = sofaState_idle;
+              }
+            }
           }
         }
       }
@@ -150,10 +161,11 @@ function onMessageArrived(message) {
   }
 }
 
-function generateMessage(wave, users) {
+function generateMessage(from, to, debug) {
   var obj = {
-    "wave": wave,
-    "users": users,
+    "from": from,
+    "to": to,
+    "debug": debug
   };
   sendMessage(compileMessage(obj));
 }
@@ -245,10 +257,10 @@ class Wave {
 
   setGradient(x, y, w, h) {
     noFill();
-      let inter = map(x, y, y + h, 0, 1);
-      let c = lerpColor(color(204, 102, 0), color(0, 102, 153), inter);
-      stroke(c);
-      line(x, y, x, y + h);
+    let inter = map(x, y, y + h, 0, 1);
+    let c = lerpColor(color(204, 102, 0), color(0, 102, 153), inter);
+    stroke(c);
+    line(x, y, x, y + h);
   }
 
   draw() {
@@ -261,7 +273,7 @@ class Wave {
 class User {
   constructor() {
     this.name = "User";
-    this.x = windowWidth/2;
+    this.x = windowWidth / 2;
     this.y = windowHeight;
     this.xSize = 130;
     this.ySize = 130;
