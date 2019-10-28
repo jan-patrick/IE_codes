@@ -48,6 +48,7 @@ function setup() {
 
 function draw() {
   background(0, 0, 0);
+  users[0].updatePosition(mouseX, mouseY);
 
   for (let i = 0; i < sofas.length; i++) {
     switch (sofaState) {
@@ -300,10 +301,19 @@ class User {
     this.y = y;
   }
 
+  drawGradient(x, y) {
+    let radius = dim / 2;
+    let h = random(0, 360);
+    for (let r = radius; r > 0; --r) {
+      fill(h, 90, 90);
+      ellipse(x, y, r, r);
+      h = (h + 1) % 360;
+    }
+  }
+
   // Custom method for drawing the object
   draw() {
     fill(0, 12);
-    rect(0, 0, this.xSize, this.ySize);
     fill(255);
     noStroke();
     ellipse(this.x, this.y, this.xSize, this.ySize);
