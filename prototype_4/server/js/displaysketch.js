@@ -54,11 +54,9 @@ function setup() {
   setupSofas();
   setupWave();
   users[currentUser] = new User();
-
 }
 
 function draw() {
-  console.log(userConnectionLines.length);
   background(0, 0, 0);
   users[currentUser].updatePosition(mouseX, mouseY);
   for (let i = 0; i < sofas.length; i++) {
@@ -424,6 +422,7 @@ class Wave {
   }
 
   draw() {
+    noStroke();
     fill(this.color1);
     rect(this.x, this.y, this.xSize, this.ySize);
     //this.setGradient(this.x, this.y, this.xSize, this.ySize);
