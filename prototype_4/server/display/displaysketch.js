@@ -302,21 +302,20 @@ class User {
   }
 
   drawGradient(x, y) {
-    let radius = dim / 2;
-    let h = random(0, 360);
+    let radius = this.xSize;
+    let h = 0;//random(0, 360);
     for (let r = radius; r > 0; --r) {
-      fill(h, 90, 90);
+      fill(h, h, h);
       ellipse(x, y, r, r);
-      h = (h + 1) % 360;
+      h = (h + 2) % 360;
     }
   }
 
-  // Custom method for drawing the object
   draw() {
-    fill(0, 12);
-    fill(255);
+    //fill(255);
     noStroke();
-    ellipse(this.x, this.y, this.xSize, this.ySize);
+    //ellipse(this.x, this.y, this.xSize, this.ySize);
+    this.drawGradient(this.x, this.y);
   }
 }
 
