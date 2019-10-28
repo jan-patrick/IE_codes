@@ -284,6 +284,7 @@ class User {
     this.xSize = 130;
     this.ySize = 130;
     this.timeOfApperance = millis();
+    this.fillColor;
   }
 
   // Custom method for updating the variables
@@ -309,10 +310,34 @@ class User {
 
   drawInsideSofa() {
     noStroke();
-    this.drawGradient(this.x, this.y);
+    this.drawGradient();
+
+    fill(0,0,0);
+
+    beginShape();
+    vertex(0, 0);
+    vertex(0, 10); //s
+    vertex(750, 60); //s
+    vertex(750, 310); //s
+    vertex(200, 290); //s
+    vertex(200, 600); //s
+    vertex(0, 600); //s
+    vertex(0, windowHeight);
+    vertex(windowWidth, windowHeight);
+    vertex(windowWidth, 0);
+    endShape(CLOSE);
   }
 
-  drawGradient(x, y) {
+  update(fillColor) {
+    if (0 > fillColor) {
+      fillColor = 0;
+    } else if (255 < fillColor) {
+      fillColor = 255;
+    }
+    this.fillColor = fillColor;
+  }
+
+  drawGradient() {
     let radius = this.xSize;
     let h = 0;
 
@@ -320,7 +345,7 @@ class User {
       let a = map(h, 0,500,0,1)
       let c = color('rgba(255%, 255%, 255%, '+a+')');
       fill(c);
-      ellipse(x, y, r, r);
+      ellipse(this.x, this.y, r, r);
       h = (h + 1) % 500;
     }
   }
@@ -329,7 +354,7 @@ class User {
     //fill(255);
     noStroke();
     //ellipse(this.x, this.y, this.xSize, this.ySize);
-    this.drawGradient(this.x, this.y);
+    this.drawGradient();
   }
 }
 

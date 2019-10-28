@@ -55,7 +55,7 @@ function draw() {
 }
 
 function setupSliders() {
-  userFollowSize_Slider = createSlider(0, 255, userSize_Slider);
+  userFollowSize_Slider = createSlider(0, 500, userSize_Slider);
   userFollowSize_Slider.position(10, 0);
 
   arduinoPresenceDelay_Slider = createSlider(5, 70, arduinoDebounceDelay_Slider);
