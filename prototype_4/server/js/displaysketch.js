@@ -51,7 +51,7 @@ function setup() {
   setupSofas();
   setupWave();
   users[currentUser] = new User();
-  userConnections[0] = new Userconnection();
+  userConnections[0] = new Userconnection(0,0, windowWidth-100, windowHeight-100);
   userConnections[0].setup();
 }
 
@@ -254,39 +254,57 @@ function setupWave() {
 }
 
 class Userconnection {
-  constructor() {
-    this.beginX = 20.0;
-    this.beginY = 20.0;
-    this.endX = 500.0; 
-    this.endY = 320.0; 
-    this.distX;
-    this.distY;
+  constructor(beginX, beginY, endX, endY) {
+    this.beginX = beginX;
+    this.beginY = beginY;
+    this.endX = endX; 
+    this.endY = endY; 
+    this.distX = this.endX - this.beginX;
+    this.distY = this.endY - this.beginY;
     this.exponent = 4;
     this.x = 0.0; 
     this.y = 0.0; 
     this.step = 0.01; 
     this.pct = 0.0; 
+    this.fillOpacity = 0;
   }
   
   setup() {
     noStroke();
-    this.distX = this.endX - this.beginX;
-    this.distY = this.endY - this.beginY;
+  }
+
+  resetToCurrentValues() {
+    this.x = 0.0; 
+    this.y = 0.0; 
+    this.pct = 0.0;
   }
   
   draw() {
     fill(0, 2);
     rect(0, 0, this.width, this.height);
     this.pct += this.step;
+    if(0.5>this.pct) {
+      this.fillOpacity+=this.step;
+    } else {
+      this.fillOpacity-=this.step;
+    }
+    if(0>this.fillOpacity) {
+      this.fillOpacity = 0;
+    } else if (1<this.fillOpacity) {
+      this.fillOpacity = 1;
+    }
     if (this.pct < 1.0) {
       this.x = this.beginX + this.pct * this.distX;
       this.y = this.beginY + pow(this.pct, this.exponent) * this.distY;
+    } else {
+      this.resetToCurrentValues();
     }
-    fill(255);
+    let c = color('rgba(255%, 255%, 255%, ' + this.fillOpacity + ')');
+    fill(c);
     ellipse(this.x, this.y, 20, 20);
   }
   
-  mousePressed() {
+  newGoalPoint() {
     this.pct = 0.0;
     this.beginY = this.y;
     this.beginX = this.x;
