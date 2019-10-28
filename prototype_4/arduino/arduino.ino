@@ -77,9 +77,19 @@ void messageReceived(String &topic, String &payload) {
         //Serial.println("Parsing input failed!");
         return;
       }
-      if(arduino.hasOwnProperty("id") && arduino.hasOwnProperty("debounceDelay")) {
-        id = (int) arduino["id"];
+      if (arduino.hasOwnProperty("id") && arduino.hasOwnProperty("debounceDelay")) {
+        //id = (int) arduino["id"];
+        //if (0 > id) {
+        //  debounceDelay = 0;
+        //} else if (1000 < id) {
+        //  id = 1000;
+        //}
         debounceDelay = (int) arduino["debounceDelay"];
+        if (2 > debounceDelay) {
+          debounceDelay = 2;
+        } else if (1000 < debounceDelay) {
+          debounceDelay = 1000;
+        }
       }
     }
   }
