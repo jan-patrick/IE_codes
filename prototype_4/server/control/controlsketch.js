@@ -38,7 +38,7 @@ function draw() {
   background(0, 0, 0);
 
   if (prevUserSize_Slider != userSize_Slider) {
-    generateMessage(undefined, 0, userSize_Slider);
+    generateMessage(clientName, "display", undefined, undefined, 0, userSize_Slider);
     prevUserSize_Slider = userSize_Slider;
   }
 
@@ -97,7 +97,7 @@ function onMessageArrived(message) {
 
     if (typeof inputs === 'object' && inputs !== null) {
       if (typeof inputs.from === "string" && typeof inputs.to === "string") {
-        if ("all" === inputs.to) { 
+        if ("all" === inputs.to) {
           generateMessage(clientName, inputs.from, "online")
         }
         if (clientName === inputs.to) {
