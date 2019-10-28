@@ -90,6 +90,7 @@ function draw() {
           userConnectionLines[o].updateNewestUserPoint();
       }
       for (let i = 0; i < userConnectionLines.length; i++) {
+        userConnectionLines[i].highlight();
         userConnectionLines[i].draw();
       }
     }
@@ -146,7 +147,7 @@ function onConnectionLost(responseObject) {
 }
 
 function onMessageArrived(message) {
-  //console.log(message.destinationName + " -> " + message.payloadString);
+  console.log(message.destinationName + " -> " + message.payloadString);
 
   try {
     inputs = JSON.parse(message.payloadString);
@@ -323,8 +324,8 @@ class Userconnection {
   }
 
   draw() {
-    fill(0, 2);
-    rect(0, 0, this.width, this.height);
+    //fill(0, 2);
+    //rect(0, 0, this.width, this.height);
     this.pct += this.step;
     if (0.5 > this.pct) {
       this.fillOpacity += this.step;
@@ -364,9 +365,9 @@ class UserconnectionLines {
     this.exponent = 4;
     this.x = 0.0;
     this.y = 0.0;
-    this.step = 0.01;
-    this.pct = 0.0;
-    this.fillOpacity = 200;
+    this.step = 2;
+    this.fillOpacityStatus = true;
+    this.fillOpacity = 100;
     this.currentUserConnect = currentUserConnect;
   }
 
@@ -374,8 +375,22 @@ class UserconnectionLines {
     noFill();
   }
 
+  highlight() {
+    if (200 <= this.fillOpacity) {
+      this.fillOpacityStatus = true;
+    } else if (50 >= this.fillOpacity) {
+      this.fillOpacityStatus = false;
+    }
+    if (this.fillOpacityStatus) {
+      this.fillOpacity -= 1;
+    } else {
+      this.fillOpacity += 1;
+    }
+  }
+
   draw() {
-    let c = color('rgba(255%, 255%, 255%, ' + this.fillOpacity + ')');
+    console.log(this.fillOpacity)
+    let c = color('rgba('+ this.fillOpacity + '%, '+ this.fillOpacity + '%, '+ this.fillOpacity + '%, '+ this.fillOpacity + ' )');
     stroke(c);
     strokeWeight(10);
     noFill();
@@ -565,5 +580,6 @@ class Sofa {
     vertex(200, 600);
     vertex(0, 600);
     endShape(CLOSE);
+    noStroke();
   }
 }
