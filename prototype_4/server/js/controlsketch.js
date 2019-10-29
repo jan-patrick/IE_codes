@@ -38,7 +38,7 @@ function setup() {
 }
 
 function draw() {
-  console.log(currentUser);
+  //console.log(currentUser);
   userSize_Slider = userFollowSize_Slider.value();
   arduinoDebounceDelay_Slider = arduinoPresenceDelay_Slider.value();
   background(0, 0, 0);
@@ -108,7 +108,7 @@ function onConnect() {
 }
 
 function onMessageArrived(message) {
-  console.log(message.destinationName + " -> " + message.payloadString);
+  //console.log(message.destinationName + " -> " + message.payloadString);
   try {
     inputs = JSON.parse(message.payloadString);
 

@@ -42,7 +42,6 @@ var displayState_3 = 3;
 // communication valutes
 var subscribedTopic = "/jan";
 
-
 function setup() {
   client.connect({
     onSuccess: onConnect,
@@ -54,6 +53,9 @@ function setup() {
   setupSofas();
   setupWave();
   users[currentUser] = new User();
+  if (displayState_3 <= displayState) {
+    users[currentUser].setupUserLine();
+  }
 }
 
 function draw() {
@@ -120,8 +122,10 @@ function draw() {
   for (let i = 0; i < users.length; i++) {
     if (displayState_0 === displayState) {
       users[i].draw();
-    } else {
+    } else if (displayState_3 >= displayState) {
       users[i].drawInsideSofa();
+    } else {
+      users[i].drawUserLine();
     }
   }
   //updateTime();
@@ -147,7 +151,7 @@ function onConnectionLost(responseObject) {
 }
 
 function onMessageArrived(message) {
-  console.log(message.destinationName + " -> " + message.payloadString);
+  //console.log(message.destinationName + " -> " + message.payloadString);
 
   try {
     inputs = JSON.parse(message.payloadString);
@@ -181,7 +185,7 @@ function onMessageArrived(message) {
                 currentUser = inputs.user.id;
                 users[currentUser] = new User();
 
-                if (2=== users.length) {
+                if (2 === users.length) {
                   if (displayState_2 === displayState) {
                     userConnections[currentUser - 1] = new Userconnection(users[inputs.user.id - 1].x, users[inputs.user.id - 1].y, users[inputs.user.id].x, users[inputs.user.id].y, currentUser);
                     userConnections[currentUser].setup();
@@ -362,12 +366,10 @@ class UserconnectionLines {
     this.beginY = beginY;
     this.endX = endX;
     this.endY = endY;
-    this.exponent = 4;
-    this.x = 0.0;
-    this.y = 0.0;
-    this.step = 2;
     this.fillOpacityStatus = true;
     this.fillOpacity = 100;
+    this.strokeWidthStatus = true;
+    this.strokeWidth = 0;
     this.currentUserConnect = currentUserConnect;
   }
 
@@ -376,7 +378,8 @@ class UserconnectionLines {
   }
 
   highlight() {
-    if (200 <= this.fillOpacity) {
+    // opacity
+    if (150 <= this.fillOpacity) {
       this.fillOpacityStatus = true;
     } else if (50 >= this.fillOpacity) {
       this.fillOpacityStatus = false;
@@ -386,18 +389,30 @@ class UserconnectionLines {
     } else {
       this.fillOpacity += 1;
     }
+    // opacity
+    if (20 <= this.strokeWidth) {
+      this.strokeWidthStatus = true;
+    } else if (15 >= this.strokeWidth) {
+      this.strokeWidthStatus = false;
+    }
+    if (this.strokeWidthStatus) {
+      this.strokeWidth -= 0.05;
+    } else {
+      this.strokeWidth += 0.05;
+    }
   }
 
   draw() {
-    console.log(this.fillOpacity)
-    let c = color('rgba('+ this.fillOpacity + '%, '+ this.fillOpacity + '%, '+ this.fillOpacity + '%, '+ this.fillOpacity + ' )');
+    let c = color('rgba(' + this.fillOpacity + '%, ' + this.fillOpacity + '%, ' + this.fillOpacity + '%, ' + this.fillOpacity + ' )');
     stroke(c);
-    strokeWeight(10);
+    strokeWeight(this.strokeWidth);
     noFill();
-
-    bezier(this.beginX, this.beginY, map(this.beginX, 0, windowHeight, 0, 250), map(this.beginY, 0, windowHeight, 0, 250), map(this.endX, 0, windowWidth, 0, 200), map(this.endY, 0, windowWidth, 0, 200), this.endX, this.endY);
+    let x1 = Math.floor(Math.random() * 1 + map(this.beginX, 0, windowWidth, 0, 250));
+    let y1 = Math.floor(Math.random() * 1 + map(this.beginX, 0, windowHeight, 0, 250));
+    let x2 = Math.floor(Math.random() * 1 + map(this.endX, 0, windowWidth, 0, 250));
+    let y2 = Math.floor(Math.random() * 1 + map(this.endY, 0, windowHeight, 0, 250));
+    bezier(this.beginX, this.beginY, x1, y1, x2, y2, this.endX, this.endY);
   }
-
   updateNewestUserPoint() {
     this.endX = users[currentUser].x;
     this.endY = users[currentUser].y;
@@ -453,6 +468,57 @@ class User {
     this.ySize = 130;
     this.timeOfApperance = millis();
     this.fillColor;
+
+    this.x1 = 0;
+    this.y1 = 0;
+    this.x2 = this.x1;
+    this.y2 = this.y2;
+  }
+
+  setupUserLine() {
+    strokeWeight(20);
+    stroke(255, 100);
+
+    this.x1 = windowWidth / 2;
+    this.y2 = windowHeight / 2;
+    this.x2 = this.x1;
+    this.y2 = this.y2;
+    this.segLength = 80;
+  }
+
+  drawUserLine() {
+    background(0);
+    this.dragSegment(0, mouseX, mouseY);
+    for (let i = 0; i < this.x.length - 1; i++) {
+      this.dragSegment(i + 1, x[i], y[i]);
+    }
+  }
+
+  dragSegment(i, xin, yin) {
+    background(0);
+
+    let dx = mouseX - this.x1;
+    let dy = mouseY - this.y1;
+    let angle1 = atan2(dy, dx);
+
+    let tx = mouseX - cos(angle1) * this.segLength;
+    let ty = mouseY - sin(angle1) * this.segLength;
+    dx = tx - this.x2;
+    dy = ty - this.y2;
+    let angle2 = atan2(dy, dx);
+    this.x1 = this.x2 + cos(angle2) * this.segLength;
+    this.y1 = this.y2 + sin(angle2) * this.segLength;
+
+    this.segment(this.x1, this.y1, angle1);
+    this.segment(this.x2, this.y2, angle2);
+  }
+
+  segment(x, y, a) {
+    push();
+    translate(x, y);
+    rotate(a);
+    line(0, 0, this.segLength, 0);
+    pop();
   }
 
   // Custom method for updating the variables
@@ -482,18 +548,18 @@ class User {
 
     fill(0, 0, 0);
 
-    beginShape();
-    vertex(0, 0);
-    vertex(0, 10); //s
-    vertex(750, 60); //s
-    vertex(750, 310); //s
-    vertex(200, 290); //s
-    vertex(200, 600); //s
-    vertex(0, 600); //s
-    vertex(0, windowHeight);
-    vertex(windowWidth, windowHeight);
-    vertex(windowWidth, 0);
-    endShape(CLOSE);
+    //beginShape();
+    //vertex(0, 0);
+    //vertex(0, 10); //s
+    //vertex(750, 60); //s
+    //vertex(750, 310); //s
+    //vertex(200, 290); //s
+    //vertex(200, 600); //s
+    //vertex(0, 600); //s
+    //vertex(0, windowHeight);
+    //vertex(windowWidth, windowHeight);
+    //vertex(windowWidth, 0);
+    //endShape(CLOSE);
   }
 
   update(fillColor) {
@@ -573,12 +639,13 @@ class Sofa {
     fill(this.fillColor);
 
     beginShape();
-    vertex(0, 10);
-    vertex(750, 60);
-    vertex(750, 310);
-    vertex(200, 290);
-    vertex(200, 600);
-    vertex(0, 600);
+    vertex(430, -50);
+    vertex(windowWidth, 345);
+    vertex(790, 490);
+    vertex(660, 630);
+    vertex(470, 430);
+    vertex(230, 645);
+    vertex(0, 365);
     endShape(CLOSE);
     noStroke();
   }
