@@ -27,6 +27,7 @@ var sofaState_Highlighting = 1;
 
 // wave related values
 var waves = [];
+var waveCount = 0;
 var waveState = 0;
 var waveState_idle = 0;
 var waveState_Washing = 1;
@@ -106,9 +107,15 @@ function draw() {
         break;
       case waveState_Washing:
         waves[i].update();
-        if (windowWidth < waves[i].x - waves[i].xSize) {
+        if (windowHeight < waves[i].y - waves[i].ySize) {
+        waveCount++;
+          waves[i].reset();
+        } 
+        if(5<waveCount) {
           waveState = waveState_Finished;
+          waveCount = 0;
         }
+
         break;
       case waveState_idle:
         break;
@@ -424,10 +431,10 @@ class UserconnectionLines {
 
 class Wave {
   constructor() {
-    this.xSize = 40;
-    this.ySize = windowHeight;
-    this.x = 0 - this.xSize;
-    this.y = 0;
+    this.xSize = windowWidth;
+    this.ySize = 40;
+    this.x = 0;
+    this.y = 0 - this.ySize;
     this.color1 = 255;
     this.color2 = 200;
     this.color3 = 150;
@@ -435,12 +442,12 @@ class Wave {
   }
 
   reset() {
-    this.x = 0 - this.xSize;
-    this.y = 0;
+    this.x = 0;
+    this.y = 0 - this.ySize;
   }
 
   update() {
-    this.x = this.x + 5;
+    this.y = this.y + 10;
   }
 
   setGradient(x, y, w, h) {
