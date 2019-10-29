@@ -548,18 +548,20 @@ class User {
 
     fill(0, 0, 0);
 
-    //beginShape();
-    //vertex(0, 0);
-    //vertex(0, 10); //s
-    //vertex(750, 60); //s
-    //vertex(750, 310); //s
-    //vertex(200, 290); //s
-    //vertex(200, 600); //s
-    //vertex(0, 600); //s
-    //vertex(0, windowHeight);
-    //vertex(windowWidth, windowHeight);
-    //vertex(windowWidth, 0);
-    //endShape(CLOSE);
+    beginShape();
+    vertex(0, 0);
+    vertex(140, 205);//s
+    vertex(700, 175);//s
+    vertex(728, 475);//s
+    vertex(670, 525);//s
+    vertex(215, 550);//s
+    vertex(155, 510);//s
+    vertex(140, 205);//s again
+    vertex(0, 0);
+    vertex(0, windowHeight);
+    vertex(windowWidth, windowHeight);
+    vertex(windowWidth, 0);
+    endShape(CLOSE);
   }
 
   update(fillColor) {
@@ -639,13 +641,12 @@ class Sofa {
     fill(this.fillColor);
 
     beginShape();
-    vertex(430, -50);
-    vertex(windowWidth, 345);
-    vertex(790, 490);
-    vertex(660, 630);
-    vertex(470, 430);
-    vertex(230, 645);
-    vertex(0, 365);
+    vertex(140, 205);
+    vertex(700, 175);
+    vertex(728, 475);
+    vertex(670, 525);
+    vertex(215, 550);
+    vertex(155, 510);
     endShape(CLOSE);
     noStroke();
   }
