@@ -706,15 +706,15 @@ class AL {
   }
 
   highlight() {
-    if (250 <= this.fillColor) {
+    if (100 <= this.fillColor) {
       alSwitchFade = true;
-    } else if (5 >= this.fillColor) {
+    } else if (50 >= this.fillColor) {
       alSwitchFade = false;
     }
     if (alSwitchFade) {
-      this.fillColor -= 2;
+      this.fillColor -= 0.4;
     } else {
-      this.fillColor += 2;
+      this.fillColor += 0.4;
     }
   }
 
@@ -733,10 +733,13 @@ class AL {
     fill(this.fillColor);
 
     beginShape();
-    vertex(670, 600);
+    vertex(670, 580);
     vertex(670, 525);
     vertex(215, 550);
-    vertex(215, 600);
+    vertex(155, 510);
+    vertex(142, 340);
+    vertex(110, 370);
+    vertex(120, 600);
     endShape(CLOSE);
     noStroke();
   }
