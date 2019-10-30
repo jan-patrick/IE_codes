@@ -729,11 +729,12 @@ class AL {
   drawGradient() {;
     let h = 0;
 
-    for (let r = 500; r > 0; --r) {
+    for (let r = 200; r > 0; --r) {
       let a = map(h, 0, 3000, 0, 1)
       let c = color('rgba(255%, 255%, 255%, ' + a + ')');
       fill(c);
-      ellipse(350, 420, r, r/1.5);
+      //ellipse(310, 440, r, r);
+      rect(250-(r/2), 400-(r/2), 100+r, 100+r, 100);
       h = (h + 1) % 3000;
     }
   }
@@ -751,6 +752,8 @@ class AL {
     //line(670, 525, 215, 550);
     //line(215, 550, 155, 510);
     //line(155, 510, 142, 340);
+
+    noStroke();
     this.drawGradient();
 
 
@@ -758,37 +761,19 @@ class AL {
 
 
 
-    //fill(0, 0, 0);
-    //beginShape();
-    //vertex(140, 205);//s
-    //vertex(700, 175);//s
-    //vertex(728, 475);//s
-    //vertex(670, 525);//s
-    //vertex(215, 550);//s
-    //vertex(155, 510);//s
-    //endShape(CLOSE);
-
-
-
-
-    noStroke();
-    fill(this.fillColor);
+    fill(0, 0, 0);
     beginShape();
-
-    vertex(windowWidth, 0);
-    vertex(windowWidth, windowHeight);
-    vertex(0, windowHeight);
-    vertex(0, 0);
-    vertex(142, 340);
-    vertex(110, 370);
-    vertex(120, 600);
-    vertex(670, 580);
-    vertex(670, 525);
-    vertex(215, 550);
-    vertex(155, 510);
-    vertex(142, 340);
-    vertex(0, 0);
+    vertex(140, 205);//s
+    vertex(700, 175);//s
+    vertex(728, 475);//s
+    vertex(670, 525);//s
+    vertex(215, 550);//s
+    vertex(155, 510);//s
     endShape(CLOSE);
-    noStroke();
+
+
+
+
+  
   }
 }
