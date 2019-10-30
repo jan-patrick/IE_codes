@@ -36,7 +36,7 @@ int state;
 int lastState = LOW;
 
 unsigned long lastDebounceTime = 0;
-unsigned long debounceDelay = 20;
+unsigned long debounceDelay = 5;
 int id = 0;
 
 void connect() {
@@ -124,7 +124,6 @@ void setup() {
 void loop() {
   client.loop();
   delay(10);  // <- fixes some issues with WiFi stability
-
   if (!client.connected()) {
     connect();
   }
@@ -183,7 +182,7 @@ void createMessage() {
     JSONVar myObject;
     JSONVar sofa;
 
-    myObject["from"] = clientName;
+    myObject["from"] = clientNameString;
     myObject["to"] = "display";
     sofa["id"] = 0;
     sofa["sofaPosition"] = -1;

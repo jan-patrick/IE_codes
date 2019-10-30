@@ -658,3 +658,61 @@ class Sofa {
     noStroke();
   }
 }
+
+class AmbientLight {
+  constructor() {
+    this.x = x;
+    this.y = y;
+    this.xSize = xSize;
+    this.ySize = ySize;
+    this.fillColor = fillColor;
+  }
+
+  // Custom method for updating the variables
+  update(fillColor) {
+    if (0 > fillColor) {
+      fillColor = 0;
+    } else if (255 < fillColor) {
+      fillColor = 255;
+    }
+    this.fillColor = fillColor;
+  }
+
+  highlight() {
+    if (250 <= this.fillColor) {
+      sofaSwitchFade = true;
+    } else if (5 >= this.fillColor) {
+      sofaSwitchFade = false;
+    }
+    if (sofaSwitchFade) {
+      this.fillColor -= 2;
+    } else {
+      this.fillColor += 2;
+    }
+  }
+
+  setStandardFillColor() {
+    if (sofaStandardColor < this.fillColor) {
+      this.fillColor -= 2;
+    } else {
+      this.fillColor = sofaStandardColor;
+    }
+  }
+
+  // Custom method for drawing the object
+  draw() {
+
+    noStroke();
+    fill(this.fillColor);
+
+    beginShape();
+    vertex(140, 205);
+    vertex(700, 175);
+    vertex(728, 475);
+    vertex(670, 525);
+    vertex(215, 550);
+    vertex(155, 510);
+    endShape(CLOSE);
+    noStroke();
+  }
+}

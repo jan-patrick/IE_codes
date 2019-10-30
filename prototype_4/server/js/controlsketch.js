@@ -108,7 +108,7 @@ function onConnect() {
 }
 
 function onMessageArrived(message) {
-  //console.log(message.destinationName + " -> " + message.payloadString);
+  console.log(message.destinationName + " -> " + message.payloadString);
   try {
     inputs = JSON.parse(message.payloadString);
 
@@ -143,11 +143,11 @@ function standardMessageWave() {
 }
 
 function standardMessageSofaHighlightStart() {
-  generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, 0, 1, true);
+  generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, 0, -1, true);
 }
 
 function standardMessageSofaHighlightStop() {
-  generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, 0, 1, false);
+  generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, 0, -1, false);
 }
 
 function standardMessageUserMoveUp() {
