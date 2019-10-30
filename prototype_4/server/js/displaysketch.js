@@ -25,6 +25,13 @@ var sofaState = 0;
 var sofaState_idle = 0;
 var sofaState_Highlighting = 1;
 
+var als = [];
+var alStandardColor = 0;
+var alSwitchFade = true;
+var alState = 0;
+var alState_idle = 0;
+var alState_highlighting = 1;
+
 // wave related values
 var waves = [];
 var waveCount = 0;
@@ -129,11 +136,26 @@ function draw() {
   for (let i = 0; i < users.length; i++) {
     if (displayState_0 === displayState) {
       users[i].draw();
-    } else if (displayState_3 >= displayState) {
+    } else if (displayState_3 > displayState) {
       users[i].drawInsideSofa();
-    } else {
-      users[i].drawUserLine();
     }
+  }
+  // ambient Light
+
+  for (let i = 0; i < als.length; i++) {
+    switch (alState) {
+      case alState_idle:
+        als[i].setStandardFillColor();
+        alState = alState_idle;
+        break;
+      case alState_highlighting:
+        als[i].highlight();
+        break;
+      default:
+        console.log("Error " + waveState);
+        break;
+    }
+    als[i].draw();
   }
   //updateTime();
   //drawTimeRemaining()
@@ -179,6 +201,13 @@ function onMessageArrived(message) {
               luggageNotification();
             }
           }
+          if (typeof inputs.al === "boolean") {
+            if (inputs.al) {
+              alState = alState_highlighting;
+            } else {
+              alState = alState_idle;
+            }
+          }
           if (typeof inputs.user === 'object' && inputs.user !== null) {
             if (typeof inputs.user.id === "number" && 0 <= inputs.user.id) {
               if (0 === inputs.user.id || users.length - 1 === inputs.user.id) {
@@ -188,7 +217,7 @@ function onMessageArrived(message) {
                 if (typeof inputs.user.posX === "number" && typeof inputs.user.posY === "number") {
                   users[inputs.user.id].updatePosition(inputs.user.posX, inputs.user.posY)
                 }
-              } else if (0 != inputs.user.id || users.length - 1 === inputs.user.id + 1) {
+              } else if (displayState_3 > displayState && 0 != inputs.user.id || users.length - 1 === inputs.user.id + 1) {
                 currentUser = inputs.user.id;
                 users[currentUser] = new User();
 
@@ -300,7 +329,8 @@ function drawTimeRemaining() {
 // Sofas, Wave, User
 
 function setupSofas() {
-  sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
+  sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);  
+  als[als.length] = new AL();
 }
 
 function setupWave() {
@@ -659,13 +689,10 @@ class Sofa {
   }
 }
 
-class AmbientLight {
+class AL {
   constructor() {
-    this.x = x;
-    this.y = y;
-    this.xSize = xSize;
-    this.ySize = ySize;
-    this.fillColor = fillColor;
+    this.user = "user";
+    this.fillColor = alStandardColor;
   }
 
   // Custom method for updating the variables
@@ -680,11 +707,11 @@ class AmbientLight {
 
   highlight() {
     if (250 <= this.fillColor) {
-      sofaSwitchFade = true;
+      alSwitchFade = true;
     } else if (5 >= this.fillColor) {
-      sofaSwitchFade = false;
+      alSwitchFade = false;
     }
-    if (sofaSwitchFade) {
+    if (alSwitchFade) {
       this.fillColor -= 2;
     } else {
       this.fillColor += 2;
@@ -692,10 +719,10 @@ class AmbientLight {
   }
 
   setStandardFillColor() {
-    if (sofaStandardColor < this.fillColor) {
+    if (alStandardColor < this.fillColor) {
       this.fillColor -= 2;
     } else {
-      this.fillColor = sofaStandardColor;
+      this.fillColor = alStandardColor;
     }
   }
 
@@ -706,12 +733,10 @@ class AmbientLight {
     fill(this.fillColor);
 
     beginShape();
-    vertex(140, 205);
-    vertex(700, 175);
-    vertex(728, 475);
+    vertex(670, 600);
     vertex(670, 525);
     vertex(215, 550);
-    vertex(155, 510);
+    vertex(215, 600);
     endShape(CLOSE);
     noStroke();
   }

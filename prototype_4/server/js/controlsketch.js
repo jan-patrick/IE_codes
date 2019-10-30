@@ -14,6 +14,7 @@ var prevUserSize_Slider = userSize_Slider;
 var arduinoPresenceDelay_Slider;
 var arduinoDebounceDelay_Slider = 20;
 var prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
+var al = false;
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -70,6 +71,10 @@ function setupSliders() {
   button = createButton('new user');
   button.position(170, 90);
   button.mousePressed(standardMessageNewUser);
+
+  button = createButton('al');
+  button.position(260, 90);
+  button.mousePressed(standardMessageAmbientLight);
 
   button = createButton('show online devices');
   button.position(280, 10);
@@ -142,6 +147,11 @@ function standardMessageWave() {
   generateMessage(clientName, "display", undefined, true);
 }
 
+function standardMessageAmbientLight() {
+  al = !al;
+  generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, al);
+}
+
 function standardMessageSofaHighlightStart() {
   generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, 0, -1, true);
 }
@@ -185,7 +195,7 @@ function standardMessageNewUser() {
   generateMessage(clientName, "display", undefined, undefined, currentUser, undefined, usersDetected[currentUser].x, usersDetected[currentUser].y, undefined, undefined, undefined);
 }
 
-function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, sofaId, sofaPosition, highlightStatus, arduinoId, debounceDelay) {
+function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, sofaId, sofaPosition, highlightStatus, arduinoId, debounceDelay, als) {
   var obj = {
     "from": from,
     "to": to,
@@ -205,7 +215,8 @@ function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, so
     "arduino": {
       "id": arduinoId,
       "debounceDelay": debounceDelay,
-    }
+    },
+    "al": als
   };
   sendMessage(compileMessage(obj));
 }
