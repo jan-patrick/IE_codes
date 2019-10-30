@@ -115,10 +115,10 @@ function draw() {
       case waveState_Washing:
         waves[i].update();
         if (windowHeight < waves[i].y - waves[i].ySize) {
-        waveCount++;
+          waveCount++;
           waves[i].reset();
-        } 
-        if(5<waveCount) {
+        }
+        if (5 < waveCount) {
           waveState = waveState_Finished;
           waveCount = 0;
         }
@@ -329,7 +329,7 @@ function drawTimeRemaining() {
 // Sofas, Wave, User
 
 function setupSofas() {
-  sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);  
+  sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
   als[als.length] = new AL();
 }
 
@@ -726,20 +726,68 @@ class AL {
     }
   }
 
-  // Custom method for drawing the object
+  drawGradient() {;
+    let h = 0;
+
+    for (let r = 500; r > 0; --r) {
+      let a = map(h, 0, 3000, 0, 1)
+      let c = color('rgba(255%, 255%, 255%, ' + a + ')');
+      fill(c);
+      ellipse(350, 420, r, r/1.5);
+      h = (h + 1) % 3000;
+    }
+  }
+
   draw() {
+
+    // gradient
+    //noFill();
+
+    //var c1 = color(255, 204, 0);
+    //var c2 = color(255);
+    //var inter = map(y, 0, 20, 0, 1);
+    //var c = lerpColor(c1, c2, inter);
+    //stroke(c);
+    //line(670, 525, 215, 550);
+    //line(215, 550, 155, 510);
+    //line(155, 510, 142, 340);
+    this.drawGradient();
+
+
+
+
+
+
+    //fill(0, 0, 0);
+    //beginShape();
+    //vertex(140, 205);//s
+    //vertex(700, 175);//s
+    //vertex(728, 475);//s
+    //vertex(670, 525);//s
+    //vertex(215, 550);//s
+    //vertex(155, 510);//s
+    //endShape(CLOSE);
+
+
+
 
     noStroke();
     fill(this.fillColor);
-
     beginShape();
+
+    vertex(windowWidth, 0);
+    vertex(windowWidth, windowHeight);
+    vertex(0, windowHeight);
+    vertex(0, 0);
+    vertex(142, 340);
+    vertex(110, 370);
+    vertex(120, 600);
     vertex(670, 580);
     vertex(670, 525);
     vertex(215, 550);
     vertex(155, 510);
     vertex(142, 340);
-    vertex(110, 370);
-    vertex(120, 600);
+    vertex(0, 0);
     endShape(CLOSE);
     noStroke();
   }
