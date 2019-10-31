@@ -766,12 +766,16 @@ class AL {
 
     fill(0, 0, 0);
     beginShape();
-    vertex(140, 205);//s
-    vertex(700, 175);//s
-    vertex(728, 475);//s
-    vertex(670, 525);//s
-    vertex(215, 550);//s
-    vertex(155, 510);//s
+    vertex(142, 168);
+    vertex(172, 155);
+    vertex(420, 150);
+    vertex(675, 160);
+    vertex(703, 172);
+    vertex(710, 475);
+    vertex(703, 483);
+    vertex(655, 526);
+    vertex(201, 525);
+    vertex(137, 470);
     endShape(CLOSE);
 
 
