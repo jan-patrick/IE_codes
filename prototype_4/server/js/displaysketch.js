@@ -70,6 +70,22 @@ function draw() {
   background(0, 0, 0);
   users[currentUser].updatePosition(mouseX, mouseY);
   for (let i = 0; i < sofas.length; i++) {
+    // ambient Light
+    for (let i = 0; i < als.length; i++) {
+      switch (alState) {
+        case alState_idle:
+          als[i].setStandardFillColor();
+          alState = alState_idle;
+          break;
+        case alState_highlighting:
+          als[i].highlight();
+          break;
+        default:
+          console.log("Error " + waveState);
+          break;
+      }
+      als[i].draw();
+    }
     // draw sofa
     switch (sofaState) {
       case sofaState_idle:
@@ -139,23 +155,6 @@ function draw() {
     } else if (displayState_3 > displayState) {
       users[i].drawInsideSofa();
     }
-  }
-  // ambient Light
-
-  for (let i = 0; i < als.length; i++) {
-    switch (alState) {
-      case alState_idle:
-        als[i].setStandardFillColor();
-        alState = alState_idle;
-        break;
-      case alState_highlighting:
-        als[i].highlight();
-        break;
-      default:
-        console.log("Error " + waveState);
-        break;
-    }
-    als[i].draw();
   }
   //updateTime();
   //drawTimeRemaining()
@@ -678,12 +677,16 @@ class Sofa {
     fill(this.fillColor);
 
     beginShape();
-    vertex(140, 205);
-    vertex(700, 175);
-    vertex(728, 475);
-    vertex(670, 525);
-    vertex(215, 550);
-    vertex(155, 510);
+    vertex(142, 168);
+    vertex(172, 155);
+    vertex(420, 150);
+    vertex(675, 160);
+    vertex(703, 172);
+    vertex(710, 475);
+    vertex(703, 483);
+    vertex(655, 526);
+    vertex(205, 524);
+    vertex(137, 470);
     endShape(CLOSE);
     noStroke();
   }
