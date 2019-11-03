@@ -62,8 +62,8 @@ function setupSliders() {
   button.position(10, 10);
   button.mousePressed(standardMessageJourneyNext);
 
-  userFollowSize_Slider = createSlider(200, 500, userSize_Slider);
-  userFollowSize_Slider.position(10, 0);
+  userFollowSize_Slider = createSlider(0, 500, userSize_Slider);
+  userFollowSize_Slider.position(150, 0);
 
   arduinoPresenceDelay_Slider = createSlider(5, 70, arduinoDebounceDelay_Slider);
   arduinoPresenceDelay_Slider.position(170, 40);

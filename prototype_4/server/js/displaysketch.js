@@ -188,7 +188,7 @@ function setJourneyState(newState) {
 }
 
 function increaseJourneyState() {
-  journeyState+=1;
+  journeyState += 1;
   checkIfValidJourneyState();
   console.log("journeyState increased to: " + journeyState);
 }
@@ -202,41 +202,42 @@ function checkIfValidJourneyState() {
   journeyState_Started = false;
 }
 
-//setTimeout(function () {
-//  sofaState = sofaState_idle;
-//}, 2000);
-
 function actOutJourney() {
   switch (journeyState) {
-    // idle, nothing happens
+    // ⓪ idle, nothing happens
     case journeyState_0:
       if (!journeyState_Started) {
         sofaState = sofaState_idle;
+        console.log("sofa is idle");
         // TODO al off
         // TODO all animations off
-        // TODO everything off and maybe idle animation
+        // TODO everything off
         journeyState_Started = true;
       }
+      // maybe idle animation after a while standbye
+      //setTimeout(function () {
+      //  animationState = animationState_sofaIdle;
+      //}, 2000);
       break;
-    // person 1 enters, sofa lights up
+    // ① person 1 enters, sofa lights up
     case journeyState_1:
       if (!journeyState_Started) {
         console.log("u1 sofa highlighted");
         sofaState = sofaState_Highlighting;
         journeyState_Started = true;
       }
+      // maybe: sofa lights up when near to u2 (ambientlight?)
       break;
-    // person 1 sits down, animation for 1
+    // ② person 1 sits down, animation for 1
     case journeyState_2:
       if (!journeyState_Started) {
         sofaState = sofaState_idle;
         journeyState_Started = true;
-      } else if (sofaState_idle === sofaState) {
-        console.log("u1 animations");
-        // TODO animation u1 runs
       }
+      console.log("u1 animations");
+      // TODO animation u1 runs
       break;
-    // person 1 sits, person 2 enters, sofa lights up partly
+    // ⓷ person 1 sits, person 2 enters, sofa lights up partly
     case journeyState_3:
       if (!journeyState_Started) {
         console.log("u2 sofa highlighted");
@@ -244,40 +245,36 @@ function actOutJourney() {
         // like sofaState = sofaState_Highlighting_2 OR SO
         journeyState_Started = true;
       }
+      // maybe: sofa lights up when near to u2 (ambientlight?)
       break;
-    // person 1+2 sit, animation for 1+2
+    // ⓸ person 1+2 sit, animation for 1+2
     case journeyState_4:
       if (!journeyState_Started) {
         sofaState = sofaState_idle;
         journeyState_Started = true;
+      } else if (sofaState_idle === sofaState) {
+        console.log("u1+2 animations");
+        // TODO animations u1+2 run
       }
       break;
-    // person 1+2 sit, luggage enters
+    // ⓹ person 1+2 sit, luggage enters
     case journeyState_5:
       if (!journeyState_Started) {
+        console.log("‼️‼️‼️ LUGGAGE LIGHT ON ‼️‼️‼️");
         journeyState_Started = true;
       }
       break;
-    // person 1+2 exit
+    // ⑥ person 1+2 exit
     case journeyState_6:
       if (!journeyState_Started) {
+        // TODO u1+2 al off
+        // TODO u1+2 animations off
+        console.log("u1+2 leave")
         journeyState_Started = true;
       }
-      break;
-    case journeyState_7:
-      if (!journeyState_Started) {
-        journeyState_Started = true;
-      }
-      break;
-    case journeyState_8:
-      if (!journeyState_Started) {
-        journeyState_Started = true;
-      }
-      break;
-    case journeyState_9:
-      if (!journeyState_Started) {
-        journeyState_Started = true;
-      }
+      setTimeout(function () {
+        journeyState = journeyState_0;
+      }, 2000);
       break;
     default:
       console.log("journeyState: " + journeyState);
