@@ -95,21 +95,21 @@ function draw() {
   background(0, 0, 0);
   users[currentUser].updatePosition(mouseX, mouseY);
   // ambient Light
-  for (let i = 0; i < als.length; i++) {
-    switch (alState) {
-      case alState_idle:
-        als[i].setStandardFillColor();
-        alState = alState_idle;
-        break;
-      case alState_highlighting_1:
-        als[i].highlight();
-        break;
-      default:
-        console.log("Error " + waveState);
-        break;
-    }
-    als[i].drawLeft();
-  }
+  //for (let i = 0; i < als.length; i++) {
+  //  switch (alState) {
+  //    case alState_idle:
+  //      als[i].setStandardFillColor();
+  //      alState = alState_idle;
+  //      break;
+  //    case alState_highlighting_1:
+  //      als[i].highlight();
+  //      break;
+  //    default:
+  //      console.log("Error " + waveState);
+  //      break;
+  //  }
+  //  als[i].drawLeft();
+  //}
   for (let i = 0; i < sofas.length; i++) {
 
     // draw sofa
@@ -124,14 +124,16 @@ function draw() {
         console.log("Error " + waveState);
         break;
     }
-    var sofaInUse = false;
-    for (let z = 0; z < sofaSeats.length; z++) {
-      if (sofaSeats[z].inUse) {
-        sofas[i].drawSingleSeat(sofaSeats[z].x, sofaSeats[z].y)
-        sofaInUse = true;
+    if (journeyState_2 < journeyState) {
+      var sofaInUse = false;
+      for (let z = 0; z < sofaSeats.length; z++) {
+        if (sofaSeats[z].inUse) {
+          sofas[i].drawSingleSeat(sofaSeats[z].x, sofaSeats[z].y)
+          sofaInUse = true;
+        }
       }
     }
-    if (!sofaInUse) {
+    if (!sofaInUse || undefined === sofaInUse) {
       sofas[i].draw();
     }
   }
@@ -241,17 +243,28 @@ function actOutJourney() {
       }
       // maybe: sofa lights up when near to u2 (ambientlight?)
       break;
-    // ② person 1 sits down, animation for 1
+    // ② person 1 sits down, 
     case journeyState_2:
       if (!journeyState_Started) {
+        console.log("u1 sits down");
         sofaState = sofaState_idle;
         journeyState_Started = true;
       }
-      console.log("u1 animations");
+
+      if (sofaStandardColor+5 >= sofas[0].fillColor) {
+        increaseJourneyState();
+      }
+      break;
+    // ⓷ animation for 1
+    case journeyState_3:
+      if (!journeyState_Started) {
+        console.log("u1 animation");
+        journeyState_Started = true;
+      }
       // TODO animation u1 runs
       break;
-    // ⓷ person 1 sits, person 2 enters, sofa lights up partly
-    case journeyState_3:
+    // ⓸ person 1 sits, person 2 enters, sofa lights up partly
+    case journeyState_4:
       if (!journeyState_Started) {
         console.log("u2 sofa highlighted");
         // TODO sofa lights up only for u2 (where u1 sits stays dark)
@@ -260,8 +273,20 @@ function actOutJourney() {
       }
       // maybe: sofa lights up when near to u2 (ambientlight?)
       break;
-    // ⓸ person 1+2 sit, animation for 1+2
-    case journeyState_4:
+    // ⓹ person 1 sits, person 2 sits down
+    case journeyState_5:
+      if (!journeyState_Started) {
+        console.log("u2 sits down");
+        sofaState = sofaState_idle;
+        journeyState_Started = true;
+      } 
+      console.log(sofas[0].fillColor)
+      if (sofaStandardColor+5 >= sofas[0].fillColor) {
+        increaseJourneyState();
+      }
+      break;
+    // ⑥ person 1+2 sit, 1+2 animation
+    case journeyState_6:
       if (!journeyState_Started) {
         sofaState = sofaState_idle;
         journeyState_Started = true;
@@ -270,15 +295,15 @@ function actOutJourney() {
         // TODO animations u1+2 run
       }
       break;
-    // ⓹ person 1+2 sit, luggage enters
-    case journeyState_5:
+    // ⑦ person 1+2 sit, luggage enters
+    case journeyState_7:
       if (!journeyState_Started) {
         console.log("‼️‼️‼️ LUGGAGE LIGHT ON ‼️‼️‼️");
         journeyState_Started = true;
       }
       break;
-    // ⑥ person 1+2 exit
-    case journeyState_6:
+    // ⑧ person 1+2 exit
+    case journeyState_8:
       if (!journeyState_Started) {
         // TODO u1+2 al off
         // TODO u1+2 animations off
@@ -471,8 +496,8 @@ function drawTimeRemaining() {
 
 function setupSofas() {
   sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
-  sofaSeats[0] = new SofaSeat("left", true, -1, 250, 350);
-  sofaSeats[1] = new SofaSeat("right", true, -1, 400, 400);
+  sofaSeats[0] = new SofaSeat("left", true, -1, 250, 300);
+  sofaSeats[1] = new SofaSeat("right", false, -1, 500, 300);
   als[als.length] = new AL();
 }
 
@@ -810,9 +835,9 @@ class Sofa {
     ;
     let h = 0;
 
-    for (let r = 200; r > 0; --r) {
+    for (let r = 350; r > 0; --r) {
       let a = map(h, 0, 3000, 0, 1)
-      let c = color('rgba(255%, 255%, 255%, ' + a + ')');
+      let c = color('rgba(' + this.fillColor + '%,' + this.fillColor + '%,' + this.fillColor + '%, ' + a + ')');
       fill(c);
       //ellipse(310, 440, r, r);
       rect(x - (r / 2), y - (r / 2), 100 + r, 100 + r, 100);
@@ -938,6 +963,7 @@ function drawSofaOutline() {
   vertex(201, 525);
   vertex(137, 470);
   endShape(CLOSE);
+  noStroke();
 }
 
 function drawFloorAroundSofa() {
@@ -956,4 +982,5 @@ function drawFloorAroundSofa() {
   vertex(windowWidth, windowHeight);
   vertex(windowWidth, 0);
   endShape(CLOSE);
+  noStroke();
 }
