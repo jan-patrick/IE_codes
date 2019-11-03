@@ -25,6 +25,7 @@ var sofaState = 0;
 var sofaState_idle = 0;
 var sofaState_Highlighting = 1;
 
+// ambient light variables
 var als = [];
 var alStandardColor = 0;
 var alSwitchFade = true;
@@ -33,6 +34,9 @@ var alState_idle = 0;
 var alState_highlighting_1 = 1;
 var alState_highlighting_2 = 2;
 var alState_highlighting_all = -1;
+
+// sofa seats
+var sofaSeats = [];
 
 // wave related values
 var waves = [];
@@ -120,7 +124,16 @@ function draw() {
         console.log("Error " + waveState);
         break;
     }
-    sofas[i].draw();
+    var sofaInUse = false;
+    for (let z = 0; z < sofaSeats.length; z++) {
+      if (sofaSeats[z].inUse) {
+        sofas[i].drawSingleSeat(sofaSeats[z].x, sofaSeats[z].y)
+        sofaInUse = true;
+      }
+    }
+    if (!sofaInUse) {
+      sofas[i].draw();
+    }
   }
   // draw users connection
   if (1 <= currentUser) {
@@ -458,6 +471,8 @@ function drawTimeRemaining() {
 
 function setupSofas() {
   sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
+  sofaSeats[0] = new SofaSeat("left", true, -1, 250, 350);
+  sofaSeats[1] = new SofaSeat("right", true, -1, 400, 400);
   als[als.length] = new AL();
 }
 
@@ -711,22 +726,7 @@ class User {
     noStroke();
     this.drawGradient();
 
-    fill(0, 0, 0);
-
-    beginShape();
-    vertex(0, 0);
-    vertex(140, 205);//s
-    vertex(700, 175);//s
-    vertex(728, 475);//s
-    vertex(670, 525);//s
-    vertex(215, 550);//s
-    vertex(155, 510);//s
-    vertex(140, 205);//s again
-    vertex(0, 0);
-    vertex(0, windowHeight);
-    vertex(windowWidth, windowHeight);
-    vertex(windowWidth, 0);
-    endShape(CLOSE);
+    drawFloorAroundSofa();
   }
 
   update(fillColor) {
@@ -791,11 +791,32 @@ class Sofa {
     }
   }
 
+  drawSingleSeat(x, y) {
+    noStroke();
+    this.drawGradient(x, y);
+
+    drawFloorAroundSofa();
+  }
+
   setStandardFillColor() {
     if (sofaStandardColor < this.fillColor) {
       this.fillColor -= 2;
     } else {
       this.fillColor = sofaStandardColor;
+    }
+  }
+
+  drawGradient(x, y) {
+    ;
+    let h = 0;
+
+    for (let r = 200; r > 0; --r) {
+      let a = map(h, 0, 3000, 0, 1)
+      let c = color('rgba(255%, 255%, 255%, ' + a + ')');
+      fill(c);
+      //ellipse(310, 440, r, r);
+      rect(x - (r / 2), y - (r / 2), 100 + r, 100 + r, 100);
+      h = (h + 1) % 3000;
     }
   }
 
@@ -818,6 +839,16 @@ class Sofa {
     vertex(137, 470);
     endShape(CLOSE);
     noStroke();
+  }
+}
+
+class SofaSeat {
+  constructor(id, inUse, user, x, y) {
+    this.id = id;
+    this.inUse = inUse;
+    this.user = user;
+    this.x = x;
+    this.y = y;
   }
 }
 
@@ -872,22 +903,6 @@ class AL {
     }
   }
 
-  drawSofaOutline() {
-    fill(0, 0, 0);
-    beginShape();
-    vertex(142, 168);
-    vertex(172, 155);
-    vertex(420, 150);
-    vertex(675, 160);
-    vertex(703, 172);
-    vertex(710, 475);
-    vertex(703, 483);
-    vertex(655, 526);
-    vertex(201, 525);
-    vertex(137, 470);
-    endShape(CLOSE);
-  }
-
   drawLeft() {
     // gradient
     //noFill();
@@ -905,6 +920,40 @@ class AL {
     this.drawGradient();
 
 
-    this.drawSofaOutline();
+    drawSofaOutline();
   }
+}
+
+function drawSofaOutline() {
+  fill(0, 0, 0);
+  beginShape();
+  vertex(142, 168);
+  vertex(172, 155);
+  vertex(420, 150);
+  vertex(675, 160);
+  vertex(703, 172);
+  vertex(710, 475);
+  vertex(703, 483);
+  vertex(655, 526);
+  vertex(201, 525);
+  vertex(137, 470);
+  endShape(CLOSE);
+}
+
+function drawFloorAroundSofa() {
+  fill(0, 0, 0);
+  beginShape();
+  vertex(0, 0);
+  vertex(140, 205);//s
+  vertex(700, 175);//s
+  vertex(728, 475);//s
+  vertex(670, 525);//s
+  vertex(215, 550);//s
+  vertex(155, 510);//s
+  vertex(140, 205);//s again
+  vertex(0, 0);
+  vertex(0, windowHeight);
+  vertex(windowWidth, windowHeight);
+  vertex(windowWidth, 0);
+  endShape(CLOSE);
 }
