@@ -59,55 +59,47 @@ function draw() {
 
 function setupSliders() {
   button = createButton('next');
-  button.position(10, 10);
+  button.position(0, 0);
+  button.size(windowWidth, windowHeight);
   button.mousePressed(standardMessageJourneyNext);
 
-  userFollowSize_Slider = createSlider(0, 500, userSize_Slider);
-  userFollowSize_Slider.position(150, 0);
-
-  arduinoPresenceDelay_Slider = createSlider(5, 70, arduinoDebounceDelay_Slider);
-  arduinoPresenceDelay_Slider.position(170, 40);
-
-  button = createButton('reset user pos');
-  button.position(170, 10);
-  button.mousePressed(standardMessageUserPosReset);
-
-  button = createButton('new user');
-  button.position(170, 90);
-  button.mousePressed(standardMessageNewUser);
-
-  button = createButton('al');
-  button.position(260, 90);
-  button.mousePressed(standardMessageAmbientLight);
-
-  button = createButton('show online devices');
-  button.position(280, 10);
-  button.mousePressed(standardMessageShowDevOnline);
-
-  button = createButton('wave');
-  button.position(10, 30);
-  button.mousePressed(standardMessageWave);
-
-  button = createButton('highlight sofa');
-  button.position(10, 60);
-  button.mousePressed(standardMessageSofaHighlightStart);
-
-  button = createButton('stop sofa highlighting');
-  button.position(10, 90);
-  button.mousePressed(standardMessageSofaHighlightStop);
-
-  button = createButton('up');
-  button.position(55, 150);
-  button.mousePressed(standardMessageUserMoveUp);
-  button = createButton('left');
-  button.position(10, 200);
-  button.mousePressed(standardMessageUserMoveLeft);
-  button = createButton('right');
-  button.position(100, 200);
-  button.mousePressed(standardMessageUserMoveRight);
-  button = createButton('down');
-  button.position(50, 250);
-  button.mousePressed(standardMessageUserMoveDown);
+  //userFollowSize_Slider = createSlider(0, 500, userSize_Slider);
+  //userFollowSize_Slider.position(150, 0);
+  //arduinoPresenceDelay_Slider = createSlider(5, 70, arduinoDebounceDelay_Slider);
+  //arduinoPresenceDelay_Slider.position(170, 40);
+  //button = createButton('reset user pos');
+  //button.position(170, 10);
+  //button.mousePressed(standardMessageUserPosReset);
+  //button = createButton('new user');
+  //button.position(170, 90);
+  //button.mousePressed(standardMessageNewUser);
+  //button = createButton('al');
+  //button.position(260, 90);
+  //button.mousePressed(standardMessageAmbientLight);
+  //button = createButton('show online devices');
+  //button.position(280, 10);
+  //button.mousePressed(standardMessageShowDevOnline);
+  //button = createButton('wave');
+  //button.position(10, 30);
+  //button.mousePressed(standardMessageWave);
+  //button = createButton('highlight sofa');
+  //button.position(10, 60);
+  //button.mousePressed(standardMessageSofaHighlightStart);
+  //button = createButton('stop sofa highlighting');
+  //button.position(10, 90);
+  //button.mousePressed(standardMessageSofaHighlightStop);
+  //button = createButton('up');
+  //button.position(55, 150);
+  //button.mousePressed(standardMessageUserMoveUp);
+  //button = createButton('left');
+  //button.position(10, 200);
+  //button.mousePressed(standardMessageUserMoveLeft);
+  //button = createButton('right');
+  //button.position(100, 200);
+  //button.mousePressed(standardMessageUserMoveRight);
+  //button = createButton('down');
+  //button.position(50, 250);
+  //button.mousePressed(standardMessageUserMoveDown);
 }
 
 function onConnect() {
