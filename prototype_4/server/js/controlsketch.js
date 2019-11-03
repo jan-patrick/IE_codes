@@ -14,7 +14,7 @@ var prevUserSize_Slider = userSize_Slider;
 var arduinoPresenceDelay_Slider;
 var arduinoDebounceDelay_Slider = 20;
 var prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
-var al = false;
+var al = 0;
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -58,7 +58,11 @@ function draw() {
 }
 
 function setupSliders() {
-  userFollowSize_Slider = createSlider(0, 500, userSize_Slider);
+  button = createButton('next');
+  button.position(10, 10);
+  button.mousePressed(standardMessageJourneyNext);
+
+  userFollowSize_Slider = createSlider(200, 500, userSize_Slider);
   userFollowSize_Slider.position(10, 0);
 
   arduinoPresenceDelay_Slider = createSlider(5, 70, arduinoDebounceDelay_Slider);
@@ -148,7 +152,15 @@ function standardMessageWave() {
 }
 
 function standardMessageAmbientLight() {
-  al = !al;
+  if (0 == al) {
+    al = 1;
+  } else if (1 == al) {
+    al = 2;
+  } else if (2 == al) {
+    al = -1;
+  } else {
+    al = 0;
+  }
   generateMessage(clientName, "display", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, al);
 }
 
@@ -217,6 +229,22 @@ function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, so
       "debounceDelay": debounceDelay,
     },
     "al": als
+  };
+  sendMessage(compileMessage(obj));
+}
+
+function standardMessageJourneyNext() {
+  generateJourneyMessage(clientName, "display", undefined, true);
+}
+
+function generateJourneyMessage(from, to, current, next) {
+  var obj = {
+    "from": from,
+    "to": to,
+    "journey": {
+      "current": current,
+      "next": next,
+    }
   };
   sendMessage(compileMessage(obj));
 }

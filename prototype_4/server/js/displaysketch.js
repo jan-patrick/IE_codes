@@ -30,7 +30,9 @@ var alStandardColor = 0;
 var alSwitchFade = true;
 var alState = 0;
 var alState_idle = 0;
-var alState_highlighting = 1;
+var alState_highlighting_1 = 1;
+var alState_highlighting_2 = 2;
+var alState_highlighting_all = -1;
 
 // wave related values
 var waves = [];
@@ -40,12 +42,26 @@ var waveState_idle = 0;
 var waveState_Washing = 1;
 var waveState_Finished = 2;
 
-// general state
+// general state to try out different user trackings, lights, connections, ...
 var displayState = 3;
 var displayState_0 = 0;
 var displayState_1 = 1;
 var displayState_2 = 2;
 var displayState_3 = 3;
+
+// journey states
+var journeyState = 0;
+var journeyState_0 = 0;
+var journeyState_1 = 1;
+var journeyState_2 = 2;
+var journeyState_3 = 3;
+var journeyState_4 = 4;
+var journeyState_5 = 5;
+var journeyState_6 = 6;
+var journeyState_7 = 7;
+var journeyState_8 = 8;
+var journeyState_Started = false;
+
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -67,25 +83,31 @@ function setup() {
 }
 
 function draw() {
+  // going to next journey step by mouse click on display
+  if (mouseIsPressed) {
+    increaseJourneyState();
+  }
+  actOutJourney();
   background(0, 0, 0);
   users[currentUser].updatePosition(mouseX, mouseY);
-  for (let i = 0; i < sofas.length; i++) {
-    // ambient Light
-    for (let i = 0; i < als.length; i++) {
-      switch (alState) {
-        case alState_idle:
-          als[i].setStandardFillColor();
-          alState = alState_idle;
-          break;
-        case alState_highlighting:
-          als[i].highlight();
-          break;
-        default:
-          console.log("Error " + waveState);
-          break;
-      }
-      als[i].draw();
+  // ambient Light
+  for (let i = 0; i < als.length; i++) {
+    switch (alState) {
+      case alState_idle:
+        als[i].setStandardFillColor();
+        alState = alState_idle;
+        break;
+      case alState_highlighting_1:
+        als[i].highlight();
+        break;
+      default:
+        console.log("Error " + waveState);
+        break;
     }
+    als[i].drawLeft();
+  }
+  for (let i = 0; i < sofas.length; i++) {
+
     // draw sofa
     switch (sofaState) {
       case sofaState_idle:
@@ -138,7 +160,6 @@ function draw() {
           waveState = waveState_Finished;
           waveCount = 0;
         }
-
         break;
       case waveState_idle:
         break;
@@ -158,6 +179,110 @@ function draw() {
   }
   //updateTime();
   //drawTimeRemaining()
+}
+
+function setJourneyState(newState) {
+  journeyState = newState;
+  checkIfValidJourneyState();
+  console.log("journeyState set to: " + journeyState);
+}
+
+function increaseJourneyState() {
+  journeyState+=1;
+  checkIfValidJourneyState();
+  console.log("journeyState increased to: " + journeyState);
+}
+
+function checkIfValidJourneyState() {
+  if (journeyState_6 < journeyState) {
+    journeyState = journeyState_0;
+  } else if (journeyState_0 > journeyState) {
+    journeyState = journeyState_0;
+  }
+  journeyState_Started = false;
+}
+
+//setTimeout(function () {
+//  sofaState = sofaState_idle;
+//}, 2000);
+
+function actOutJourney() {
+  switch (journeyState) {
+    // idle, nothing happens
+    case journeyState_0:
+      if (!journeyState_Started) {
+        sofaState = sofaState_idle;
+        // TODO al off
+        // TODO all animations off
+        // TODO everything off and maybe idle animation
+        journeyState_Started = true;
+      }
+      break;
+    // person 1 enters, sofa lights up
+    case journeyState_1:
+      if (!journeyState_Started) {
+        console.log("u1 sofa highlighted");
+        sofaState = sofaState_Highlighting;
+        journeyState_Started = true;
+      }
+      break;
+    // person 1 sits down, animation for 1
+    case journeyState_2:
+      if (!journeyState_Started) {
+        sofaState = sofaState_idle;
+        journeyState_Started = true;
+      } else if (sofaState_idle === sofaState) {
+        console.log("u1 animations");
+        // TODO animation u1 runs
+      }
+      break;
+    // person 1 sits, person 2 enters, sofa lights up partly
+    case journeyState_3:
+      if (!journeyState_Started) {
+        console.log("u2 sofa highlighted");
+        // TODO sofa lights up only for u2 (where u1 sits stays dark)
+        // like sofaState = sofaState_Highlighting_2 OR SO
+        journeyState_Started = true;
+      }
+      break;
+    // person 1+2 sit, animation for 1+2
+    case journeyState_4:
+      if (!journeyState_Started) {
+        sofaState = sofaState_idle;
+        journeyState_Started = true;
+      }
+      break;
+    // person 1+2 sit, luggage enters
+    case journeyState_5:
+      if (!journeyState_Started) {
+        journeyState_Started = true;
+      }
+      break;
+    // person 1+2 exit
+    case journeyState_6:
+      if (!journeyState_Started) {
+        journeyState_Started = true;
+      }
+      break;
+    case journeyState_7:
+      if (!journeyState_Started) {
+        journeyState_Started = true;
+      }
+      break;
+    case journeyState_8:
+      if (!journeyState_Started) {
+        journeyState_Started = true;
+      }
+      break;
+    case journeyState_9:
+      if (!journeyState_Started) {
+        journeyState_Started = true;
+      }
+      break;
+    default:
+      console.log("journeyState: " + journeyState);
+      break;
+  }
 }
 
 function onConnect() {
@@ -205,6 +330,13 @@ function onMessageArrived(message) {
               alState = alState_highlighting;
             } else {
               alState = alState_idle;
+            }
+          }
+          if (typeof inputs.journey === 'object' && inputs.journey !== null) {
+            if (typeof inputs.journey.current === "number") {
+              setJourneyState(inputs.journey.current);
+            } else if (typeof inputs.journey.next === "boolean" && inputs.journey.next) {
+              increaseJourneyState();
             }
           }
           if (typeof inputs.user === 'object' && inputs.user !== null) {
@@ -729,7 +861,8 @@ class AL {
     }
   }
 
-  drawGradient() {;
+  drawGradient() {
+    ;
     let h = 0;
 
     for (let r = 200; r > 0; --r) {
@@ -737,13 +870,28 @@ class AL {
       let c = color('rgba(255%, 255%, 255%, ' + a + ')');
       fill(c);
       //ellipse(310, 440, r, r);
-      rect(250-(r/2), 400-(r/2), 100+r, 100+r, 100);
+      rect(250 - (r / 2), 400 - (r / 2), 100 + r, 100 + r, 100);
       h = (h + 1) % 3000;
     }
   }
 
-  draw() {
+  drawSofaOutline() {
+    fill(0, 0, 0);
+    beginShape();
+    vertex(142, 168);
+    vertex(172, 155);
+    vertex(420, 150);
+    vertex(675, 160);
+    vertex(703, 172);
+    vertex(710, 475);
+    vertex(703, 483);
+    vertex(655, 526);
+    vertex(201, 525);
+    vertex(137, 470);
+    endShape(CLOSE);
+  }
 
+  drawLeft() {
     // gradient
     //noFill();
 
@@ -760,27 +908,6 @@ class AL {
     this.drawGradient();
 
 
-
-
-
-
-    fill(0, 0, 0);
-    beginShape();
-    vertex(142, 168);
-    vertex(172, 155);
-    vertex(420, 150);
-    vertex(675, 160);
-    vertex(703, 172);
-    vertex(710, 475);
-    vertex(703, 483);
-    vertex(655, 526);
-    vertex(201, 525);
-    vertex(137, 470);
-    endShape(CLOSE);
-
-
-
-
-  
+    this.drawSofaOutline();
   }
 }
