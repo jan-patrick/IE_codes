@@ -67,8 +67,8 @@ var journeyState_8 = 8;
 var journeyState_Started = false;
 
 // animation variables
+var animationParticlesLeft = [];
 var animationParticlesRight = [];
-
 var animationState = -1;
 var animationState_sofaIdle = -1;
 var animationState_left = 0;
@@ -159,6 +159,13 @@ function draw() {
       for (var i = 0; i < animationParticlesRight.length; i++) {
         animationParticlesRight[i].update();
         animationParticlesRight[i].display();
+      }
+    }
+    if (animationState_left === animationState || animationState_All === animationState) {
+      if (animationParticlesLeft.length < 100) animationParticlesLeft.push(new AnimationLeft());
+      for (var i = 0; i < animationParticlesLeft.length; i++) {
+        animationParticlesLeft[i].update();
+        animationParticlesLeft[i].display();
       }
     }
     // !!! ⬇ also used by seat based highlighting ⬇ !!! 
@@ -296,7 +303,11 @@ function actOutJourney() {
     case journeyState_3:
       if (!journeyState_Started) {
         console.log("u1 animation");
-        animationState = animationState_right;
+        if (sofaSeats[0].inUse) {
+          animationState = animationState_left;
+        } else {
+          animationState = animationState_right;
+        }
         journeyState_Started = true;
       }
 
@@ -1018,6 +1029,53 @@ class AL {
   }
 }
 
+class AnimationLeft {
+
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.x = random(140, 440);
+    this.y = random(0, 170);
+    this.vy = random(0.1, 2);
+    this.maxy = this.y + 350;
+    this.r = 0;
+    this.tr = 50;
+    this.w = random(0.1, 2);
+  }
+
+  update() {
+    if (this.y < this.maxy) {
+      this.y += this.vy;
+    } else {
+      this.r++;
+    }
+    if (this.r > this.tr) this.reset();
+  }
+
+  display() {
+    ellipseMode(RADIUS);
+    noFill();
+    strokeWeight(this.w);
+    if (this.y < this.maxy) {
+      stroke(255);
+      push();
+      translate(this.x, this.y);
+      beginShape();
+      strokeWeight(1);
+      vertex(0, -5);
+      quadraticVertex(3, 0, 0, 1);
+      quadraticVertex(-3, 0, 0, -5);
+      endShape(CLOSE);
+      pop();
+    } else {
+      stroke(255, map(this.r, 0, this.tr, 255, 0));
+      ellipse(this.x, this.y, this.r, this.r * .5);
+    }
+  }
+}
+
 class AnimationRight {
 
   constructor() {
@@ -1025,7 +1083,7 @@ class AnimationRight {
   }
 
   reset() {
-    this.x = random(300, 530);
+    this.x = random(440, 700);
     this.y = random(0, 170);
     this.vy = random(0.1, 2);
     this.maxy = this.y + 350;
