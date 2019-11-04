@@ -87,9 +87,7 @@ function checkForAlerts() {
   if (lastJourney_state != currentJourney_state) {
     lastJourney_state = currentJourney_state;
     console.log("current journey: " + currentJourney_state)
-    if (1 === currentJourney_state) {
-      alert("‼️ define ONE seat as in use ‼️");
-    } else if (7 === currentJourney_state) {
+    if (7 === currentJourney_state) {
       alert("‼️ LUGGAGE LIGHT ON ‼️");
     }
   }
@@ -318,8 +316,8 @@ function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, so
 }
 
 function standardMessageJourneyNext() {
-  if (1 === currentJourney_state && sofaSeats_left && sofaSeats_right) {
-    alert("only one seat can be in use")
+  if (1 === currentJourney_state && sofaSeats_left && sofaSeats_right || 1 === currentJourney_state && !sofaSeats_left && !sofaSeats_right) {
+    alert("one seat must be in use (only)")
   } else {
     generateJourneyMessage(clientName, "display", undefined, true);
   }
