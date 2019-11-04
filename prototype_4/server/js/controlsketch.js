@@ -182,7 +182,9 @@ function onMessageArrived(message) {
           generateMessage(clientName, inputs.from, "online")
         }
         if (clientName === inputs.to) {
-          if (typeof inputs.debug === "string") {
+          if ("reload" === inputs.debug) {
+            location.reload();
+          } else {
             console.log(inputs.debug + " : " + inputs.from);
           }
         }

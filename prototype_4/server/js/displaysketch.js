@@ -74,10 +74,12 @@ var animationState_sofaIdle = -1;
 var animationState_left = 0;
 var animationState_right = 1;
 var animationState_All = 10;
-
+var amountAnimationParticles = 70;
 
 // communication valutes
 var subscribedTopic = "/jan";
+
+var reloadable = true;
 
 function setup() {
   client.connect({
@@ -98,7 +100,7 @@ function setup() {
 function draw() {
   // going to next journey step by mouse click on display
   if (mouseIsPressed) {
-    increaseJourneyState();
+    reloadAllJourneyComponents();
   }
   actOutJourney();
   background(0, 0, 0);
@@ -155,14 +157,14 @@ function draw() {
 
   if (animationState_sofaIdle != animationState) {
     if (animationState_right === animationState || animationState_All === animationState) {
-      if (animationParticlesRight.length < 100) animationParticlesRight.push(new AnimationRight());
+      if (animationParticlesRight.length < amountAnimationParticles) animationParticlesRight.push(new AnimationRight());
       for (var i = 0; i < animationParticlesRight.length; i++) {
         animationParticlesRight[i].update();
         animationParticlesRight[i].display();
       }
     }
     if (animationState_left === animationState || animationState_All === animationState) {
-      if (animationParticlesLeft.length < 100) animationParticlesLeft.push(new AnimationLeft());
+      if (animationParticlesLeft.length < amountAnimationParticles) animationParticlesLeft.push(new AnimationLeft());
       for (var i = 0; i < animationParticlesLeft.length; i++) {
         animationParticlesLeft[i].update();
         animationParticlesLeft[i].display();
@@ -170,6 +172,13 @@ function draw() {
     }
     // !!! ⬇ also used by seat based highlighting ⬇ !!! 
     drawFloorAroundSofa();
+  }
+  if(0 < animationParticlesLeft.length && animationState_sofaIdle === animationState) {
+    for (var i = 0; i < animationParticlesLeft.length; i++) {
+      animationParticlesLeft[i].update();
+      animationParticlesLeft[i].display();
+    }
+    console.log("l");
   }
   // draw users connection
   //if (1 <= currentUser) {
@@ -240,6 +249,19 @@ function increaseJourneyState() {
   journeyState += 1;
   checkIfValidJourneyState();
   console.log("journeyState increased to: " + journeyState);
+}
+
+function reloadAllJourneyComponents() {
+  if (reloadable) {
+    reloadable = false;
+    var obj = {
+      "from": clientName,
+      "to": "control",
+      "debug": "reload"
+    };
+    sendMessage(compileMessage(obj));
+    location.reload();
+  }
 }
 
 function checkIfValidJourneyState() {
@@ -317,6 +339,11 @@ function actOutJourney() {
     case journeyState_4:
       if (!journeyState_Started) {
         console.log("u2 sofa highlighted");
+        if (sofaSeats[0].inUse) {
+          animationState = animationState_left;
+        } else {
+          animationState = animationState_right;
+        }
         sofaState = sofaState_Highlighting;
         journeyState_Started = true;
       }
@@ -325,6 +352,11 @@ function actOutJourney() {
     // ⓹ person 1 sits, person 2 sits down
     case journeyState_5:
       if (!journeyState_Started) {
+        if (sofaSeats[0].inUse) {
+          animationState = animationState_left;
+        } else {
+          animationState = animationState_right;
+        }
         console.log("u2 sits down");
         sofaState = sofaState_idle;
         journeyState_Started = true;
@@ -348,6 +380,7 @@ function actOutJourney() {
     // ⑦ person 1+2 sit, luggage enters
     case journeyState_7:
       if (!journeyState_Started) {
+        animationState = animationState_All;
         console.log("‼️‼️‼️ LUGGAGE LIGHT ON ‼️‼️‼️");
         journeyState_Started = true;
       }
@@ -361,7 +394,7 @@ function actOutJourney() {
       }
       setTimeout(function () {
         location.reload();
-      }, 5000);
+      }, 50000);
       break;
     default:
       console.log("journeyState: " + journeyState);
@@ -1051,7 +1084,7 @@ class AnimationLeft {
     } else {
       this.r++;
     }
-    if (this.r > this.tr) this.reset();
+    if (this.r > this.tr && animationState_left === animationState) this.reset();
   }
 
   display() {
