@@ -69,6 +69,12 @@ var journeyState_Started = false;
 // animation variables
 var animationParticlesRight = [];
 
+var animationState = -1;
+var animationState_sofaIdle = -1;
+var animationState_left = 0;
+var animationState_right = 1;
+var animationState_All = 10;
+
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -147,12 +153,17 @@ function draw() {
     }
   }
 
-  if (animationParticlesRight.length < 200) animationParticlesRight.push(new AnimationRight());
-  for (var i = 0; i < animationParticlesRight.length; i++) {
-    animationParticlesRight[i].update();
-    animationParticlesRight[i].display();
+  if (animationState_sofaIdle != animationState) {
+    if (animationState_right === animationState || animationState_All === animationState) {
+      if (animationParticlesRight.length < 100) animationParticlesRight.push(new AnimationRight());
+      for (var i = 0; i < animationParticlesRight.length; i++) {
+        animationParticlesRight[i].update();
+        animationParticlesRight[i].display();
+      }
+    }
+    // !!! ⬇ also used by seat based highlighting ⬇ !!! 
+    drawFloorAroundSofa();
   }
-  drawSofaOnlySeatRight();
   // draw users connection
   //if (1 <= currentUser) {
   //  if (displayState_2 === displayState) {
@@ -252,9 +263,7 @@ function actOutJourney() {
       if (!journeyState_Started) {
         sofaState = sofaState_idle;
         console.log("sofa is idle");
-        // TODO al off
-        // TODO all animations off
-        // TODO everything off
+        animationState = animationState_sofaIdle;
         journeyState_Started = true;
       }
       // maybe idle animation after a while standbye
@@ -287,8 +296,10 @@ function actOutJourney() {
     case journeyState_3:
       if (!journeyState_Started) {
         console.log("u1 animation");
+        animationState = animationState_right;
         journeyState_Started = true;
       }
+
       // TODO animation u1 runs
       break;
     // ⓸ person 1 sits, person 2 enters, sofa lights up partly
@@ -315,8 +326,9 @@ function actOutJourney() {
     case journeyState_6:
       if (!journeyState_Started) {
         console.log("u1+2 animations");
-        setSofaSeatsInUse(true,true);
+        setSofaSeatsInUse(true, true);
         sofaState = sofaState_idle;
+        animationState = animationState_All;
         journeyState_Started = true;
       } else if (sofaState_idle === sofaState) {
         // TODO animations u1+2 run
@@ -332,8 +344,7 @@ function actOutJourney() {
     // ⑧ person 1+2 exit
     case journeyState_8:
       if (!journeyState_Started) {
-        // TODO u1+2 al off
-        // TODO u1+2 animations off
+        animationState = animationState_sofaIdle;
         console.log("u1+2 leave")
         journeyState_Started = true;
       }
@@ -1008,16 +1019,16 @@ class AL {
 }
 
 class AnimationRight {
-  
+
   constructor() {
     this.reset();
   }
 
   reset() {
-    this.x = random(width);
-    this.y = random(-150, 0);
+    this.x = random(300, 530);
+    this.y = random(0, 170);
     this.vy = random(0.1, 2);
-    this.maxy = this.y + 450;
+    this.maxy = this.y + 350;
     this.r = 0;
     this.tr = 50;
     this.w = random(0.1, 2);
@@ -1037,19 +1048,19 @@ class AnimationRight {
     noFill();
     strokeWeight(this.w);
     if (this.y < this.maxy) {
-     stroke(255);
-     push();
-     translate(this.x,this.y);
-     beginShape();
-     strokeWeight(1);
-     vertex(0,-5);
-     quadraticVertex(3, 0, 0, 1);
-     quadraticVertex(-3,0, 0, -5);
-     endShape(CLOSE);
-     pop();
+      stroke(255);
+      push();
+      translate(this.x, this.y);
+      beginShape();
+      strokeWeight(1);
+      vertex(0, -5);
+      quadraticVertex(3, 0, 0, 1);
+      quadraticVertex(-3, 0, 0, -5);
+      endShape(CLOSE);
+      pop();
     } else {
       stroke(255, map(this.r, 0, this.tr, 255, 0));
-      ellipse(this.x, this.y, this.r, this.r*.5);
+      ellipse(this.x, this.y, this.r, this.r * .5);
     }
   }
 }
@@ -1073,26 +1084,6 @@ function drawSofaOutline() {
 }
 
 function drawFloorAroundSofa() {
-  fill(0, 0, 0);
-  noStroke();
-  beginShape();
-  vertex(0, 0);
-  vertex(140, 205);//s
-  vertex(700, 175);//s
-  vertex(728, 475);//s
-  vertex(670, 525);//s
-  vertex(215, 550);//s
-  vertex(155, 510);//s
-  vertex(140, 205);//s again
-  vertex(0, 0);
-  vertex(0, windowHeight);
-  vertex(windowWidth, windowHeight);
-  vertex(windowWidth, 0);
-  endShape(CLOSE);
-  noStroke();
-}
-
-function drawSofaOnlySeatRight() {
   fill(0, 0, 0);
   noStroke();
   beginShape();
