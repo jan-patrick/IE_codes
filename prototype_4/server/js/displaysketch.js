@@ -396,6 +396,7 @@ function actOutJourney() {
     // ⑥ person 1+2 sit, 1+2 animation
     case journeyState_6:
       if (!journeyState_Started) {
+        impactCircleRunning = true;
         console.log("u1+2 animations");
         setSofaSeatsInUse(true, true);
         sofaState = sofaState_idle;
@@ -638,6 +639,7 @@ function setupSofas() {
   sofaSeats[0] = new SofaSeat("left", false, -1, 250, 300);
   sofaSeats[1] = new SofaSeat("right", false, -1, 500, 300);
   impactCircles[0] = new ImpactCircle(300, 300);
+  impactCircles[1] = new ImpactCircle(570, 300);
   als[als.length] = new AL();
 }
 
