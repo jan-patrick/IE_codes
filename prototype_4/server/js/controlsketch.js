@@ -24,6 +24,10 @@ var usersDetected = [];
 var currentUser = 0;
 var userMovementValueDifferenz = 40;
 
+// sofaSeats
+var sofaSeats_left = false;
+var sofaSeats_right = false;
+
 
 function setup() {
   client.connect({
@@ -40,27 +44,56 @@ function setup() {
 
 function draw() {
   //console.log(currentUser);
-  userSize_Slider = userFollowSize_Slider.value();
-  arduinoDebounceDelay_Slider = arduinoPresenceDelay_Slider.value();
+  //userSize_Slider = userFollowSize_Slider.value();
+  //arduinoDebounceDelay_Slider = arduinoPresenceDelay_Slider.value();
   background(0, 0, 0);
 
-  if (prevUserSize_Slider != userSize_Slider) {
-    generateMessage(clientName, "display", undefined, undefined, currentUser, userSize_Slider);
-    prevUserSize_Slider = userSize_Slider;
+  let color_active = color(0, 82, 33);
+  let color_inActive = color(160, 0, 0);
+
+  if (sofaSeats_left) {
+    fill(color_active);
+  } else {
+    fill(color_inActive);
   }
-  if (prevArduinoDebounceDelay_Slider != arduinoDebounceDelay_Slider) {
-    generateMessage(clientName, "arduino-entrance", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, currentUser, arduinoDebounceDelay_Slider);
-    prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
+  noStroke();
+  rect(0, 0, windowWidth / 2, windowHeight / 4);
+
+  if (sofaSeats_right) {
+    fill(color_active);
+  } else {
+    fill(color_inActive);
   }
+  noStroke();
+  rect(windowWidth / 2, 0, windowWidth / 2, windowHeight / 4);
+
+  //if (prevUserSize_Slider != userSize_Slider) {
+  //  generateMessage(clientName, "display", undefined, undefined, currentUser, userSize_Slider);
+  //  prevUserSize_Slider = userSize_Slider;
+  //}
+  //if (prevArduinoDebounceDelay_Slider != arduinoDebounceDelay_Slider) {
+  //  generateMessage(clientName, "arduino-entrance", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, currentUser, arduinoDebounceDelay_Slider);
+  //  prevArduinoDebounceDelay_Slider = arduinoDebounceDelay_Slider;
+  //}
 
   //updateTime();
   //drawTimeRemaining()
 }
 
 function setupSliders() {
+  button = createButton("left");
+  button.position(0, windowHeight / 4);
+  button.size(windowWidth / 2, windowHeight / 4);
+  button.mousePressed(standardMessageSofaSeatsLeft);
+
+  button = createButton("right");
+  button.position(windowWidth / 2, windowHeight / 4);
+  button.size(windowWidth / 2, windowHeight / 4);
+  button.mousePressed(standardMessageSofaSeatsRight);
+
   button = createButton('next');
-  button.position(0, 0);
-  button.size(windowWidth, windowHeight);
+  button.position(0, windowHeight / 2);
+  button.size(windowWidth, windowHeight / 2);
   button.mousePressed(standardMessageJourneyNext);
 
   //userFollowSize_Slider = createSlider(0, 500, userSize_Slider);
@@ -123,6 +156,15 @@ function onMessageArrived(message) {
             console.log(inputs.debug + " : " + inputs.from);
           }
         }
+        if (typeof inputs.sofaSeats === 'object' && inputs.sofaSeats !== null) {
+          if (typeof inputs.sofaSeats.left === "boolean" && inputs.sofaSeats.left !== null && typeof inputs.sofaSeats.right === "boolean" && inputs.sofaSeats.right !== null) {
+            setSofaSeatsInUse(inputs.sofaSeats.left, inputs.sofaSeats.right);
+          } else if (typeof inputs.sofaSeats.left === "boolean" && inputs.sofaSeats.left !== null) {
+            setSofaSeatsInUse(inputs.sofaSeats.left, undefined);
+          } else if (typeof inputs.sofaSeats.right === "boolean" && inputs.sofaSeats.right !== null) {
+            setSofaSeatsInUse(undefined, inputs.sofaSeats.right);
+          }
+        }
       }
     } else {
       console.log("error while understanding data!")
@@ -136,6 +178,15 @@ function onMessageArrived(message) {
 function onConnectionLost(responseObject) {
   if (responseObject.errorCode !== 0) {
     console.log("onConnectionLost:" + responseObject.errorMessage);
+  }
+}
+
+function setSofaSeatsInUse(left, right) {
+  if (typeof left === "boolean" && null !== left) {
+    sofaSeats_left = left;
+  }
+  if (typeof right === "boolean" && null !== right) {
+    sofaSeats_right = right;
   }
 }
 
@@ -236,6 +287,29 @@ function generateJourneyMessage(from, to, current, next) {
     "journey": {
       "current": current,
       "next": next,
+    }
+  };
+  sendMessage(compileMessage(obj));
+}
+
+function standardMessageSofaSeatsLeft() {
+  sofaSeats_left = !sofaSeats_left;
+  console.log(sofaSeats_left)
+  generateSofaSeatsMessage(clientName, "display", sofaSeats_left, sofaSeats_right);
+}
+
+function standardMessageSofaSeatsRight() {
+  sofaSeats_right = !sofaSeats_right;
+  generateSofaSeatsMessage(clientName, "display", sofaSeats_left, sofaSeats_right);
+}
+
+function generateSofaSeatsMessage(from, to, left, right) {
+  var obj = {
+    "from": from,
+    "to": to,
+    "sofaSeats": {
+      "left": left,
+      "right": right,
     }
   };
   sendMessage(compileMessage(obj));

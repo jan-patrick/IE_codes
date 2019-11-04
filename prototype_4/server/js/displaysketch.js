@@ -319,7 +319,7 @@ function actOutJourney() {
         journeyState_Started = true;
       }
       setTimeout(function () {
-        location.reload(); 
+        location.reload();
       }, 5000);
       break;
     default:
@@ -380,6 +380,15 @@ function onMessageArrived(message) {
               setJourneyState(inputs.journey.current);
             } else if (typeof inputs.journey.next === "boolean" && inputs.journey.next) {
               increaseJourneyState();
+            }
+          }
+          if (typeof inputs.sofaSeats === 'object' && inputs.sofaSeats !== null) {
+            if (typeof inputs.sofaSeats.left === "boolean" && inputs.sofaSeats.left !== null && typeof inputs.sofaSeats.right === "boolean" && inputs.sofaSeats.right !== null) {
+              setSofaSeatsInUse(inputs.sofaSeats.left, inputs.sofaSeats.right);
+            } else if (typeof inputs.sofaSeats.left === "boolean" && inputs.sofaSeats.left !== null) {
+              setSofaSeatsInUse(inputs.sofaSeats.left, undefined);
+            } else if (typeof inputs.sofaSeats.right === "boolean" && inputs.sofaSeats.right !== null) {
+              setSofaSeatsInUse(undefined, inputs.sofaSeats.right);
             }
           }
           if (typeof inputs.user === 'object' && inputs.user !== null) {
@@ -447,7 +456,27 @@ function generateMessage(from, to, debug) {
   sendMessage(compileMessage(obj));
 }
 
+function setSofaSeatsInUse(left, right) {
+  if (typeof left === "boolean" && null !== left) {
+    sofaSeats[0].inUse = left;
+  }
+  if (typeof right === "boolean" && null !== right) {
+    sofaSeats[1].inUse = right;
+  }
+  generateSofaSeatsMessage(clientName, "console", sofaSeats[0].inUse, sofaSeats[1].inUse)
+}
 
+function generateSofaSeatsMessage(from, to, left, right) {
+  var obj = {
+    "from": from,
+    "to": to,
+    "sofaSeats": {
+      "left": left,
+      "right": right,
+    }
+  };
+  sendMessage(compileMessage(obj));
+}
 
 function compileMessage(obj) {
   var json = JSON.stringify(obj);
@@ -975,6 +1004,25 @@ function drawSofaOutline() {
 }
 
 function drawFloorAroundSofa() {
+  fill(0, 0, 0);
+  beginShape();
+  vertex(0, 0);
+  vertex(140, 205);//s
+  vertex(700, 175);//s
+  vertex(728, 475);//s
+  vertex(670, 525);//s
+  vertex(215, 550);//s
+  vertex(155, 510);//s
+  vertex(140, 205);//s again
+  vertex(0, 0);
+  vertex(0, windowHeight);
+  vertex(windowWidth, windowHeight);
+  vertex(windowWidth, 0);
+  endShape(CLOSE);
+  noStroke();
+}
+
+function drawSofaOnlySeatRight() {
   fill(0, 0, 0);
   beginShape();
   vertex(0, 0);
