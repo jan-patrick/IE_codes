@@ -52,7 +52,7 @@ function draw() {
   background(0, 0, 0);
 
   let color_active = color(0, 82, 33);
-  let color_inActive = color(160, 0, 0);
+  let color_inActive = color(0, 0, 0);
 
   if (sofaSeats_left) {
     fill(color_active);
@@ -114,17 +114,17 @@ function setupSliders() {
   button.mousePressed(reloadAllJourneyComponents);
 
   button = createButton("left");
-  button.position(0, windowHeight / 5*2);
+  button.position(0, windowHeight / 5 * 2);
   button.size(windowWidth / 2, windowHeight / 5);
   button.mousePressed(standardMessageSofaSeatsLeft);
 
   button = createButton("right");
-  button.position(windowWidth / 2, windowHeight / 5*2);
+  button.position(windowWidth / 2, windowHeight / 5 * 2);
   button.size(windowWidth / 2, windowHeight / 5);
   button.mousePressed(standardMessageSofaSeatsRight);
 
   button = createButton('next');
-  button.position(0, windowHeight / 5*3);
+  button.position(0, windowHeight / 5 * 3);
   button.size(windowWidth, windowHeight / 2);
   button.mousePressed(standardMessageJourneyNext);
 
@@ -318,7 +318,11 @@ function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, so
 }
 
 function standardMessageJourneyNext() {
-  generateJourneyMessage(clientName, "display", undefined, true);
+  if (1 === currentJourney_state && sofaSeats_left && sofaSeats_right) {
+    alert("only one seat can be in use")
+  } else {
+    generateJourneyMessage(clientName, "display", undefined, true);
+  }
 }
 
 function generateJourneyMessage(from, to, current, next) {
@@ -335,7 +339,6 @@ function generateJourneyMessage(from, to, current, next) {
 
 function standardMessageSofaSeatsLeft() {
   sofaSeats_left = !sofaSeats_left;
-  console.log(sofaSeats_left)
   generateSofaSeatsMessage(clientName, "display", sofaSeats_left, sofaSeats_right);
 }
 
