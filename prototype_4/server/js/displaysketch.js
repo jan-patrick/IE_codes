@@ -37,6 +37,9 @@ var alState_highlighting_all = -1;
 
 // sofa seats
 var sofaSeats = [];
+var impactCircles = [];
+var circlesSwitchFade = true;
+var impactCircleRunning = false;
 
 // wave related values
 var waves = [];
@@ -154,6 +157,25 @@ function draw() {
       sofas[i].draw();
     }
   }
+  if (impactCircleRunning) {
+    if (journeyState_5 >= journeyState) {
+      if (sofaSeats[0].inUse) {
+        impactCircles[0].highlight();
+        impactCircles[0].draw();
+      } else {
+        impactCircles[1].highlight();
+        impactCircles[1].draw();
+      }
+    } else {
+      if (impactCircles[0].r < impactCircles[1].r) {
+        impactCircles[0].highlight();
+        impactCircles[0].draw();
+      } else {
+        impactCircles[1].highlight();
+        impactCircles[1].draw();
+      }
+    }
+  }
 
   if (animationState_sofaIdle != animationState) {
     if (animationState_right === animationState || animationState_All === animationState) {
@@ -173,13 +195,13 @@ function draw() {
     // !!! ⬇ also used by seat based highlighting ⬇ !!! 
     drawFloorAroundSofa();
   }
-  if(0 < animationParticlesLeft.length && animationState_sofaIdle === animationState) {
+  if (0 < animationParticlesLeft.length && animationState_sofaIdle === animationState) {
     for (var i = 0; i < animationParticlesLeft.length; i++) {
       animationParticlesLeft[i].update();
       animationParticlesLeft[i].display();
     }
   }
-  if(0 < animationParticlesRight.length && animationState_sofaIdle === animationState) {
+  if (0 < animationParticlesRight.length && animationState_sofaIdle === animationState) {
     for (var i = 0; i < animationParticlesRight.length; i++) {
       animationParticlesRight[i].update();
       animationParticlesRight[i].display();
@@ -329,6 +351,7 @@ function actOutJourney() {
     // ⓷ animation for 1
     case journeyState_3:
       if (!journeyState_Started) {
+        impactCircleRunning = true;
         console.log("u1 animation");
         if (sofaSeats[0].inUse) {
           animationState = animationState_left;
@@ -614,6 +637,7 @@ function setupSofas() {
   sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
   sofaSeats[0] = new SofaSeat("left", false, -1, 250, 300);
   sofaSeats[1] = new SofaSeat("right", false, -1, 500, 300);
+  impactCircles[0] = new ImpactCircle(300, 300);
   als[als.length] = new AL();
 }
 
@@ -1031,7 +1055,6 @@ class AL {
   }
 
   drawGradient() {
-    ;
     let h = 0;
 
     for (let r = 200; r > 0; --r) {
@@ -1157,6 +1180,40 @@ class AnimationRight {
       ellipse(this.x, this.y, this.r, this.r * .5);
     }
   }
+}
+
+class ImpactCircle {
+
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.r = 0;
+    this.strokeColor = 200;
+  }
+
+  highlight() {
+    if (150 <= this.strokeColor) {
+      circlesSwitchFade = true;
+    } else if (50 >= this.strokeColor) {
+      circlesSwitchFade = false;
+    }
+    if (circlesSwitchFade) {
+      this.strokeColor -= 2;
+    } else {
+      this.strokeColor += 2;
+    }
+    this.r += 2;
+    if (windowWidth <= this.r) {
+      impactCircleRunning = false;
+    }
+  }
+
+  draw() {
+    stroke(this.strokeColor);
+    strokeWeight(5);
+    ellipse(this.x, this.y, this.r, this.r);
+  }
+
 }
 
 function drawSofaOutline() {
