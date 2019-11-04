@@ -178,7 +178,12 @@ function draw() {
       animationParticlesLeft[i].update();
       animationParticlesLeft[i].display();
     }
-    console.log("l");
+  }
+  if(0 < animationParticlesRight.length && animationState_sofaIdle === animationState) {
+    for (var i = 0; i < animationParticlesRight.length; i++) {
+      animationParticlesRight[i].update();
+      animationParticlesRight[i].display();
+    }
   }
   // draw users connection
   //if (1 <= currentUser) {
@@ -392,9 +397,7 @@ function actOutJourney() {
         console.log("u1+2 leave")
         journeyState_Started = true;
       }
-      setTimeout(function () {
-        location.reload();
-      }, 50000);
+      setTimeout(reloadAllJourneyComponents, 50000);
       break;
     default:
       console.log("journeyState: " + journeyState);
@@ -1084,7 +1087,7 @@ class AnimationLeft {
     } else {
       this.r++;
     }
-    if (this.r > this.tr && animationState_left === animationState) this.reset();
+    if (this.r > this.tr && journeyState_8 > journeyState) this.reset();
   }
 
   display() {
@@ -1131,7 +1134,7 @@ class AnimationRight {
     } else {
       this.r++;
     }
-    if (this.r > this.tr) this.reset();
+    if (this.r > this.tr && journeyState_8 > journeyState) this.reset();
   }
 
   display() {
