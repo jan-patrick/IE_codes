@@ -152,6 +152,7 @@ function draw() {
     animationParticlesRight[i].update();
     animationParticlesRight[i].display();
   }
+  drawSofaOnlySeatRight();
   // draw users connection
   //if (1 <= currentUser) {
   //  if (displayState_2 === displayState) {
@@ -877,7 +878,7 @@ class Sofa {
     noStroke();
     this.drawGradient(x, y);
 
-    drawFloorAroundSofa();
+    //drawFloorAroundSofa();
   }
 
   setStandardFillColor() {
@@ -1055,6 +1056,7 @@ class AnimationRight {
 
 function drawSofaOutline() {
   fill(0, 0, 0);
+  noStroke();
   beginShape();
   vertex(142, 168);
   vertex(172, 155);
@@ -1072,6 +1074,7 @@ function drawSofaOutline() {
 
 function drawFloorAroundSofa() {
   fill(0, 0, 0);
+  noStroke();
   beginShape();
   vertex(0, 0);
   vertex(140, 205);//s
@@ -1091,6 +1094,7 @@ function drawFloorAroundSofa() {
 
 function drawSofaOnlySeatRight() {
   fill(0, 0, 0);
+  noStroke();
   beginShape();
   vertex(0, 0);
   vertex(140, 205);//s

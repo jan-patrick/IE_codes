@@ -316,7 +316,7 @@ function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, so
 }
 
 function standardMessageJourneyNext() {
-  if (1 === currentJourney_state && sofaSeats_left && sofaSeats_right || 1 === currentJourney_state && !sofaSeats_left && !sofaSeats_right) {
+  if (2 === currentJourney_state && sofaSeats_left && sofaSeats_right || 2 === currentJourney_state && !sofaSeats_left && !sofaSeats_right) {
     alert("one seat must be in use (only)")
   } else {
     generateJourneyMessage(clientName, "display", undefined, true);
