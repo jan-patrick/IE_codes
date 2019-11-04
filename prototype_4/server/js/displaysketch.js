@@ -192,8 +192,6 @@ function draw() {
         animationParticlesLeft[i].display();
       }
     }
-    // !!! ⬇ also used by seat based highlighting ⬇ !!! 
-    drawFloorAroundSofa();
   }
   if (0 < animationParticlesLeft.length && animationState_sofaIdle === animationState) {
     for (var i = 0; i < animationParticlesLeft.length; i++) {
@@ -206,6 +204,10 @@ function draw() {
       animationParticlesRight[i].update();
       animationParticlesRight[i].display();
     }
+  }
+  // !!! ⬇ also used by seat based highlighting ⬇ !!! 
+  if (journeyState_0 < journeyState) {
+    drawFloorAroundSofa();
   }
   // draw users connection
   //if (1 <= currentUser) {
@@ -533,10 +535,10 @@ function onMessageArrived(message) {
           }
           if (typeof inputs.sofa === 'object' && inputs.sofa !== null) {
             if (typeof inputs.sofa.id === "number" && 0 <= inputs.sofa.id && sofas.length >= inputs.sofa.id) {
-              if (typeof inputs.sofa.sofaPosition === "number" && inputs.sofa.highlightStatus) {
+              if (typeof inputs.sofa.sofaPosition === "number" && inputs.sofa.highlightStatus && journeyState_0 >= journeyState) {
                 sofaState = sofaState_Highlighting;
                 console.log("sofa highlighting");
-              } else if (typeof inputs.sofa.sofaPosition === "number" && !inputs.sofa.highlightStatus) {
+              } else if (typeof inputs.sofa.sofaPosition === "number" && !inputs.sofa.highlightStatus && journeyState_0 >= journeyState) {
                 sofaState = sofaState_idle;
                 console.log("sofa is off");
               }
@@ -636,8 +638,8 @@ function drawTimeRemaining() {
 
 function setupSofas() {
   sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
-  sofaSeats[0] = new SofaSeat("left", false, -1, 250, 300);
-  sofaSeats[1] = new SofaSeat("right", false, -1, 500, 300);
+  sofaSeats[0] = new SofaSeat("left", false, -1, 90, 150);
+  sofaSeats[1] = new SofaSeat("right", false, -1, 390, 150);
   impactCircles[0] = new ImpactCircle(300, 300);
   impactCircles[1] = new ImpactCircle(570, 300);
   als[als.length] = new AL();
@@ -960,7 +962,10 @@ class Sofa {
 
   drawSingleSeat(x, y) {
     noStroke();
-    this.drawGradient(x, y);
+    //this.drawGradient(x, y);
+
+    fill(this.fillColor);
+    rect(x, y, 300, 400)
 
     //drawFloorAroundSofa();
   }
@@ -994,16 +999,14 @@ class Sofa {
     fill(this.fillColor);
 
     beginShape();
-    vertex(142, 168);
-    vertex(172, 155);
-    vertex(420, 150);
-    vertex(675, 160);
-    vertex(703, 172);
-    vertex(710, 475);
-    vertex(703, 483);
-    vertex(655, 526);
-    vertex(205, 524);
-    vertex(137, 470);
+    vertex(130, 185);
+    vertex(170, 155);
+    vertex(470, 175);
+    vertex(625, 182); // set
+    vertex(635, 453); // set
+    vertex(588, 492); // set
+    vertex(190, 500);
+    vertex(127, 450);
     endShape(CLOSE);
     noStroke();
   }
@@ -1097,10 +1100,10 @@ class AnimationLeft {
   }
 
   reset() {
-    this.x = random(140, 440);
-    this.y = random(0, 170);
+    this.x = random(135, 390);
+    this.y = random(30, 170);
     this.vy = random(0.1, 2);
-    this.maxy = this.y + 350;
+    this.maxy = this.y + 280;
     this.r = 0;
     this.tr = 50;
     this.w = random(0.1, 2);
@@ -1144,10 +1147,10 @@ class AnimationRight {
   }
 
   reset() {
-    this.x = random(440, 700);
-    this.y = random(0, 170);
+    this.x = random(390, 640);
+    this.y = random(30, 170);
     this.vy = random(0.1, 2);
-    this.maxy = this.y + 350;
+    this.maxy = this.y + 285;
     this.r = 0;
     this.tr = 50;
     this.w = random(0.1, 2);
@@ -1222,16 +1225,14 @@ function drawSofaOutline() {
   fill(0, 0, 0);
   noStroke();
   beginShape();
-  vertex(142, 168);
-  vertex(172, 155);
-  vertex(420, 150);
-  vertex(675, 160);
-  vertex(703, 172);
-  vertex(710, 475);
-  vertex(703, 483);
-  vertex(655, 526);
-  vertex(201, 525);
-  vertex(137, 470);
+  vertex(130, 185);
+  vertex(170, 155);
+  vertex(470, 175);
+  vertex(625, 182);
+  vertex(635, 453);
+  vertex(588, 492);
+  vertex(190, 500);
+  vertex(127, 450);
   endShape(CLOSE);
   noStroke();
 }
@@ -1241,13 +1242,15 @@ function drawFloorAroundSofa() {
   noStroke();
   beginShape();
   vertex(0, 0);
-  vertex(140, 205);//s
-  vertex(700, 175);//s
-  vertex(728, 475);//s
-  vertex(670, 525);//s
-  vertex(215, 550);//s
-  vertex(155, 510);//s
-  vertex(140, 205);//s again
+  vertex(130, 185); // s
+  vertex(170, 155); // s
+  vertex(470, 175); // s
+  vertex(625, 182); // s
+  vertex(635, 453); // s
+  vertex(588, 492); // s
+  vertex(190, 500); // s
+  vertex(127, 450); // s
+  vertex(130, 185); // s again
   vertex(0, 0);
   vertex(0, windowHeight);
   vertex(windowWidth, windowHeight);
