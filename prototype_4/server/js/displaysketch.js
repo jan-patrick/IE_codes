@@ -640,8 +640,8 @@ function setupSofas() {
   sofas[sofas.length] = new Sofa(20, 50, sofaSize, sofaSize, sofaStandardColor);
   sofaSeats[0] = new SofaSeat("left", false, -1, 90, 150);
   sofaSeats[1] = new SofaSeat("right", false, -1, 390, 150);
-  impactCircles[0] = new ImpactCircle(300, 300);
-  impactCircles[1] = new ImpactCircle(570, 300);
+  impactCircles[0] = new ImpactCircle(290, 370);
+  impactCircles[1] = new ImpactCircle(470, 370);
   als[als.length] = new AL();
 }
 
