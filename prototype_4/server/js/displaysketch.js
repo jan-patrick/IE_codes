@@ -221,6 +221,18 @@ function checkIfValidJourneyState() {
     journeyState = journeyState_0;
   }
   journeyState_Started = false;
+  generateCurrentJourneyMessage("control");
+}
+
+function generateCurrentJourneyMessage(to) {
+  var obj = {
+    "from": clientName,
+    "to": to,
+    "journey": {
+      "current": journeyState
+    }
+  };
+  sendMessage(compileMessage(obj));
 }
 
 function actOutJourney() {
@@ -254,8 +266,6 @@ function actOutJourney() {
       if (!journeyState_Started) {
         console.log("u1 sits down");
         sofaState = sofaState_idle;
-        // hard coded position for now
-        sofaSeats[1].inUse = true;
         journeyState_Started = true;
       }
 
@@ -295,8 +305,7 @@ function actOutJourney() {
     case journeyState_6:
       if (!journeyState_Started) {
         console.log("u1+2 animations");
-        // hard coded position for now
-        sofaSeats[0].inUse = true;
+        setSofaSeatsInUse(true,true);
         sofaState = sofaState_idle;
         journeyState_Started = true;
       } else if (sofaState_idle === sofaState) {

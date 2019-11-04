@@ -27,6 +27,8 @@ var userMovementValueDifferenz = 40;
 // sofaSeats
 var sofaSeats_left = false;
 var sofaSeats_right = false;
+var currentJourney_state = -1;
+var lastJourney_state = currentJourney_state - 1;
 
 
 function setup() {
@@ -43,6 +45,7 @@ function setup() {
 }
 
 function draw() {
+  checkForAlerts();
   //console.log(currentUser);
   //userSize_Slider = userFollowSize_Slider.value();
   //arduinoDebounceDelay_Slider = arduinoPresenceDelay_Slider.value();
@@ -78,6 +81,18 @@ function draw() {
 
   //updateTime();
   //drawTimeRemaining()
+}
+
+function checkForAlerts() {
+  if (lastJourney_state != currentJourney_state) {
+    lastJourney_state = currentJourney_state;
+    console.log("current journey: " + currentJourney_state)
+    if(1 === currentJourney_state) {
+      alert("‼️ define ONE seat as in use ‼️");
+    } else if (7 === currentJourney_state) {
+      alert("‼️ LUGGAGE LIGHT ON ‼️");
+    }
+  }
 }
 
 function setupSliders() {
@@ -142,7 +157,7 @@ function onConnect() {
 }
 
 function onMessageArrived(message) {
-  console.log(message.destinationName + " -> " + message.payloadString);
+  //console.log(message.destinationName + " -> " + message.payloadString);
   try {
     inputs = JSON.parse(message.payloadString);
 
@@ -163,6 +178,11 @@ function onMessageArrived(message) {
             setSofaSeatsInUse(inputs.sofaSeats.left, undefined);
           } else if (typeof inputs.sofaSeats.right === "boolean" && inputs.sofaSeats.right !== null) {
             setSofaSeatsInUse(undefined, inputs.sofaSeats.right);
+          }
+        }
+        if (typeof inputs.journey === 'object' && inputs.journey !== null) {
+          if (typeof inputs.journey.current === "number") {
+            setJourneyState(inputs.journey.current);
           }
         }
       }
@@ -188,6 +208,10 @@ function setSofaSeatsInUse(left, right) {
   if (typeof right === "boolean" && null !== right) {
     sofaSeats_right = right;
   }
+}
+
+function setJourneyState(state) {
+  currentJourney_state = state;
 }
 
 function standardMessageWave() {
