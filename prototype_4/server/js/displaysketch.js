@@ -66,6 +66,9 @@ var journeyState_7 = 7;
 var journeyState_8 = 8;
 var journeyState_Started = false;
 
+// animation variables
+var animationParticlesRight = [];
+
 
 // communication valutes
 var subscribedTopic = "/jan";
@@ -143,61 +146,67 @@ function draw() {
       sofas[i].draw();
     }
   }
+
+  if (animationParticlesRight.length < 200) animationParticlesRight.push(new AnimationRight());
+  for (var i = 0; i < animationParticlesRight.length; i++) {
+    animationParticlesRight[i].update();
+    animationParticlesRight[i].display();
+  }
   // draw users connection
-  if (1 <= currentUser) {
-    if (displayState_2 === displayState) {
-      for (let o = 0; o < userConnections.length; o++) {
-        if (currentUser === userConnections[o].currentUserConnect)
-          userConnections[o].updateNewestUserPoint();
-      }
-      for (let i = 0; i < userConnections.length; i++) {
-        userConnections[i].draw();
-      }
-    } else {
-      for (let o = 0; o < userConnectionLines.length; o++) {
-        if (currentUser === userConnectionLines[o].currentUserConnect)
-          userConnectionLines[o].updateNewestUserPoint();
-      }
-      for (let i = 0; i < userConnectionLines.length; i++) {
-        userConnectionLines[i].highlight();
-        userConnectionLines[i].draw();
-      }
-    }
-  }
+  //if (1 <= currentUser) {
+  //  if (displayState_2 === displayState) {
+  //    for (let o = 0; o < userConnections.length; o++) {
+  //      if (currentUser === userConnections[o].currentUserConnect)
+  //        userConnections[o].updateNewestUserPoint();
+  //    }
+  //    for (let i = 0; i < userConnections.length; i++) {
+  //      userConnections[i].draw();
+  //    }
+  //  } else {
+  //    for (let o = 0; o < userConnectionLines.length; o++) {
+  //      if (currentUser === userConnectionLines[o].currentUserConnect)
+  //        userConnectionLines[o].updateNewestUserPoint();
+  //    }
+  //    for (let i = 0; i < userConnectionLines.length; i++) {
+  //      userConnectionLines[i].highlight();
+  //      userConnectionLines[i].draw();
+  //    }
+  //  }
+  //}
   // draw wave
-  for (let i = 0; i < waves.length; i++) {
-    switch (waveState) {
-      case waveState_Finished:
-        waves[i].reset();
-        waveState = waveState_idle;
-        break;
-      case waveState_Washing:
-        waves[i].update();
-        if (windowHeight < waves[i].y - waves[i].ySize) {
-          waveCount++;
-          waves[i].reset();
-        }
-        if (5 < waveCount) {
-          waveState = waveState_Finished;
-          waveCount = 0;
-        }
-        break;
-      case waveState_idle:
-        break;
-      default:
-        console.log("Error " + waveState);
-        break;
-    }
-    waves[i].draw();
-  }
+  //for (let i = 0; i < waves.length; i++) {
+  //  switch (waveState) {
+  //    case waveState_Finished:
+  //      waves[i].reset();
+  //      waveState = waveState_idle;
+  //      break;
+  //    case waveState_Washing:
+  //      waves[i].update();
+  //      if (windowHeight < waves[i].y - waves[i].ySize) {
+  //        waveCount++;
+  //        waves[i].reset();
+  //      }
+  //      if (5 < waveCount) {
+  //        waveState = waveState_Finished;
+  //        waveCount = 0;
+  //      }
+  //      break;
+  //    case waveState_idle:
+  //      break;
+  //    default:
+  //      console.log("Error " + waveState);
+  //      break;
+  //  }
+  //  waves[i].draw();
+  //}
   // draw user specific light
-  for (let i = 0; i < users.length; i++) {
-    if (displayState_0 === displayState) {
-      users[i].draw();
-    } else if (displayState_3 > displayState) {
-      users[i].drawInsideSofa();
-    }
-  }
+  //for (let i = 0; i < users.length; i++) {
+  //  if (displayState_0 === displayState) {
+  //    users[i].draw();
+  //  } else if (displayState_3 > displayState) {
+  //    users[i].drawInsideSofa();
+  //  }
+  //}
   //updateTime();
   //drawTimeRemaining()
 }
@@ -994,6 +1003,53 @@ class AL {
 
 
     drawSofaOutline();
+  }
+}
+
+class AnimationRight {
+  
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.x = random(width);
+    this.y = random(-150, 0);
+    this.vy = random(0.1, 2);
+    this.maxy = this.y + 450;
+    this.r = 0;
+    this.tr = 50;
+    this.w = random(0.1, 2);
+  }
+
+  update() {
+    if (this.y < this.maxy) {
+      this.y += this.vy;
+    } else {
+      this.r++;
+    }
+    if (this.r > this.tr) this.reset();
+  }
+
+  display() {
+    ellipseMode(RADIUS);
+    noFill();
+    strokeWeight(this.w);
+    if (this.y < this.maxy) {
+     stroke(255);
+     push();
+     translate(this.x,this.y);
+     beginShape();
+     strokeWeight(1);
+     vertex(0,-5);
+     quadraticVertex(3, 0, 0, 1);
+     quadraticVertex(-3,0, 0, -5);
+     endShape(CLOSE);
+     pop();
+    } else {
+      stroke(255, map(this.r, 0, this.tr, 255, 0));
+      ellipse(this.x, this.y, this.r, this.r*.5);
+    }
   }
 }
 
