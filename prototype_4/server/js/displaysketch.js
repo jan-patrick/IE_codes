@@ -368,7 +368,9 @@ function onMessageArrived(message) {
         }
         if (clientName === inputs.to) {
           if (typeof inputs.debug === "string") {
-            if (typeof inputs.debug === "string") {
+            if ("reload" === inputs.debug) {
+              location.reload();
+            } else {
               console.log(inputs.debug + " : " + inputs.from);
             }
           }

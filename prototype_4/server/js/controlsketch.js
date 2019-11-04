@@ -60,7 +60,7 @@ function draw() {
     fill(color_inActive);
   }
   noStroke();
-  rect(0, 0, windowWidth / 2, windowHeight / 4);
+  rect(0, windowHeight / 5, windowWidth / 2, windowHeight / 5);
 
   if (sofaSeats_right) {
     fill(color_active);
@@ -68,7 +68,7 @@ function draw() {
     fill(color_inActive);
   }
   noStroke();
-  rect(windowWidth / 2, 0, windowWidth / 2, windowHeight / 4);
+  rect(windowWidth / 2, windowHeight / 5, windowWidth / 2, windowHeight / 5);
 
   //if (prevUserSize_Slider != userSize_Slider) {
   //  generateMessage(clientName, "display", undefined, undefined, currentUser, userSize_Slider);
@@ -87,7 +87,7 @@ function checkForAlerts() {
   if (lastJourney_state != currentJourney_state) {
     lastJourney_state = currentJourney_state;
     console.log("current journey: " + currentJourney_state)
-    if(1 === currentJourney_state) {
+    if (1 === currentJourney_state) {
       alert("‼️ define ONE seat as in use ‼️");
     } else if (7 === currentJourney_state) {
       alert("‼️ LUGGAGE LIGHT ON ‼️");
@@ -95,19 +95,36 @@ function checkForAlerts() {
   }
 }
 
+function reloadAllJourneyComponents() {
+  if (confirm("I'm reloading everything?")) {
+    var obj = {
+      "from": clientName,
+      "to": "display",
+      "debug": "reload"
+    };
+    sendMessage(compileMessage(obj));
+    location.reload();
+  }
+}
+
 function setupSliders() {
+  button = createButton("reload");
+  button.position(0, 0);
+  button.size(windowWidth, windowHeight / 5);
+  button.mousePressed(reloadAllJourneyComponents);
+
   button = createButton("left");
-  button.position(0, windowHeight / 4);
-  button.size(windowWidth / 2, windowHeight / 4);
+  button.position(0, windowHeight / 5*2);
+  button.size(windowWidth / 2, windowHeight / 5);
   button.mousePressed(standardMessageSofaSeatsLeft);
 
   button = createButton("right");
-  button.position(windowWidth / 2, windowHeight / 4);
-  button.size(windowWidth / 2, windowHeight / 4);
+  button.position(windowWidth / 2, windowHeight / 5*2);
+  button.size(windowWidth / 2, windowHeight / 5);
   button.mousePressed(standardMessageSofaSeatsRight);
 
   button = createButton('next');
-  button.position(0, windowHeight / 2);
+  button.position(0, windowHeight / 5*3);
   button.size(windowWidth, windowHeight / 2);
   button.mousePressed(standardMessageJourneyNext);
 
