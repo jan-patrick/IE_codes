@@ -71,6 +71,9 @@ function draw() {
   noStroke();
   rect(windowWidth / 2, windowHeight / 5, windowWidth / 2, windowHeight / 5);
 
+  fill(255);
+  text( currentJourney_state, windowWidth / 2, windowHeight / 5 * 1.5);
+
   //if (prevUserSize_Slider != userSize_Slider) {
   //  generateMessage(clientName, "display", undefined, undefined, currentUser, userSize_Slider);
   //  prevUserSize_Slider = userSize_Slider;
