@@ -451,12 +451,19 @@ function onConnectionLost(responseObject) {
 }
 
 function resetAndReloadAllJourneyComponents() {
+  var resestTime = 0;
+  if( journeyState_3 <= journeyState) {
+    resestTime = reloadTimeout_long;
+  } else {
+    resestTime = 5000;
+  }
+  setTimeout(reloadAllJourneyComponents, resestTime);
+
   journeyState = journeyState_8;
   animationState = animationState_sofaIdle;
   sofaState = sofaState_idle;
   impactCircleRunning = false;
   journeyState_Started = true;
-  setTimeout(reloadAllJourneyComponents, reloadTimeout_long);
 }
 
 function onMessageArrived(message) {

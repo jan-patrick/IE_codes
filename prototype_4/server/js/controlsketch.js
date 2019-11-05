@@ -114,7 +114,6 @@ function resetAndReloadAllJourneyComponents() {
       "debug": "abort&reload"
     };
     sendMessage(compileMessage(obj));
-    location.reload();
   }
 }
 
