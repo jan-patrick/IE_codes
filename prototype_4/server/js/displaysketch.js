@@ -138,9 +138,9 @@ function draw() {
       default:
         console.log("Error " + waveState);
         break;
-    }
-    if (journeyState_3 < journeyState && journeyState < journeyState_6) {
-      var sofaInUse = false;
+    }      
+    var sofaInUse = false;
+    if (journeyState_3 <= journeyState && journeyState < journeyState_6) {
       for (let z = 0; z < sofaSeats.length; z++) {
         if (sofaSeats[z].inUse) {
           sofaInUse = true;
@@ -455,6 +455,7 @@ function resetAndReloadAllJourneyComponents() {
   animationState = animationState_sofaIdle;
   sofaState = sofaState_idle;
   impactCircleRunning = false;
+  journeyState_Started = true;
   setTimeout(reloadAllJourneyComponents, reloadTimeout_long);
 }
 
