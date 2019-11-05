@@ -82,6 +82,7 @@ var amountAnimationParticles = 70;
 // communication valutes
 var subscribedTopic = "/jan";
 
+var reloadTimeout_long = 50000;
 var reloadable = true;
 
 function setup() {
@@ -423,7 +424,7 @@ function actOutJourney() {
         console.log("u1+2 leave")
         journeyState_Started = true;
       }
-      setTimeout(reloadAllJourneyComponents, 50000);
+      setTimeout(reloadAllJourneyComponents, reloadTimeout_long);
       break;
     default:
       console.log("journeyState: " + journeyState);
@@ -449,6 +450,14 @@ function onConnectionLost(responseObject) {
   }
 }
 
+function resetAndReloadAllJourneyComponents() {
+  journeyState = journeyState_8;
+  animationState = animationState_sofaIdle;
+  sofaState = sofaState_idle;
+  impactCircleRunning = false;
+  setTimeout(reloadAllJourneyComponents, reloadTimeout_long);
+}
+
 function onMessageArrived(message) {
   //console.log(message.destinationName + " -> " + message.payloadString);
 
@@ -464,6 +473,8 @@ function onMessageArrived(message) {
           if (typeof inputs.debug === "string") {
             if ("reload" === inputs.debug) {
               location.reload();
+            } else if ("abort&reload" === inputs.debug) {
+              resetAndReloadAllJourneyComponents();
             } else {
               console.log(inputs.debug + " : " + inputs.from);
             }

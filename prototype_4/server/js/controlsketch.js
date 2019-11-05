@@ -42,6 +42,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   setupSliders();
   usersDetected[currentUser] = new UserDetected();
+  textAlign( CENTER );
 }
 
 function draw() {
@@ -105,11 +106,28 @@ function reloadAllJourneyComponents() {
   }
 }
 
+function resetAndReloadAllJourneyComponents() {
+  if (confirm("Abort and reload everything?")) {
+    var obj = {
+      "from": clientName,
+      "to": "display",
+      "debug": "abort&reload"
+    };
+    sendMessage(compileMessage(obj));
+    location.reload();
+  }
+}
+
 function setupSliders() {
   button = createButton("reload");
   button.position(0, 0);
-  button.size(windowWidth, windowHeight / 5);
+  button.size(windowWidth/2, windowHeight / 5);
   button.mousePressed(reloadAllJourneyComponents);
+
+  button = createButton("abort and reload");
+  button.position(windowWidth/2, );
+  button.size(windowWidth/2, windowHeight / 5);
+  button.mousePressed(resetAndReloadAllJourneyComponents);
 
   button = createButton("left");
   button.position(0, windowHeight / 5 * 2);
@@ -318,9 +336,9 @@ function generateMessage(from, to, debug, wave, userId, userSize, posX, posY, so
 }
 
 function standardMessageJourneyNext() {
-  if (1 === currentJourney_state && sofaSeats_left && sofaSeats_right || 1 === currentJourney_state && !sofaSeats_left && !sofaSeats_right ||  
-      2 === currentJourney_state && sofaSeats_left && sofaSeats_right || 2 === currentJourney_state && !sofaSeats_left && !sofaSeats_right ||
-      3 === currentJourney_state && sofaSeats_left && sofaSeats_right || 3 === currentJourney_state && !sofaSeats_left && !sofaSeats_right) {
+  if (1 === currentJourney_state && sofaSeats_left && sofaSeats_right || 1 === currentJourney_state && !sofaSeats_left && !sofaSeats_right ||
+    2 === currentJourney_state && sofaSeats_left && sofaSeats_right || 2 === currentJourney_state && !sofaSeats_left && !sofaSeats_right ||
+    3 === currentJourney_state && sofaSeats_left && sofaSeats_right || 3 === currentJourney_state && !sofaSeats_left && !sofaSeats_right) {
     alert("one seat must be in use (only)")
   } else {
     generateJourneyMessage(clientName, "display", undefined, true);
