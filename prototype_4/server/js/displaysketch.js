@@ -498,7 +498,9 @@ function onMessageArrived(message) {
         if (clientName === inputs.to) {
           if (typeof inputs.debug === "string") {
             if ("reload" === inputs.debug) {
-              location.reload();
+              setSofaSeatsInUse(false, false);
+              setArduinoAmbientLight();
+              setTimeout(function() {location.reload();}, 500);
             } else if ("abort&reload" === inputs.debug) {
               resetAndReloadAllJourneyComponents();
             } else {
@@ -1001,11 +1003,39 @@ class Sofa {
     noStroke();
     //this.drawGradient(x, y);
 
+    //let currentColor = map(this.fillColor, 0, 255, 0, 1)
+    //if (0 > currentColor) {
+    //  currentColor = 0;
+    //} else if (1 < currentColor) {
+    //  currentColor = 1;
+    //}
+    //currentColor = Math.round(currentColor * 10) / 10;
+    //let c1 = color('rgba(255, 255, 255, ' + currentColor + ' )');
+    //let c2 = color('rgba(255, 255, 255, 0)');
+    //let widthX = 350;
+    //if (sofaSeats[1].inUse) {
+    //  this.drawSingleSeatGradient(x, y, widthX, 400, c1, c2)
+    //} else {
+    //  this.drawSingleSeatGradient(x, y, widthX, 400, c2, c1)
+    //}
+
     fill(this.fillColor);
     rect(x, y, 300, 400)
 
     //drawFloorAroundSofa();
   }
+
+  drawSingleSeatGradient(x, y, w, h, c1, c2) {
+    noFill();
+    for (let i = x; i <= x + w; i++) {
+      let inter = map(i, x, x + w, 0, 1);
+      let c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(i, y, i, y + h);
+    }
+  }
+
+
 
   setStandardFillColor() {
     if (sofaStandardColor < this.fillColor) {
