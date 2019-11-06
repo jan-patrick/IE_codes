@@ -12,6 +12,11 @@
 #include <WiFiNINA.h>
 #include <MQTT.h>
 #include <Arduino_JSON.h>
+#include <ChainableLED.h>
+
+#define NUM_LEDS  7
+
+ChainableLED leds(5, 6, NUM_LEDS);
 
 //wifi settings
 const char ssid[] = "TUvisitor";
@@ -30,14 +35,7 @@ unsigned long lastMillis = 0;
 unsigned long lastJsonMillis = 0;
 bool highlightStatus = false;
 
-int sensorPin = 6;
-int val = 0;
-int state;
-int lastState = LOW;
-
-unsigned long lastDebounceTime = 0;
-unsigned long debounceDelay = 5;
-int id = 0;
+byte pos = 0;
 
 void connect() {
   //Serial.print("checking wifi...");
@@ -85,12 +83,7 @@ void messageReceived(String &topic, String &payload) {
         //} else if (1000 < id) {
         //  id = 1000;
         //}
-        debounceDelay = (int) arduino["debounceDelay"];
-        if (2 > debounceDelay) {
-          debounceDelay = 2;
-        } else if (1000 < debounceDelay) {
-          debounceDelay = 1000;
-        }
+        //debounceDelay = (int) arduino["debounceDelay"];
       }
     }
   }
@@ -116,9 +109,6 @@ void setup() {
   client.onMessage(messageReceived);
 
   connect();
-
-  pinMode(sensorPin, INPUT);
-
 }
 
 void loop() {
@@ -128,29 +118,17 @@ void loop() {
     connect();
   }
 
-  val = digitalRead(sensorPin);
-
-  if (val != lastState) {
-    // reset the debouncing timer
-    lastDebounceTime = millis();
+  
+  for (byte i=0; i<NUM_LEDS; i++)
+  {
+    if (i==pos)
+      leds.setColorRGB(i, 255, 0, 0);  
+    else
+      leds.setColorRGB(i, 0, 0, 255); 
   }
-
-  if (HIGH == val && (millis() - lastDebounceTime) > debounceDelay) {
-    if (val == lastState) {
-      // reset the debouncing timer
-      state = val;
-
-      lastMillis = millis();
-      highlightStatus = true;
-      createMessage();
-    }
-  }
-
-  if (millis() - lastMillis > 5000 && highlightStatus) {
-    highlightStatus = false;
-    createMessage();
-  }
-  lastState = val;
+  delay(250);
+  
+  pos = (pos+1) % NUM_LEDS;
 }
 
 void sayHi( const char* to) {
@@ -165,34 +143,6 @@ void sayHi( const char* to) {
   String jsonString = JSON.stringify(myObject);
 
   client.publish("/jan", jsonString);
-
-  //Serial.println(sendJson);
-}
-
-void createMessage() {
-  bool sendJson = false;
-  if (millis() - lastJsonMillis > 500) {
-    sendJson = true;
-  } //else if (!highlightStatus) {
-  //  sendJson = true;
-  //}
-  if (sendJson == true) {
-    lastJsonMillis = millis();
-
-    JSONVar myObject;
-    JSONVar sofa;
-
-    myObject["from"] = clientNameString;
-    myObject["to"] = "display";
-    sofa["id"] = 0;
-    sofa["sofaPosition"] = -1;
-    sofa["highlightStatus"] = highlightStatus;
-    myObject["sofa"] = sofa;
-
-    String jsonString = JSON.stringify(myObject);
-
-    client.publish("/jan", jsonString);
-  }
 
   //Serial.println(sendJson);
 }
