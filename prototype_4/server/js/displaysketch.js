@@ -138,7 +138,7 @@ function draw() {
       default:
         console.log("Error " + waveState);
         break;
-    }      
+    }
     var sofaInUse = false;
     if (journeyState_3 <= journeyState && journeyState < journeyState_6) {
       for (let z = 0; z < sofaSeats.length; z++) {
@@ -281,6 +281,19 @@ function increaseJourneyState() {
   console.log("journeyState increased to: " + journeyState);
 }
 
+function setArduinoAmbientLight() {
+  var obj = {
+    "from": clientName,
+    "to": "arduino-ambientLight",
+    "arduino": {
+      "id": 1,
+      "sofaSeatsInUse0": sofaSeats[0].inUse,
+      "sofaSeatsInUse1": sofaSeats[1].inUse,
+    },
+  };
+  sendMessage(compileMessage(obj));
+}
+
 function reloadAllJourneyComponents() {
   if (reloadable) {
     reloadable = false;
@@ -362,9 +375,8 @@ function actOutJourney() {
           animationState = animationState_right;
         }
         journeyState_Started = true;
+        setArduinoAmbientLight();
       }
-
-      // TODO animation u1 runs
       break;
     // ⓸ person 1 sits, person 2 enters, sofa lights up partly
     case journeyState_4:
@@ -377,6 +389,7 @@ function actOutJourney() {
         }
         sofaState = sofaState_Highlighting;
         journeyState_Started = true;
+        setArduinoAmbientLight();
       }
       // maybe: sofa lights up when near to u2 (ambientlight?)
       break;
@@ -391,6 +404,7 @@ function actOutJourney() {
         console.log("u2 sits down");
         sofaState = sofaState_idle;
         journeyState_Started = true;
+        setArduinoAmbientLight();
       }
       if (sofaStandardColor + 5 >= sofas[0].fillColor) {
         increaseJourneyState();
@@ -405,6 +419,7 @@ function actOutJourney() {
         sofaState = sofaState_idle;
         animationState = animationState_All;
         journeyState_Started = true;
+        setArduinoAmbientLight();
       } else if (sofaState_idle === sofaState) {
         // TODO animations u1+2 run
       }
@@ -415,6 +430,7 @@ function actOutJourney() {
         animationState = animationState_All;
         console.log("‼️‼️‼️ LUGGAGE LIGHT ON ‼️‼️‼️");
         journeyState_Started = true;
+        setArduinoAmbientLight();
       }
       break;
     // ⑧ person 1+2 exit
@@ -423,6 +439,8 @@ function actOutJourney() {
         animationState = animationState_sofaIdle;
         console.log("u1+2 leave")
         journeyState_Started = true;
+        setSofaSeatsInUse(false, false);
+        setArduinoAmbientLight();
       }
       setTimeout(reloadAllJourneyComponents, reloadTimeout_long);
       break;
@@ -452,7 +470,7 @@ function onConnectionLost(responseObject) {
 
 function resetAndReloadAllJourneyComponents() {
   var resestTime = 0;
-  if( journeyState_3 <= journeyState) {
+  if (journeyState_3 <= journeyState) {
     resestTime = reloadTimeout_long;
   } else {
     resestTime = 5000;

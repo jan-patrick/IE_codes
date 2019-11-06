@@ -21,8 +21,8 @@ ChainableLED leds(5, 6, NUM_LEDS);
 //wifi settings
 const char ssid[] = "TUvisitor";
 const char pass[] = "pass";
-const char* clientName[1] = { "arduino-entrance" };
-const String clientNameString = "arduino-entrance";
+const char* clientName[1] = { "arduino-ambientLight" };
+const String clientNameString = "arduino-ambientLight";
 
 //mqtt settings
 const char mqtt_clientID[] = "Arduino Nano IOT";
@@ -36,6 +36,9 @@ unsigned long lastJsonMillis = 0;
 bool highlightStatus = false;
 
 byte pos = 0;
+
+bool al_left = false;
+bool al_right = false;
 
 void connect() {
   //Serial.print("checking wifi...");
@@ -76,14 +79,15 @@ void messageReceived(String &topic, String &payload) {
         //Serial.println("Parsing input failed!");
         return;
       }
-      if (arduino.hasOwnProperty("id") && arduino.hasOwnProperty("debounceDelay")) {
+      if (arduino.hasOwnProperty("id") && arduino.hasOwnProperty("sofaSeatsInUse0") && arduino.hasOwnProperty("sofaSeatsInUse1")) {
         //id = (int) arduino["id"];
         //if (0 > id) {
         //  debounceDelay = 0;
         //} else if (1000 < id) {
         //  id = 1000;
         //}
-        //debounceDelay = (int) arduino["debounceDelay"];
+        al_left = (bool) arduino["sofaSeatsInUse0"];
+        al_right = (bool) arduino["sofaSeatsInUse1"];
       }
     }
   }
@@ -118,17 +122,31 @@ void loop() {
     connect();
   }
 
-  
-  for (byte i=0; i<NUM_LEDS; i++)
-  {
-    if (i==pos)
-      leds.setColorRGB(i, 255, 0, 0);  
-    else
-      leds.setColorRGB(i, 0, 0, 255); 
+  if (al_left) {
+    for (byte i = 4; i < NUM_LEDS; i++)
+    {
+      leds.setColorRGB(i, 255, 255, 255);
+    }
+  } else {
+    for (byte i = 4; i < NUM_LEDS; i++)
+    {
+      leds.setColorRGB(i, 0, 0, 0);
+    }
   }
-  delay(250);
+
   
-  pos = (pos+1) % NUM_LEDS;
+  if (al_right) {
+    for (byte i = 0; i < 4; i++)
+    {
+      leds.setColorRGB(i, 255, 255, 255);
+    }
+  } else {
+    for (byte i = 0; i < 4; i++)
+    {
+      leds.setColorRGB(i, 0, 0, 0);
+    }
+  }
+
 }
 
 void sayHi( const char* to) {
