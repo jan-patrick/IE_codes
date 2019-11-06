@@ -40,6 +40,9 @@ byte pos = 0;
 bool al_left = false;
 bool al_right = false;
 
+int brightness_left = 0;
+int brightness_right = 0;
+
 void connect() {
   //Serial.print("checking wifi...");
   while (WiFi.status() != WL_CONNECTED) {
@@ -123,30 +126,39 @@ void loop() {
   }
 
   if (al_left) {
-    for (byte i = 4; i < NUM_LEDS; i++)
-    {
-      leds.setColorRGB(i, 255, 255, 255);
+    if (255 > brightness_left) {
+      brightness_left++;
+    } else if (255 <= brightness_left) {
+      brightness_left = 255;
     }
   } else {
-    for (byte i = 4; i < NUM_LEDS; i++)
-    {
-      leds.setColorRGB(i, 0, 0, 0);
+    if (0 < brightness_left) {
+      brightness_left--;
+    } else if (0 >= brightness_left) {
+      brightness_left = 0;
     }
   }
 
-  
   if (al_right) {
-    for (byte i = 0; i < 4; i++)
-    {
-      leds.setColorRGB(i, 255, 255, 255);
+    if (255 > brightness_right) {
+      brightness_right++;
+    } else if (255 <= brightness_right) {
+      brightness_right = 255;
     }
   } else {
-    for (byte i = 0; i < 4; i++)
-    {
-      leds.setColorRGB(i, 0, 0, 0);
+    if (0 < brightness_right) {
+      brightness_right--;
+    } else if (0 >= brightness_right) {
+      brightness_right = 0;
     }
   }
-
+  leds.setColorRGB(0, brightness_right, brightness_right, brightness_right);
+  leds.setColorRGB(1, brightness_right, brightness_right, brightness_right);
+  leds.setColorRGB(2, brightness_right, brightness_right, brightness_right);
+  leds.setColorRGB(3, brightness_right, brightness_right, brightness_right);
+  leds.setColorRGB(4, brightness_left, brightness_left, brightness_left);
+  leds.setColorRGB(5, brightness_left, brightness_left, brightness_left);
+  leds.setColorRGB(6, brightness_left, brightness_left, brightness_left);
 }
 
 void sayHi( const char* to) {

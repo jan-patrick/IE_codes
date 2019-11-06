@@ -436,11 +436,11 @@ function actOutJourney() {
     // ⑧ person 1+2 exit
     case journeyState_8:
       if (!journeyState_Started) {
+        setSofaSeatsInUse(false, false);
+        setArduinoAmbientLight();
         animationState = animationState_sofaIdle;
         console.log("u1+2 leave")
         journeyState_Started = true;
-        setSofaSeatsInUse(false, false);
-        setArduinoAmbientLight();
       }
       setTimeout(reloadAllJourneyComponents, reloadTimeout_long);
       break;
