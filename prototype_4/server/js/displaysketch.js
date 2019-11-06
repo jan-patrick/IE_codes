@@ -481,7 +481,7 @@ function resetAndReloadAllJourneyComponents() {
   animationState = animationState_sofaIdle;
   sofaState = sofaState_idle;
   impactCircleRunning = false;
-  journeyState_Started = true;
+  journeyState_Started = false;
 }
 
 function onMessageArrived(message) {
