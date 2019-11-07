@@ -1070,8 +1070,8 @@ class Sofa {
     vertex(170, 155);
     vertex(470, 175);
     vertex(625, 182); // set
-    vertex(635, 453); // set
-    vertex(588, 492); // set
+    vertex(635, 457); // set
+    vertex(588, 498); // set
     vertex(190, 500);
     vertex(127, 450);
     endShape(CLOSE);
