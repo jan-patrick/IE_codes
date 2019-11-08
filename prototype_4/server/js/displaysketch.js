@@ -19,7 +19,7 @@ userConnectionLines = [];
 // sofa related values
 var sofas = [];
 var sofaSize = 80;
-var sofaStandardColor = 0;
+var sofaStandardColor = 100;
 var sofaSwitchFade = true;
 var sofaState = 0;
 var sofaState_idle = 0;
@@ -1067,13 +1067,13 @@ class Sofa {
 
     beginShape();
     vertex(130, 185);
-    vertex(170, 155);
-    vertex(470, 175);
+    vertex(170, 170);
+    vertex(602, 170);
     vertex(625, 182); // set
-    vertex(635, 457); // set
-    vertex(588, 498); // set
-    vertex(190, 500);
-    vertex(127, 450);
+    vertex(635, 450); // set
+    vertex(588, 492); // set
+    vertex(182, 495);
+    vertex(125, 450);
     endShape(CLOSE);
     noStroke();
   }
@@ -1292,14 +1292,14 @@ function drawSofaOutline() {
   fill(0, 0, 0);
   noStroke();
   beginShape();
-  vertex(130, 185);
-  vertex(170, 155);
-  vertex(470, 175);
-  vertex(625, 182);
-  vertex(635, 453);
-  vertex(588, 492);
-  vertex(190, 500);
-  vertex(127, 450);
+  vertex(130, 185);// s
+  vertex(170, 170);// s
+  vertex(602, 170);// s
+  vertex(625, 182);// s
+  vertex(635, 450);// s
+  vertex(588, 492);// s
+  vertex(182, 495);// s
+  vertex(125, 450);// s
   endShape(CLOSE);
   noStroke();
 }
@@ -1309,14 +1309,14 @@ function drawFloorAroundSofa() {
   noStroke();
   beginShape();
   vertex(0, 0);
-  vertex(130, 185); // s
-  vertex(170, 155); // s
-  vertex(470, 175); // s
-  vertex(625, 182); // s
-  vertex(635, 453); // s
-  vertex(588, 492); // s
-  vertex(190, 500); // s
-  vertex(127, 450); // s
+  vertex(130, 185);// s
+  vertex(170, 170);// s
+  vertex(602, 170);// s
+  vertex(625, 182);// s
+  vertex(635, 450);// s
+  vertex(588, 492);// s
+  vertex(182, 495);// s
+  vertex(125, 450);// s
   vertex(130, 185); // s again
   vertex(0, 0);
   vertex(0, windowHeight);
