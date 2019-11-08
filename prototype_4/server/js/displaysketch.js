@@ -19,7 +19,7 @@ userConnectionLines = [];
 // sofa related values
 var sofas = [];
 var sofaSize = 80;
-var sofaStandardColor = 100;
+var sofaStandardColor = 0;
 var sofaSwitchFade = true;
 var sofaState = 0;
 var sofaState_idle = 0;
